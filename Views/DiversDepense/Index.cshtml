@@ -1,0 +1,431 @@
+@using originalstoremada.C_
+@using originalstoremada.Services
+@model List<DiversDepense>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    Pagination<DiversDepense> paginations = ViewBag.paginations;
+    List<TypeDepense> typeDepenses = ViewBag.typeDepenses;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Divers Depense de l' annee @ViewBag.Annee</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>Depenses</a></li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+
+<button type="button" class="btn but2-mod1 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#update">
+    <i class="fe fe-plus-circle fe-24"></i>
+    <span>Nouvelle Depense</span>
+</button>
+
+<button type="button" class="btn but2-mod3 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#type">
+    <i class="fe fe-plus-circle fe-24"></i>
+    <span>Type de Depense</span>
+</button>
+
+<div class="dropdown">
+    <button type="button" class="btn but2-mod2 btn-lg dropdown-toggle mb-3 mr-2" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        <i class="fa fa-download fa-24"></i>
+        <span>Ajouter Par CSV</span>
+    </button>
+    <form asp-action="ImportDepenseFromCsv" class="dropdown-menu p-4 form_upload" enctype="multipart/form-data">
+    
+        <a asp-action="DownCsvModel" type="submit" class="btn but2-mod1 mb-3 btn-sm">
+            <i class="fa fa-download fa-24"></i>
+            <span>Télécharger Le Modèle Csv</span>
+        </a>
+
+        <span class="form_upload-title">Télécharger votre fichier</span>
+        <p class="form_upload-paragraph">
+            Le fichier doit être de type csv
+        </p>
+        <p class="form_upload-paragraph">
+            Les séparateur doivent être (";")
+        </p>
+        <label for="file_upload-input" class="drop_upload-container">
+            <span class="drop_upload-title">Chosir le fichier</span>
+            <input name="fichier" class="btn form-control" type="file" accept=".csv" required id="file_upload-input">
+        </label>
+        <button type="submit" class="btn but2-mod2 btn-sm">
+            <i class="fa fa-download fa-24"></i>
+            <span>Télécharger</span>
+        </button>
+    </form>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form asp-action="Index" method="get" class="needs-validation" novalidate>
+            <li class="breadcrumb-item">
+                <div class="row">
+                    <div class="col-6">
+                        <input name="Annee" id="mois" class="form-control" value="@ViewBag.Annee" required placeholder="Annee"/>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" id="Find" class="btn but2-mod3 btn-sm"><i class="fa fa-search"></i> <span>Changer</span></button>
+                    </div>
+                </div>
+            </li>
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Depense global</h5>
+        
+                <!-- Line Chart -->
+                <div id="depenseParAnsMois"></div>
+                <!-- End Line Chart -->
+        
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card mb-3">
+            <div class="card-body">
+                <h5 class="card-title">Depense par type</h5>
+            
+                <!-- Line Chart -->
+                <div id="depenseParType"></div>
+                <!-- End Line Chart -->
+            
+            </div>
+        </div>
+    </div>
+
+
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Date</th>
+                    <th class="pal6_bg2 text-white">Type</th>
+                    <th class="pal6_bg2 text-white">Montant</th>
+                    <th class="pal6_bg2 text-white">Description</th>
+                    <th class="pal6_bg2 text-white"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@Formattage.DateTime(item.Date)</span>
+                                <span>
+                                    <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#cat_@item.Id">
+                                        <i class="fe fe-edit"></i><span>Modifier</span>
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
+                        <td>@item.TypeDepense.Nom</td>
+                        <td>@Formattage.Valeur(item.MontantAr) MGA</td>
+                        <td class="truncate-text"><a href="" data-bs-toggle="modal" data-bs-target="#cat_@item.Id">@item.Corps</a></td>
+                        <td>
+                            <button data-bs-toggle="modal" data-bs-target="#del_@item.Id" class="btn but2-mod1 btn-sm ml-3">
+                                <i class="fa fa-trash"></i>
+                                <span>Suppimer</span>
+                            </button>
+                        </td>
+                    </tr>
+                    
+                    
+                    <div class="modal fade" id="cat_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content border-0">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="varyModalLabel">Modifier</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form asp-action="Update" as class="needs-validation" novalidate
+                                      asp-route-Annee="@ViewBag.Annee" asp-route-pagId="@ViewBag.pagId"
+                                      asp-route-isPagination="@ViewBag.isPagination">
+                                    <div class="modal-body">
+                                        <input type="hidden" name="Id" value="@item.Id"/>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Date</label>
+                                            <input value="@Formattage.InputDateTime(@item.Date)" name="Date" type="datetime-local" class="form-control" id="recipient-name" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Type</label>
+                                            <select name="IdTypeDepense" class="form-select" id="recipient-name" required>
+                                                @foreach (var t in typeDepenses)
+                                                {
+                                                    if (t.Id == item.IdTypeDepense)
+                                                    {
+                                                        <option value="@t.Id" selected>@t.Nom</option>
+                                                    }
+                                                    else
+                                                    {
+                                                        <option value="@t.Id">@t.Nom</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Montant MGA</label>
+                                            <input value="@item.MontantAr" name="MontantAr" step="0.01" type="number" class="form-control" id="recipient-name" placeholder="Montant" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Description</label>
+                                            <textarea name="Corps" step="0.01" class="form-control" id="recipient-name" placeholder="Description" required>@item.Corps</textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal fade" id="del_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content border-0">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="varyModalLabel">Suppression</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form asp-action="Remove" asp-route-IdDepense="@item.Id">
+                                    <div class="modal-body text-center">
+                                        Voulez-vous vraiment supprimer cette élément?
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <tr>
+                    <th colspan="5"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        @if (paginations != null)
+        {
+            <div class="pagin1">
+                <a asp-action="Index" asp-route-pagId="@(paginations.PageId-1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+                @if (paginations.PageId > 1 && paginations.PageId > 4)
+                {
+                               
+                    <a asp-action="Index"  asp-route-pagId="1" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">1</a>
+                    @if (paginations.PageId > 5)
+                    {
+                        <span class="page-dots">...</span>
+                    }
+                }
+                @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+                {
+                    @if (i > 0 && i <= paginations.TotalPages)
+                    {
+                        <a asp-action="Index"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@i</a>
+                    }
+                }
+                                                    
+                @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+                {
+                    @if (paginations.PageId < paginations.TotalPages - 4)
+                    {
+                        <span class="page-dots">...</span>
+                    }
+                    <a asp-action="Index"  asp-route-pagId="@paginations.TotalPages" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@paginations.TotalPages</a>
+                }
+                <a asp-action="Index" asp-route-pagId="@(paginations.PageId+1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+            </div>     
+        }
+       
+    </div>
+</div>
+
+@*---------MODAL UPDATE-----------------*@
+
+<div class="modal fade rounded-5" id="update" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajout de nouvelle <strong>Dépense</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Add" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Date</label>
+                        <input name="Date" type="datetime-local" class="form-control" id="recipient-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Type</label>
+                        <select name="IdTypeDepense" class="form-select" id="recipient-name" required>
+                            @foreach (var t in typeDepenses)
+                            {
+                                <option value="@t.Id">@t.Nom</option>
+                            }
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Montant MGA</label>
+                        <input name="MontantAr" step="0.01" type="number" class="form-control" id="recipient-name" placeholder="Montant" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Description</label>
+                        <textarea name="Corps" step="0.01" type="datetime-local" class="form-control" id="recipient-name" placeholder="Description" required></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade rounded-5" id="type" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content border-0">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajout de nouvelle <strong>Dépense</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="tab2-wrap">
+                    <table class="tab2">
+                        <thead>
+                        <tr>
+                            <th class="pal6_bg4">Type</th>
+                            <th class="pal6_bg4">Code</th>
+                            <th class="pal6_bg4"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in typeDepenses)
+                        {
+                            <tr class="alert" role="alert">
+                                <form asp-action="UpdateType" asp class="needs-validation" novalidate
+                                      asp-route-Annee="@ViewBag.Annee" asp-route-pagId="@ViewBag.pagId"
+                                      asp-route-isPagination="@ViewBag.isPagination">
+                                    <input type="hidden" name="Id" value="@item.Id"/>
+                                    <td>
+                                        <input type="text" value="@item.Nom" name="Nom" placeholder="Type" class="form-control" required/>
+                                    </td>
+                                    <td>
+                                        <input type="text" value="@item.Code" name="Code" placeholder="Code" class="form-control" required/>
+                                    </td>
+                                    <td>
+                                        <button type="submit" class="btn but2-mod3 btn-sm">
+                                            <i class="fa fa-edit"></i>
+                                            <span>Modifier</span>
+                                        </button>
+                                        <a asp-action="RemoveType" asp-route-IdType="@item.Id" class="btn but2-mod1 btn-sm ml-3">
+                                            <i class="fa fa-trash text-white"></i>
+                                            <span class="text-white">Suppimer</span>
+                                        </a>
+                                    </td>
+                                </form>
+                            </tr>
+                        }
+                        <tr>
+                            <form asp-action="AddType" class="needs-validation" novalidate>
+                                <td>
+                                    <input type="text" name="Nom" placeholder="Type" class="form-control" required/>
+                                </td>
+                                <td>
+                                    <input type="text" name="Code" placeholder="Code" class="form-control"required/>
+                                </td>
+                                <td>
+                                    <button type="submit" class="btn but2-mod2 btn-sm">
+                                        <i class="fa fa-plus text-white"></i>
+                                        <span class="text-white">Ajouter</span>
+                                    </button>
+                                </td>
+                            </form>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      new ApexCharts(document.querySelector("#depenseParAnsMois"), {
+        series: [{
+          name: "Depense",
+          data: @Html.Raw(ViewBag.depenseParAnsMois)
+        }],
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: @Html.Raw(ViewBag.labelMois),
+        }
+      }).render();
+    });
+</script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      new ApexCharts(document.querySelector("#depenseParType"), {
+        series:  @Html.Raw(ViewBag.depenseParType),
+        chart: {
+          height: 350,
+          type: 'pie',
+          toolbar: {
+            show: true
+          }
+        },
+        labels: @Html.Raw(ViewBag.labelTypes),
+      }).render();
+    });
+</script>

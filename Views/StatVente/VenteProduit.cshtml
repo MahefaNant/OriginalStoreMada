@@ -1,0 +1,175 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Boutiques
+@model dynamic
+
+@{
+    Layout = RoutePath.ContentAdmin();
+  bool ? SuperAdmin = ViewBag.SuperAdmin;
+
+  int mois = ViewBag.mois;
+  int annee = ViewBag.annee;
+  List<Boutique> boutiques = ViewBag.boutiques;
+}
+
+<div class="row">
+  
+  <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Meilleur ventes global</h5>
+ 
+        <!-- Bar Chart -->
+        <div id="global"></div>
+ 
+        <script>
+           document.addEventListener("DOMContentLoaded", () => {
+             new ApexCharts(document.querySelector("#global"), {
+               series: [{
+                 data: @Html.Raw(ViewBag.valGlobal)
+               }],
+               chart: {
+                 type: 'bar',
+                 height: 350
+               },
+               plotOptions: {
+                 bar: {
+                   borderRadius: 4,
+                   horizontal: true,
+                 }
+               },
+               dataLabels: {
+                 enabled: false
+               },
+               xaxis: {
+                 categories: @Html.Raw(ViewBag.labelGlobal),
+               }
+             }).render();
+           });
+         </script>
+        <!-- End Bar Chart -->
+ 
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="row">
+  
+  <div class="pagetitle">
+    <nav>
+      <ol class="breadcrumb">
+        <form asp-action="VenteProduit" method="get">
+          <li class="breadcrumb-item">
+            <div class="row">
+              <div class="col-6 mb-3">
+                <select name="mois" id="mois" class="form-select" asp-items="@ViewBag.selectMois"></select>
+              </div>
+              <div class="col-6 mb-3">
+                <input type="number" id="year" step="any" name="annee" value="@annee" class="form-control " required/>
+              </div>
+              <div class="col-6">
+                <div class="input-group mb-3">
+                  <span class="input-group-text" id="basic-addon1">Top </span>
+                  <input name="top" value="@ViewBag.top" type="number" class="form-control " placeholder="top produit" aria-describedby="basic-addon1">
+                </div>
+              </div>
+              @if (ViewBag.super != null)
+              {
+                <div class="col-6 mb-3">
+                  <select name="IdBoutique" id="IdBoutique" class="form-select" asp-items="@ViewBag.selectListBout"></select>
+                </div>
+              }
+           
+              <div class="col-6 mb-3">
+                <button type="submit" id="Find" class="btn but2-mod3 btn-sm "><i class="fa fa-search"></i> <span>Rechercher</span></button>
+              </div>
+            </div>
+          </li>
+        </form>
+      </ol>
+    </nav>
+  </div>
+
+  <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Meilleur ventes Par Annee</h5>
+
+        <!-- Bar Chart -->
+        <div id="Ans"></div>
+
+        <script>
+             document.addEventListener("DOMContentLoaded", () => {
+               new ApexCharts(document.querySelector("#Ans"), {
+                 series: [{
+                   data: @Html.Raw(ViewBag.valAns)
+                 }],
+                 chart: {
+                   type: 'bar',
+                   height: 350
+                 },
+                 plotOptions: {
+                   bar: {
+                     borderRadius: 4,
+                     horizontal: true,
+                   }
+                 },
+                 dataLabels: {
+                   enabled: false
+                 },
+                 xaxis: {
+                   categories: @Html.Raw(ViewBag.labelAns),
+                 }
+               }).render();
+             });
+           </script>
+        <!-- End Bar Chart -->
+
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-sm-12 col-md-12 col-lg-6">
+    <div class="card mb-3">
+      <div class="card-body">
+        <h5 class="card-title">Meilleur ventes par Mois</h5>
+
+        <!-- Bar Chart -->
+        <div id="Mois"></div>
+
+        <script>
+             document.addEventListener("DOMContentLoaded", () => {
+               new ApexCharts(document.querySelector("#Mois"), {
+                 series: [{
+                   data: @Html.Raw(ViewBag.valMois)
+                 }],
+                 chart: {
+                   type: 'bar',
+                   height: 350
+                 },
+                 plotOptions: {
+                   bar: {
+                     borderRadius: 4,
+                     horizontal: true,
+                   }
+                 },
+                 dataLabels: {
+                   enabled: false
+                 },
+                 xaxis: {
+                   categories: @Html.Raw(ViewBag.labelMois),
+                 }
+               }).render();
+             });
+           </script>
+        <!-- End Bar Chart -->
+
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+

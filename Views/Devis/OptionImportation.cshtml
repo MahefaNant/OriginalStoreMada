@@ -1,0 +1,239 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis.Views
+@model List<originalstoremada.Models.Devis.Views.VvolDevisLivraison>
+
+@{
+    Layout = RoutePath.ContentClient();
+  List<VvolDevisLivraison> commsInLivr = ViewBag.commsInLivr;
+  List<VvolDevisLivraison>? adresses = ViewBag.adresses;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage($"Option d'importation des commandes devis #{Formattage.Numero(ViewBag.id_devis)}"))
+<!----------------->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container card mb-3 border-0">
+
+<nav aria-label="breadcrumb mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Mes devis</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a asp-action="Details" asp-route-id_devis="@ViewBag.id_devis">Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a asp-action="Payement" asp-route-id_devis="@ViewBag.id_devis">Payement</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Options d'importation</li>
+    </ol>
+</nav>
+  
+  <div class="card-header border-0 text-center">
+      @if (commsInLivr.Any())
+      {
+        <button type="button" class="btn but2-mod2" data-bs-toggle="modal" data-bs-target="#livr">
+          <i class="fa fa-truck"></i>
+          <span>Option de Livraison</span>
+        </button>
+      }
+  </div>
+
+  <div class="card-body">
+    <h4 class="text-center">Articles avec option d'importation</h4>
+    <div class="tab2-wrap">
+      <table class="tab2">
+        <thead>
+        <tr>
+          <th scope="col" class="pal6_bg2 text-white"></th>
+          <th scope="col" class="pal6_bg2 text-white">Désignation</th>
+          <th scope="col" class="pal6_bg2 text-white">Référence et Vol</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var q in Model)
+        {
+          <tr scope="row">
+            <td style="width: 200px">
+              <a>
+                <img style="width: 100px" class="img-thumbnail" src="~/images/produits/@(q.CommandeDevis.image != null ? $"minimize_{q.CommandeDevis.image}" : "locks/minimize_vide.jpg") " alt="">
+              </a>
+            </td>
+            <td>
+              <div class="pl-3 email">
+                <span> @q.CommandeDevis.ProduitName</span>
+                <span>Quantiter: <strong>@q.Quantiter</strong></span>
+                <span></span>
+              </div>
+            </td>
+            <td>
+              <div class="pl-3 email">
+                <span>Vol du @Formattage.DateTime(q.Vol.DateDepart)</span>
+                @if (q.Vol.DateArriver != null)
+                {
+                  <span>
+                    <button class="btn btn-success btn-sm disabled">
+                      <i class="fa fa-flag"></i> le vol est arrivé
+                    </button>
+                    @if (q.DateLivrer != null)
+                    {
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                        {
+                          <button class="btn btn-success btn-sm disabled"><i class="fa fa-truck"></i> Déjà Livrer</button>
+                        } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                        {
+                          <button class="btn btn-success btn-sm disabled"><i class="fa fa-check"></i> Déjà récupérer</button>
+                        }
+                    }
+                    else
+                    {
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                        {
+                          <button class="btn btn-warning btn-sm disabled"><i class="fa fa-times"></i> Livraison en attente</button>
+                        } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                        {
+                          <button class="btn btn-warning btn-sm disabled"><i class="fa fa-times"></i> Récupération en attente</button>
+                        }
+                    }
+                    
+                  </span>
+                  <span><strong>arrivé le @Formattage.DateTime((DateTime)q.Vol.DateArriver)</strong></span>
+                }
+                else
+                {
+                  <span>Arrivée prévue le @Formattage.Date(q.Vol.DateArriverEstimer)</span>
+                }
+                
+                <span><a href="@q.CommandeDevis.ReferenceSite" target="_blank">@q.CommandeDevis.ReferenceSite</a></span>
+              </div>
+            </td>
+          </tr>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer border-0">
+    @if (!Model.Any())
+    {
+      <div class="alert pal6_bg2 fade show mb-3 text-center" role="alert">
+        <strong class="text-white"><i class="fa fa-warning"></i>En attente de configuration administrateur!</strong>
+      </div>
+    }
+  </div>
+</div>
+
+@if (commsInLivr.Any())
+{
+  <div class="modal fade mt-5" id="livr" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-xl-down modal-fullscreen-sm-down modal-fullscreen-md-down" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="varyModalLabel">Options de Livraisons</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+            
+          @if (adresses != null)
+          {
+            <div class="row">
+              
+              @foreach(var ad in adresses) {
+                <div class="col-md-6">
+                  <div class="card border-danger shadow mb-3">
+                    <div class="card-body mx-md-5">
+                      <ul class="list-group mb-3">
+                        <li class="list-group-item">Choix de Livraison: @(ad.IsInBoutque!=null && (bool)ad.IsInBoutque ? "Recupération Directe sur Boutique" : "Par Livraison ")</li>
+                        @if (ad.FraisLivraison != null)
+                        {
+                          <li class="list-group-item">Frais: @Formattage.Valeur((double)ad.FraisLivraison) MGA</li>
+                        }
+                        else
+                        {
+                          <li class="list-group-item">Vous pouvez le récupérer</li>
+                        }
+                        <li class="list-group-item">@ad.Quartier - @ad.Ville</li>
+                        <li class="list-group-item">Long: @ad.Longitude / Lat: @ad.Latitude</li>
+                      </ul>
+                      <a class="btn but2-mod3 btn-sm">
+                        <i class="fa fa-map"></i><span>Consulter</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+           
+            
+            
+          <div class="list-group mb-3 text-center">
+            @foreach (var q in commsInLivr)
+            {
+              <a href="#" class="list-group-item list-group-item-action">
+
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">
+                    <img style="width: 80px" class="img-thumbnail" src="~/images/produits/@(q.CommandeDevis.image != null ? $"minimize_{q.CommandeDevis.image}" : "locks/minimize_vide.jpg") " alt="">
+                  </h5>
+                    
+                  @if (q.InAdresse)
+                  {
+                    <small>
+                      <button class="btn btn-danger btn-sm disabled">
+                        <i class="fa fa-bell"></i> <span> Adresse sélectionnée</span>
+                      </button>
+                    </small>
+                  }
+                    
+                </div>
+
+                <p class="mb-1">@q.CommandeDevis.ProduitName</p>
+                <p class="text-body-secondary mb-1">Adresse : <strong>@q.Quartier - @q.Ville</strong></p>
+                <p class="text-body-secondary mb-1">
+                  @if (q.DateLivrer != null)
+                  {
+                    @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-truck"></i> Déjà Livrer</button>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-check"></i> Déjà récupérer</button>
+                      }
+                  }
+                  else
+                  {
+                    @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-times"></i> Livraison en attente</button>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-times"></i> Récupération en attente</button>
+                      }
+                  }
+                </p>
+                <small class="text-body-secondary mb-1">Quantiter : <strong>@q.Quantiter</strong></small>
+                
+
+              </a>
+            }
+          </div>
+
+          <div class="text-center">
+            <a asp-action="ChooseLivraison" asp-route-id_devis="@ViewBag.id_devis" asp-route-InBoutique="true" class="btn mb-2 mr-2 but2-mod1 btn-sm"><i class="fa fa-gift"></i> <span>Option de récupération en boutique</span></a>
+            <a asp-action="ChooseLivraison" asp-route-id_devis="@ViewBag.id_devis" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-truck"></i> <span>Option de livraison</span></a>
+          </div>
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+}

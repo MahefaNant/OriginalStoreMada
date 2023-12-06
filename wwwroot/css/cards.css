@@ -1,0 +1,134 @@
+/*
+
+<div class="wrapper-cd1">
+<div class="circle-1-cd1"></div>
+<div class="circle-2-cd1"></div>
+<div class="card-cd1">
+  <section class="top-cd1">
+    <span class="u-l-cd1">User list:</span>
+  </section>
+  <section class="bottom-cd1">
+    <ul class="users-cd1">
+      <li class="user-cd1">
+        <span class="user-name-cd1">Olivia Anderson</span>
+        <span class="user-occupation-cd1">Marketing Manager</span>
+      </li>
+      <li class="user-cd1">
+        <span class="user-name-cd1">Ethan Murphy</span>
+        <span class="user-occupation-cd1">Graphic Designer</span>
+      </li>
+      <li class="user-cd1">
+        <span class="user-name-cd1">Ava Collins</span>
+        <span class="user-occupation-cd1">Financial Analyst</span>
+      </li>
+      <li class="user-cd1">
+        <span class="user-name-cd1">Noah Walker</span>
+        <span class="user-occupation-cd1">Journalist</span>
+      </li>
+    </ul>
+  </section>
+</div>
+</div>
+
+*/
+
+@import url('css/palettes.css');
+
+.wrapper-cd1 {
+    position: relative;
+    --white: #e3e3e3;
+    --bc: rgb(203,46,79);
+    --bc-al: rgba(203,46,79,0.6);
+}
+
+.card-cd1 {
+    max-width: 340px;
+    padding: 1rem 0;
+    display: grid;
+    grid-template-areas: "top" "bottom";
+    grid-template-rows: 20% 1fr;
+    border: 1px solid var(--pal6-bg1);
+    border-radius: .75rem;
+    background: var(--pal6-bg1);
+    color: var(--pal6-bg3);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 15px 30px -15px var(--bc-al);
+    isolation: isolate;
+}
+
+.circle-1-cd1 {
+    position: absolute;
+    content: '';
+    width: 5rem;
+    height: 5rem;
+    left: 1rem;
+    top: 50%;
+    transform: translate(-50%);
+    background-color: var(--pal6-bg1);
+    border-radius: 50%;
+    z-index: -10;
+}
+
+.top-cd1 {
+    padding: .5rem 4rem;
+    z-index: 1;
+}
+
+.bottom-cd1 {
+    z-index: 2;
+}
+
+.users-cd1 {
+    display: flex;
+    flex-direction: column;
+    padding: .5rem 0;
+}
+
+.user-cd1 {
+    width: 100%;
+    padding: .75rem 4rem;
+    display: flex;
+    gap: .1rem;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 1.1rem;
+    border-bottom: 1px solid var(--pal6-bg2);
+    position: relative;
+}
+
+.user-cd1:hover {
+    background-color: var(--pal6-bg2);
+}
+
+.user-cd1:nth-last-child(1) {
+    border-bottom: none;
+}
+
+.user-cd1::before {
+    content: '';
+    position: absolute;
+    width: 5px;
+    height: 5px;
+    left: 1.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: var(--white);
+    border-radius: 50%;
+}
+
+.user-name-cd1 {
+    font-weight: 700;
+    font-style: italic;
+}
+
+.user-occupation-cd1 {
+    opacity: .8;
+}
+
+.u-l-cd1 {
+    font-size: 1.1rem;
+    font-weight: 700;
+    font-style: italic;
+}
+
+/*-----------------------------------------------*/

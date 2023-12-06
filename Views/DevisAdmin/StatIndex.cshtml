@@ -1,0 +1,163 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements
+@using originalstoremada.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Payements.views
+@model List<originalstoremada.Models.Payements.views.VPayementDevisSum>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    Pagination<VPayementDevisSum> paginations = ViewBag.paginations;
+}
+
+<!-- Page Title -->
+<div class="pagetitle mb-3">
+    <h1>Payement des Devis de l' annee @ViewBag.Annee</h1>
+    <nav>Mahefa Nantenaina
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>Payement des Devis</a></li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+<div class="card mb-3">
+    <div class="card-body">
+        <form asp-action="StatIndex" method="get" class="needs-validation" novalidate>
+            <li class="breadcrumb-item">
+                <div class="row">
+                    <div class="col-6">
+                        <input name="Annee" id="mois" class="form-control" value="@ViewBag.Annee" required placeholder="Annee"/>
+                    </div>
+                    <div class="col-2">
+                        <button type="submit" id="Find" class="btn but2-mod3 btn-sm"><i class="fa fa-search"></i> <span>Changer</span></button>
+                    </div>
+                </div>
+            </li>
+        </form>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <h5 class="card-title">Devis global</h5>
+        
+        <!-- Line Chart -->
+        <div id="payement"></div>
+        <!-- End Line Chart -->
+        
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Date</th>
+                    <th class="pal6_bg2 text-white">Devis</th>
+                    <th class="pal6_bg2 text-white">Client</th>
+                    <th class="pal6_bg2 text-white">Montant</th>
+                    <th class="pal6_bg2 text-white">Type de Payement</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@Formattage.DateTime((DateTime)item.DatePayement)</span>
+                                <span>
+                                </span>
+                            </div>
+                        </td>
+                        <td><a asp-action="Payement" asp-route-id_devis="@item.IdDevis">#@Formattage.Numero(item.IdDevis)</a></td>
+                        <td>@item.Client.Mail</td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@Formattage.Valeur(item.Montant) MGA</span>
+                                <span>benefice: @Formattage.Valeur(item.Benefice ?? 0) MGA</span>
+                                <span></span>
+                            </div>
+                        </td>
+                        <td>@item.TypePayement.Nom</td>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="5"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        @if (paginations != null)
+        {
+            <div class="pagin1">
+                <a asp-action="StatIndex" asp-route-pagId="@(paginations.PageId-1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+                @if (paginations.PageId > 1 && paginations.PageId > 4)
+                {
+                               
+                    <a asp-action="StatIndex"  asp-route-pagId="1" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">1</a>
+                    @if (paginations.PageId > 5)
+                    {
+                        <span class="page-dots">...</span>
+                    }
+                }
+                @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+                {
+                    @if (i > 0 && i <= paginations.TotalPages)
+                    {
+                        <a asp-action="StatIndex"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@i</a>
+                    }
+                }
+                                                    
+                @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+                {
+                    @if (paginations.PageId < paginations.TotalPages - 4)
+                    {
+                        <span class="page-dots">...</span>
+                    }
+                    <a asp-action="StatIndex"  asp-route-pagId="@paginations.TotalPages" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@paginations.TotalPages</a>
+                }
+                <a asp-action="StatIndex" asp-route-pagId="@(paginations.PageId+1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+            </div>     
+        }
+       
+    </div>
+</div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      new ApexCharts(document.querySelector("#payement"), {
+        series: [{
+          name: "Payement",
+          data: @Html.Raw(ViewBag.payDatas)
+        }],
+        chart: {
+          height: 350,
+          type: 'line',
+          zoom: {
+            enabled: false
+          }
+        },
+        dataLabels: {
+          enabled: false
+        },
+        stroke: {
+          curve: 'straight'
+        },
+        grid: {
+          row: {
+            colors: ['#f3f3f3', 'transparent'], // takes an array which will be repeated on columns
+            opacity: 0.5
+          },
+        },
+        xaxis: {
+          categories: @Html.Raw(ViewBag.labelMois),
+        }
+      }).render();
+    });
+</script>
+

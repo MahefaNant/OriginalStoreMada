@@ -1,0 +1,405 @@
+is_global = true
+build_property.TargetFramework = net7.0
+build_property.TargetPlatformMinVersion = 
+build_property.UsingMicrosoftNETSdkWeb = true
+build_property.ProjectTypeGuids = 
+build_property.InvariantGlobalization = 
+build_property.PlatformNeutralAssembly = 
+build_property.EnforceExtendedAnalyzerRules = 
+build_property._SupportedPlatformList = Linux,macOS,Windows
+build_property.RootNamespace = originalstoremada
+build_property.RootNamespace = originalstoremada
+build_property.ProjectDir = /home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/
+build_property.RazorLangVersion = 7.0
+build_property.SupportLocalizedComponentNames = 
+build_property.GenerateRazorMetadataSourceChecksumAttributes = 
+build_property.MSBuildProjectDirectory = /home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada
+build_property._RazorSourceGeneratorDebug = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Areas/Identity/Pages/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = QXJlYXMvSWRlbnRpdHkvUGFnZXMvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vSG9tZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/HomeClientImage.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vSG9tZUNsaWVudEltYWdlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vTG9naW4uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/SignUp.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vU2lnblVwLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/templates/_Aside.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vdGVtcGxhdGVzL19Bc2lkZS5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/templates/_Content.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vdGVtcGxhdGVzL19Db250ZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/templates/_HtmlTemplate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vdGVtcGxhdGVzL19IdG1sVGVtcGxhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin/templates/_Nav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW4vdGVtcGxhdGVzL19OYXYuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin_S/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5fUy9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin_S/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5fUy9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin_S/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5fUy9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin_S/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5fUy9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Admin_S/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQWRtaW5fUy9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Affectation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvQWZmZWN0YXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Boutique/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQm91dGlxdWUvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/CategorieProduit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2F0ZWdvcmllUHJvZHVpdC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/Home.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L0hvbWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/Login.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L0xvZ2luLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/SignUp.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L1NpZ25VcC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/templates/_BoutiqueChoose.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L3RlbXBsYXRlcy9fQm91dGlxdWVDaG9vc2UuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/templates/_Content.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L3RlbXBsYXRlcy9fQ29udGVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/templates/_Footer.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L3RlbXBsYXRlcy9fRm9vdGVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/templates/_HtmlTemplate.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L3RlbXBsYXRlcy9fSHRtbFRlbXBsYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Client/templates/_Nav.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ2xpZW50L3RlbXBsYXRlcy9fTmF2LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Commission/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29tbWlzc2lvbi9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Commission/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29tbWlzc2lvbi9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Commission/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29tbWlzc2lvbi9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Commission/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29tbWlzc2lvbi9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Commission/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvQ29tbWlzc2lvbi9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/ChooseLivraison.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvQ2hvb3NlTGl2cmFpc29uLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/MesPayement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvTWVzUGF5ZW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/OptionImportation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvT3B0aW9uSW1wb3J0YXRpb24uY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Devis/Payement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXMvUGF5ZW1lbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DevisAdmin/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXNBZG1pbi9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DevisAdmin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXNBZG1pbi9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DevisAdmin/OptionImportation.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXNBZG1pbi9PcHRpb25JbXBvcnRhdGlvbi5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DevisAdmin/Payement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXNBZG1pbi9QYXllbWVudC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DevisAdmin/StatIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGV2aXNBZG1pbi9TdGF0SW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DiversDepense/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGl2ZXJzRGVwZW5zZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/DiversEntrer/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRGl2ZXJzRW50cmVyL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EntreeProduit/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW50cmVlUHJvZHVpdC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EntreeProduit/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW50cmVlUHJvZHVpdC9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EntreeProduit/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW50cmVlUHJvZHVpdC9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EntreeProduit/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW50cmVlUHJvZHVpdC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EntreeProduit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRW50cmVlUHJvZHVpdC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Event/Calendrier.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnQvQ2FsZW5kcmllci5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Event/Carts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnQvQ2FydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Event/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnQvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EventAdmin/AddProduitEvent.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnRBZG1pbi9BZGRQcm9kdWl0RXZlbnQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EventAdmin/Calendrier.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnRBZG1pbi9DYWxlbmRyaWVyLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/EventAdmin/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRXZlbnRBZG1pbi9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FactureAdmin/DetailsFacture.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmFjdHVyZUFkbWluL0RldGFpbHNGYWN0dXJlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FactureAdmin/Facture.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmFjdHVyZUFkbWluL0ZhY3R1cmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FactureAdmin/StatIndex.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRmFjdHVyZUFkbWluL1N0YXRJbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FraisImportation/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRnJhaXNJbXBvcnRhdGlvbi9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FraisImportation/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRnJhaXNJbXBvcnRhdGlvbi9EZWxldGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FraisImportation/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRnJhaXNJbXBvcnRhdGlvbi9EZXRhaWxzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FraisImportation/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRnJhaXNJbXBvcnRhdGlvbi9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/FraisImportation/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvRnJhaXNJbXBvcnRhdGlvbi9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Home/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Home/Privacy.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvSG9tZS9Qcml2YWN5LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/MyShop/DetailsFacture.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTXlTaG9wL0RldGFpbHNGYWN0dXJlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/MyShop/DetailsFacturePdf.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTXlTaG9wL0RldGFpbHNGYWN0dXJlUGRmLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/MyShop/Facture.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTXlTaG9wL0ZhY3R1cmUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/MyShop/MesPayement.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvTXlTaG9wL01lc1BheWVtZW50LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PreferenceProduit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJlZmVyZW5jZVByb2R1aXQvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PrixProduit/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJpeFByb2R1aXQvQ3JlYXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PrixProduit/Delete.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJpeFByb2R1aXQvRGVsZXRlLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PrixProduit/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJpeFByb2R1aXQvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PrixProduit/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJpeFByb2R1aXQvRWRpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/PrixProduit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJpeFByb2R1aXQvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Produit/Create.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdC9DcmVhdGUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Produit/Edit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdC9FZGl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Produit/EntrerProduit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdC9FbnRyZXJQcm9kdWl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Produit/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdC9JbmRleC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Produit/SortieProduit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdC9Tb3J0aWVQcm9kdWl0LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/ProduitShop/Carts.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdFNob3AvQ2FydHMuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/ProduitShop/ChooseBoutique.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdFNob3AvQ2hvb3NlQm91dGlxdWUuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/ProduitShop/Details.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdFNob3AvRGV0YWlscy5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/ProduitShop/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvUHJvZHVpdFNob3AvSW5kZXguY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Shared/Error.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL0Vycm9yLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Shared/_LoginPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19Mb2dpblBhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Shared/_ValidationScriptsPartial.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19WYWxpZGF0aW9uU2NyaXB0c1BhcnRpYWwuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/StatVente/VenteProduit.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU3RhdFZlbnRlL1ZlbnRlUHJvZHVpdC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/TypePayement/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVHlwZVBheWVtZW50L0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Vol/Index.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvVm9sL0luZGV4LmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/_ViewImports.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdJbXBvcnRzLmNzaHRtbA==
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/_ViewStart.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvX1ZpZXdTdGFydC5jc2h0bWw=
+build_metadata.AdditionalFiles.CssScope = 
+
+[/home/mahefanant/A0-MyPC/WORKS/STAGE 1/originalstoremada/Views/Shared/_Layout.cshtml]
+build_metadata.AdditionalFiles.TargetPath = Vmlld3MvU2hhcmVkL19MYXlvdXQuY3NodG1s
+build_metadata.AdditionalFiles.CssScope = b-oqxuvs9mst

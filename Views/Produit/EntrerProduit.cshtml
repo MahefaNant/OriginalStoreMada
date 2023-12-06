@@ -1,0 +1,121 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Produits
+@using originalstoremada.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<originalstoremada.Models.Produits.EntreeProduit>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    Pagination<EntreeProduit> paginations = ViewBag.paginations;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+  <h1>Entrer Produit</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><a>Entrer</a></li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+<div class="pagetitle">
+  <nav>
+    <ol class="breadcrumb">
+      <form asp-action="EntrerProduit" method="get">
+        <li class="breadcrumb-item">
+          <div class="row">
+            <div class="col-6 mb-3">
+              <input type="date"  step="any" name="dateDeb" class="form-control " />
+            </div>
+            <div class="col-6 mb-3">
+              <input type="date"  step="any" name="dateFin" class="form-control " />
+            </div>
+            @if (ViewBag.super != null)
+            {
+              <div class="col-6 mb-3">
+                <select name="IdBoutique" id="IdBoutique" class="form-select" asp-items="@ViewBag.selectListBout"></select>
+              </div>
+            }
+            <div class="col-6 mb-3">
+              <button type="submit" id="Find" class="btn but2-mod3 btn-sm "><i class="fa fa-search"></i> <span>Rechercher</span></button>
+            </div>
+          </div>
+        </li>
+      </form>
+    </ol>
+  </nav>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Date</th>
+                    <th class="pal6_bg2 text-white">Boutique</th>
+                    <th class="pal6_bg2 text-white">Produit</th>
+                    <th class="pal6_bg2 text-white">Quantiter</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            @Formattage.DateTime(item.Date)
+                        </td>
+                        <td>@item.Boutique.Ville / @item.Boutique.Quartier </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.Produit.Nom</span>
+                                <span>
+                                    @item.PreferenceProduit.ContenueProduit.Couleur / pt: @item.PreferenceProduit.Taille
+                                </span>
+                                <span></span>
+                            </div>
+                        </td>
+                        <td>@item.Quantiter</td>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="4"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div class="pagin1">
+    <a asp-action="EntrerProduit" asp-route-isPagination="true"  asp-route-pagId="@(paginations.PageId-1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+    @if (paginations.PageId > 1 && paginations.PageId > 4)
+    {
+                       
+        <a asp-action="EntrerProduit" asp-route-isPagination="true"  asp-route-pagId="1">1</a>
+        @if (paginations.PageId > 5)
+        {
+            <span class="page-dots">...</span>
+        }
+    }
+    @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+    {
+        @if (i > 0 && i <= paginations.TotalPages)
+        {
+            <a asp-action="EntrerProduit" asp-route-isPagination="true"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+        }
+    }
+                                            
+    @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+    {
+        @if (paginations.PageId < paginations.TotalPages - 4)
+        {
+            <span class="page-dots">...</span>
+        }
+        <a asp-action="EntrerProduit" asp-route-isPagination="true"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+    }
+    <a asp-action="EntrerProduit" asp-route-isPagination="true"  asp-route-pagId="@(paginations.PageId+1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+</div>
+

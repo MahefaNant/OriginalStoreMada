@@ -1,0 +1,235 @@
+@using originalstoremada.C_
+@model originalstoremada.Models.Evenements.others.CalendarMonth
+
+@{
+    Layout = RoutePath.ContentAdmin();
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Calendrier d'événement</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>Calendrier</a></li>
+            <li class="breadcrumb-item active"></li>    
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<button class="btn but2-mod2 btn-lg mb-3" data-bs-toggle="modal" data-bs-target="#createEvent">
+    <i class="fe fe-plus"></i> 
+    <span>COMMENCER A CREER UN EVENEMENT</span>
+</button>
+
+<div class="card mb-3 border-0">
+    <div class="card-header bg-white border-0">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <div class="navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <a class="nav-link"><span class="text-center btn pal_bg4 btn-sm text-dark mr-2">?</span> <strong>Vide</strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"><span class="text-center btn bg-success btn-sm text-dark mr-2">?</span> <strong>Aujourd'hui</strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"><span class="text-center btn pal6_bg2 btn-sm text-white mr-2">?</span> <strong>Événement en cours</strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"><span class="text-center btn pal6_bg1 btn-sm text-dark mr-2">?</span> <strong>Événement à venir</strong></a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link"><span class="text-center btn pal6_bg3 btn-sm text-white mr-2">?</span> <strong>Événement terminer</strong></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><strong>Date : @Model.Date.ToString("MMMM yyyy")</strong></li>
+        </ol>
+    </nav>
+</div>
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <form asp-action="FindCalendar">
+                <li class="breadcrumb-item">
+                    <div class="row">
+                        <div class="col-5">
+                            <select name="mois" id="mois" class="form-select" asp-items="@ViewBag.mois"></select>
+                        </div>
+                        <div class="col-3">
+                            <input type="number" id="year" step="any" name="year" value="@Model.Date.ToString("yyyy")" class="form-control" required/>
+                        </div>
+                        <div class="col-2">
+                            <button type="submit" id="Find" class="btn but2-mod3 btn-sm"><i class="fa fa-search"></i> <span>Rechercher</span></button>
+                        </div>
+                    </div>
+                </li>
+            </form>
+        </ol>
+    </nav>
+</div>
+
+<div class="pagetitle">
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item">
+                <a asp-action="PreviousCalendar" asp-route-Date="@Model.Date.ToString("yyyy-MM-ddTHH:mm:ss")" class="but2-mod3 btn-sm mr-2">
+                    <strong class="fa fa-chevron-left"></strong> <span>suivant</span>
+                </a>
+                <a asp-action="Calendrier" class="but2-mod3 btn-sm mr-2">
+                    <span>Cet mois</span>
+                </a>
+                <a asp-action="NextCalendar" asp-route-Date="@Model.Date.ToString("yyyy-MM-ddTHH:mm:ss")" class="but2-mod3 btn-sm mr-2">
+                    <span>précédent</span> <strong class="fa fa-chevron-right"></strong>
+                </a>
+            </li>
+        </ol>
+    </nav>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg1 "><strong>Lundi</strong></th>
+                    <th class="pal6_bg1"><strong>Mardi</strong></th>
+                    <th class="pal6_bg1"><strong>Mercredi</strong></th>
+                    <th class="pal6_bg1"><strong>Jeudi</strong></th>
+                    <th class="pal6_bg1"><strong>Vendredi</strong></th>
+                    <th class="pal6_bg1"><strong>Samedi</strong></th>
+                    <th class="pal6_bg1"><strong>Dimanche</strong></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    @for (var i = 1; i < Model.StartDay; i++)
+                    {
+                        <td></td>
+                    }
+                        
+                    @foreach(var D in Model.DaysInMonths)
+                    {
+                        <td class="fix-w">
+                            <div class="pl-3 email">
+                                @{
+                                    var bg = "pal_bg4";
+                                    var color = D.ExistEvent == 0 || D.ExistEvent == 2 || D.ExistEvent == -1? "text-dark" : "text-light";
+                                    var bg_but = "";
+                                    if (D.ExistEvent == -1) bg = "bg-success";
+                                    if (D.ExistEvent == 1) { // event
+                                        bg = "pal6_bg2";
+                                        bg_but = "but2-mod1";
+                                    }
+                                    if (D.ExistEvent == 2) {// fin
+                                        bg = "pal6_bg1"; 
+                                        bg_but = "but2-mod3";
+                                    }
+                                    if (D.ExistEvent == 3) {// futur
+                                        bg = "pal6_bg3"; 
+                                        bg_but = "but2-mod2";
+                                    }
+                                }
+                                <span class="text-center @color to_circle @bg">@D.DayNumber</span>
+                                @if (D.Evenements.Any())
+                                {
+                                    
+                                    foreach (var ev in D.Evenements)
+                                    {
+                                        <span>
+                                            <a asp-action="AddProduitEvent" asp-route-id_event="@ev.Id" class="btn @bg_but btn-sm">
+                                                <i class="fa fa-circle @color"></i>
+                                                <span class="@color">@Formattage.Time(ev.DateDeb) - @Formattage.Time(ev.DateFin)</span>
+                                            </a>
+                                        </span>
+                                    }
+                                }
+                            </div>
+                        </td>
+                        if ((Model.StartDay + D.DayNumber - 1) % 7 == 0)
+                        {
+                            @:</tr><tr>
+                        }
+                    }
+                        
+                    @for (var i = 0; i < (7 - (Model.StartDay + Model.DaysInMonths.Count() - 1) % 7); i++)
+                    {
+                        <td></td>
+                    }
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@*---------MODAL CREATEEVENT-----------------*@
+
+<div class="modal fade" id="createEvent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajouter un nouveau <strong>Événement</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="CreateEvent" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Date de l'événement</label>
+                        <input name="Date" type="date" class="form-control" id="recipient-name" required>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Heure début</label>
+                                <input name="heureDeb" type="time" class="form-control" id="recipient-name" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Heure Fin</label>
+                                <input name="heureFin" type="time" class="form-control" id="recipient-name" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="form-floating">
+                        <textarea name="Description" class="form-control" placeholder="Descrire l`événement" id="floatingTextarea2" style="height: 100px" required=""></textarea>
+                        <label for="floatingTextarea2">Description de l` événement</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*----------------*@

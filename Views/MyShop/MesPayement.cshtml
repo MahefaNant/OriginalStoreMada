@@ -1,0 +1,130 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements
+@using originalstoremada.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<originalstoremada.Models.Payements.PayementProduit>
+
+@{
+    Layout = RoutePath.ContentClient();
+    Pagination<PayementProduit> paginations = ViewBag.paginations;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage($"Mes Payements depuis Shop"))
+<!----------------->
+
+<div class="container">
+    
+
+
+    <div class="row">
+        <div class="col-md-12">
+    
+            <a asp-action="MesPayement" asp-route-etat="0" type="button" class="btn btn@(ViewBag.etat != 0 ? "-outline" : "")-secondary mb-3">Tous</a>
+            <a asp-action="MesPayement" asp-route-etat="1" type="button" class="btn btn@(ViewBag.etat != 1 ? "-outline" : "")-secondary mb-3">Payés</a>
+            <a asp-action="MesPayement" asp-route-etat="2" type="button" class="btn btn@(ViewBag.etat != 2 ? "-outline" : "")-secondary mb-3">Non Payés</a>
+            <div class="tab2-wrap">
+                <table class="tab2">
+                    <thead>
+                    <tr>
+                        <th class="pal6_bg2 text-white">Date</th>
+                        <th class="pal6_bg2 text-white">Facture</th>
+                        <th class="pal6_bg2 text-white">Montant</th>
+                        <th class="pal6_bg2 text-white">Type de Payement</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="alert" role="alert">
+                            <td>
+                                <div class="pl-3 email">
+                                    <span>@Formattage.DateTime(item.Date)</span>
+                                    <span></span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pl-3 email">
+                                    <span><a asp-action="DetailsFacture" asp-route-id_facture="@item.IdFacture">#@Formattage.Numero(item.IdFacture)</a></span>
+                                    <span>
+                                        
+                                        @if (item.Facture.DateSuspendue != null)
+                                        {
+                                            <span>
+                                                <button type="button" class="btn btn-danger disabled">
+                                                    <i class="fa fa-bell"></i> Facture suspendue
+                                                </button>
+                                            </span>
+                                            <span>
+                                                <strong>Suspendue le <span class="text-danger">@Formattage.DateTime((DateTime)item.Facture.DateSuspendue)</span></strong>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            @if (item.Facture.EstPayer == null)
+                                            {
+                                                <a class="btn but2-mod1 btn-sm" asp-action="DetailsFacture" asp-route-id_facture="@item.IdFacture">
+                                                    <i class="fa fa-bell text-danger"></i>
+                                                    <span><strong class="text-danger">Un Payement non Confirmé</strong></span>
+                                                </a>
+                                            }
+                                            else
+                                            {
+                                                <a class="btn but2-mod3 btn-sm" asp-action="DetailsFacture" asp-route-id_facture="@item.IdFacture">
+                                                    <i class="fa fa-bell text-success"></i>
+                                                    <span><strong class="text-success">Payement Confirmé</strong></span>
+                                                </a>
+                                            }
+                                        }
+                                        
+                                    </span>
+                                </div>
+
+                            </td>
+                            <td>@Formattage.Valeur(Math.Round(item.Montant * item.Quantiter, 2)) MGA</td>
+                            <td>@item.TypePayement.Nom</td>
+                        </tr>
+                    }
+                    <tr>
+                        <th colspan="4"></th>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        
+            @if (paginations != null)
+            {
+                <div class="pagin1">
+                    <a asp-action="MesPayement" asp-route-pagId="@(paginations.PageId-1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+                    @if (paginations.PageId > 1 && paginations.PageId > 4)
+                    {
+                               
+                        <a asp-action="MesPayement"  asp-route-pagId="1" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">1</a>
+                        @if (paginations.PageId > 5)
+                        {
+                            <span class="page-dots">...</span>
+                        }
+                    }
+                    @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+                    {
+                        @if (i > 0 && i <= paginations.TotalPages)
+                        {
+                            <a asp-action="MesPayement"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@i</a>
+                        }
+                    }
+                                                    
+                    @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+                    {
+                        @if (paginations.PageId < paginations.TotalPages - 4)
+                        {
+                            <span class="page-dots">...</span>
+                        }
+                        <a asp-action="MesPayement"  asp-route-pagId="@paginations.TotalPages" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee">@paginations.TotalPages</a>
+                    }
+                    <a asp-action="MesPayement" asp-route-pagId="@(paginations.PageId+1)" asp-route-isPagination="true" asp-route-Annee="@ViewBag.Annee" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+                </div>     
+            }
+       
+        </div>
+    </div>
+</div>

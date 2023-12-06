@@ -1,0 +1,272 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.StatAdmin
+@using originalstoremada.Models.Users
+@model dynamic
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentAdmin();
+    VBeneficeReel beneficeReel = ViewBag.beneficeReel;
+    List<VBeneficeReelParAnneeMois> beneficeReelParmoisAns = ViewBag.beneficeReelParmoisAns;
+    VBeneficeReelParAnnee Brans = ViewBag.beneficeReelParAnnee;
+}
+
+
+@*<form asp-controller="Test" asp-action="Upload" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="Images" class="control-label"></label>
+        <input type="file" name="Images" class="form-control"/>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Create" class="btn btn-primary" />
+    </div>
+</form>*@
+
+<div class="container-fluid">
+    <div class="row justify-content-center">
+        <div class="col-12">
+            @if (ViewBag.super == null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+                    <strong>Contenue Inaccessible</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+            <div class="row">
+                <div class="col-md-6 col-xl-3 mb-4">
+                    <div class="card shadow pal6_bg3 text-white border-0">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3 text-center">
+                                    <span class="circle circle-sm pal6_bg1">
+                                        <i class="fe fe-16 fe-shopping-bag text-dark mb-0"></i>
+                                    </span>
+                                </div>
+                                <div class="col pr-0">
+                                    <p class="small mb-0"><strong class="text-white">Bénéfice réel</strong></p>
+                                    <span class="h3 mb-0 text-white">@Formattage.Valeur(beneficeReel.BeneficeReel) MGA</span>
+                                    <span class="small text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-6 col-xl-3 mb-4">
+                    <div class="card shadow pal6_bg1 text-dark border-0">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3 text-center">
+                                    <span class="circle circle-sm pal6_bg2">
+                                        <i class="fe fe-16 fe-shopping-bag text-white mb-0"></i>
+                                    </span>
+                                </div>
+                                <div class="col pr-0">
+                                    <p class="small mb-0"><strong class="text-dark">
+                                        <a asp-controller="DevisAdmin" asp-action="StatIndex">Recette Devis</a>
+                                    </strong></p>
+                                    <span class="h3 mb-0 text-dark">@Formattage.Valeur(beneficeReel.RecetteDevis) MGA</span>
+                                    <span class="small text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3 mb-4">
+                    <div class="card shadow pal5_bg3 text-dark border-0">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3 text-center">
+                                    <span class="circle circle-sm pal6_bg2">
+                                        <i class="fe fe-16 fe-shopping-bag text-white mb-0"></i>
+                                    </span>
+                                </div>
+                                <div class="col pr-0">
+                                    <p class="small mb-0"><strong class="texDiversDepenset-dark">
+                                        <a asp-controller="FactureAdmin" asp-action="StatIndex">Recette Facture</a>
+                                    </strong></p>
+                                    <span class="h3 mb-0 text-dark">@Formattage.Valeur(beneficeReel.RecetteFacture) MGA</span>
+                                    <span class="small text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-xl-3 mb-4">
+                    <div class="card shadow  pal6_bg2 text-dark border-0">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3 text-center">
+                                    <span class="circle circle-sm pal6_bg2">
+                                        <i class="fe fe-16 fe-shopping-bag text-white mb-0"></i>
+                                    </span>
+                                </div>
+                                <div class="col pr-0">
+                                    <p class="small mb-0"><strong class="text-dark">
+                                        <a asp-controller="DiversEntrer" asp-action="Index">Divers Recette</a>
+                                    </strong></p>
+                                    <span class="h3 mb-0 text-dark">@Formattage.Valeur(beneficeReel.RecetteDivers) MGA</span>
+                                    <span class="small text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-6 col-xl-3 mb-4">
+                    <div class="card shadow pal3_bg5 text-white border-0">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-3 text-center">
+                                    <span class="circle circle-sm pal6_bg3">
+                                        <i class="fe fe-16 fe-shopping-bag text-white mb-0"></i>
+                                    </span>
+                                </div>
+                                <div class="col pr-0">
+                                    <p class="small mb-0"><strong class="text-white">
+                                        <a asp-controller="DiversDepense" asp-action="Index">Divers Depense</a>
+                                    </strong></p>
+                                    <span class="h3 mb-0 text-white">@Formattage.Valeur(beneficeReel.DepenseTotal) MGA</span>
+                                    <span class="small text-muted"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Suivis</h5>
+
+                        <form asp-action="Home" method="get" class="needs-validation" novalidate="">
+                            <li class="breadcrumb-item">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <input name="Annee" id="mois" class="form-control" value="@ViewBag.Annee" required placeholder="Annee"/>
+                                    </div>
+                                    <div class="col-2">
+                                        <button type="submit" id="Find" class="btn but2-mod3 btn-sm"><i class="fa fa-search"></i> <span>Changer</span></button>
+                                    </div>
+                                </div>
+                            </li>
+                        </form>
+                        
+                        <!-- Column Chart -->
+                        <div id="columnChart"></div>
+
+                        <div class="tab2-wrap">
+                            <table class="tab2">
+                                <thead>
+                                <tr>
+                                    <th class="pal6_bg2 text-white">mois</th>
+                                    <th class="pal6_bg2 text-white">recette magasin</th>
+                                    <th class="pal6_bg2 text-white">recette devis</th>
+                                    <th class="pal6_bg2 text-white">recette divers</th>
+                                    <th class="pal6_bg2 text-white">recette Total</th>
+                                    <th class="pal6_bg2 text-white">Depense Total</th>
+                                    <th class="pal6_bg2 text-white">Bénéfice réel</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @foreach (var item in beneficeReelParmoisAns)
+                                {
+                                    <tr class="alert" role="alert">
+                                        <td>@UtilesFonctions.Mois()[item.Mois - 1]</td>
+                                        <td>@Formattage.Valeur(item.RecetteFacture) MGA</td>
+                                        <td>@Formattage.Valeur(item.RecetteDevis) MGA</td>
+                                        <td>@Formattage.Valeur(item.RecetteDivers) MGA</td>
+                                        <td>@Formattage.Valeur(item.RecetteTotal) MGA</td>
+                                        <td>@Formattage.Valeur(item.DepenseTotal) MGA</td>
+                                        <td>@Formattage.Valeur(item.BeneficeReel) MGA</td>
+                                    </tr>
+                                }
+                                <tr>
+                                    <td class="bg-secondary text-white "></td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.RecetteFacture) MGA</td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.RecetteDevis) MGA</td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.RecetteDivers) MGA</td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.RecetteTotal) MGA</td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.DepenseTotal) MGA</td>
+                                    <td class="bg-secondary text-white fw-bold">@Formattage.Valeur(Brans.BeneficeReel) MGA</td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        
+
+                        <script>
+                          
+                            document.addEventListener("DOMContentLoaded", () => {
+                              new ApexCharts(document.querySelector("#columnChart"), {
+                                series: [{
+                                  name: 'Bénéfice réel',
+                                  data: @Html.Raw(ViewBag.dataBeneficeReel)
+                                }, {
+                                  name: 'Recette Devis',
+                                  data: @Html.Raw(ViewBag.dataRecetteDevis)
+                                }, {
+                                  name: 'Recette Facture',
+                                  data: @Html.Raw(ViewBag.dataRecetteFacture)
+                                }, {
+                                   name: 'Divers Recette',
+                                   data: @Html.Raw(ViewBag.dataRecetteDivers)
+                                 }, {
+                                     name: 'Divers Depense',
+                                     data: @Html.Raw(ViewBag.dataDiversDepense)
+                                   }],
+                                chart: {
+                                  type: 'bar',
+                                  height: 350
+                                },
+                                plotOptions: {
+                                  bar: {
+                                    horizontal: false,
+                                    columnWidth: '55%',
+                                    endingShape: 'rounded'
+                                  },
+                                },
+                                dataLabels: {
+                                  enabled: false
+                                },
+                                stroke: {
+                                  show: true,
+                                  width: 2,
+                                  colors: ['transparent']
+                                },
+                                xaxis: {
+                                  categories: @Html.Raw(ViewBag.labelMois),
+                                },
+                                yaxis: {
+                                  title: {
+                                    text: 'MGA (MGA)'
+                                  }
+                                },
+                                fill: {
+                                  opacity: 1
+                                },
+                                tooltip: {
+                                  y: {
+                                    formatter: function(val) {
+                                      return val + " MGA";
+                                    }
+                                  }
+                                },
+                                colors: ['#344E71', '#FDE9E7', '#ffcccc', '#FF978D' , '#333533'], 
+                              }).render();
+                            });
+                        </script>
+                        <!-- End Column Chart -->
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

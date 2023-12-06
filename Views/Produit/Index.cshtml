@@ -1,0 +1,369 @@
+@using originalstoremada.C_
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Produits.views
+@using originalstoremada.Services
+@using originalstoremada.Services.Produits.Others
+@model IEnumerable<originalstoremada.Models.Produits.views.VImagePrincipalPrixProduit>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    Pagination<VImagePrincipalPrixProduit> paginations = ViewBag.paginations;
+    RechercheProduitAdmin recherche = ViewBag.recherche;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+  <h1>Nos Produit</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><a>Nos Produit</a></li>
+      <li class="breadcrumb-item active"></li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+<a asp-action="Create" class="btn but2-mod2 btn-lg mb-3">
+    <i class="fe fe-plus"></i> 
+    <span>NOUVELLE MODELE PRODUIT</span>
+</a>
+
+<div class="dropdown">
+    <button type="button" class="btn but2-mod2 btn-lg dropdown-toggle mb-3" data-bs-toggle="dropdown" aria-expanded="false" data-bs-auto-close="outside">
+        <i class="fa fa-download fa-24"></i>
+        <span>Ajouter Par CSV</span>
+    </button>
+    <form asp-action="ImportProduitsFromCsv" class="dropdown-menu p-4 form_upload" enctype="multipart/form-data">
+    
+        <a asp-action="DownCsvModel" type="submit" class="btn but2-mod1 mb-3 btn-sm">
+            <i class="fa fa-download fa-24"></i>
+            <span>Télécharger Le Modèle Csv</span>
+        </a>
+
+        <span class="form_upload-title">Télécharger votre fichier</span>
+        <p class="form_upload-paragraph">
+            Le fichier doit être de type csv
+        </p>
+        <p class="form_upload-paragraph">
+            Les séparateur doivent être (";")
+        </p>
+        <label for="file_upload-input" class="drop_upload-container">
+            <span class="drop_upload-title">Chosir le fichier</span>
+            <input name="fichier" class="btn form-control" type="file" accept=".csv" required id="file_upload-input">
+        </label>
+        <button type="submit" class="btn but2-mod2 btn-sm">
+            <i class="fa fa-download fa-24"></i>
+            <span>Télécharger</span>
+        </button>
+    </form>
+</div>
+
+<a asp-action="EntrerProduit" class="btn but2-mod3 btn-sm mb-3 mr-2">
+    <i class="fe fe-repeat"></i> 
+    <span>Mouvement d'entrer</span>
+</a>
+
+<a asp-action="SortieProduit" class="btn but2-mod3 btn-sm mb-3 mr-2">
+    <i class="fe fe-repeat"></i> 
+    <span>Mouvement de sortie</span>
+</a>
+
+<div class="accordion" id="accordionExample">
+    <form asp-action="Index" asp-route-pagId="1">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    <i class="fe fe-filter"></i> Filtre
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionExample">
+                <div class="accordion-body">
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-floating mb-3">
+                                <input name="Nom" value="@(recherche!=null ? recherche.Nom : "")" type="text" class="form-control" id="floatingInput" placeholder="ex: Nike">
+                                <label for="floatingInput">Designation ex: Nike</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-floating mb-3">
+                                <select name="IdCategorie" asp-items="@ViewBag.categories" class="form-select" id="floatingSelect" aria-label="Floating label select example"></select>
+                                <label for="floatingSelect">Catégories</label>
+                            </div>
+                        </div>
+                        <div class="col-md-2 mb-3">
+                            <div class="form-floating">
+                                <select name="IdType" asp-items="@ViewBag.types" class="form-select" id="floatingSelect" aria-label="Floating label select example"></select>
+                                <label for="floatingSelect">Types ou Genre</label>
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="row">
+                                <div class="col">
+                                    <div class="form-floating mb-3">
+                                        <input name="minPrice" value="@(recherche!=null ? recherche.minPrice : "")" type="number" step="0.01" class="form-control" id="floatingInput" placeholder="ex: min">
+                                        <label for="floatingInput">Prix min (MGA)</label>
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <div class="form-floating mb-3">
+                                        <input name="maxPrice" value="@(recherche!=null ? recherche.maxPrice : "")" type="number" step="0.01" class="form-control" id="floatingInput" placeholder="ex: min">
+                                        <label for="floatingInput">Prix max (MGA)</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <a asp-action="Index" asp-route-pagId="1" asp-route-refresh="true" class="btn btn-secondary"><i class="fe fe-refresh-ccw"></i> Reanitialiser</a>
+                            <button type="submit" class="btn but2-mod3 btn-sm">
+                                <i class="fe fe-search"></i> 
+                                <span> Rechercher</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white"></th>
+                    <th class="pal6_bg2 text-white">Designation</th>
+                    <th class="pal6_bg2 text-white">Categorie</th>
+                    <th class="pal6_bg2 text-white">Prix</th>
+                    <th class="pal6_bg2 text-white"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <a asp-controller="PreferenceProduit" asp-action="Index" asp-route-id_produit="@item.Id">
+                                <img class="img-thumbnail" src="~/images/produits/@(item.Image != null ? $"minimize_{item.Image}" : "locks/minimize_vide.jpg") " alt="">
+                                <i class="fe fe-edit-2" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.Nom</span>
+                                <span>Pour <strong>@item.Type</strong></span>
+                                @if (item.PourEnfant)
+                                {
+                                    <span>Pour Enfant</span>
+                                }
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.CategorieProduit.Nom</span>
+                                <span>
+                                    <a asp-action="Create" asp-route-id_produit="@item.Id" type="button" class="btn but2-mod3 btn-sm">
+                                        <i class="fe fe-edit"></i><span class="text-dark">Modifier</span>
+                                    </a>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>
+                                    @if (item.PrixVenteInitial != null)
+                                    {
+                                        @if (item.DateDebPromo != null)
+                                        {
+                                            <strong class="fw-bold">@Formattage.Valeur((double)item.PrixVenteProm) MGA</strong> <del>@Formattage.Valeur((double)item.PrixVenteInitial) MGA</del>
+                                        }
+                                        else
+                                        {
+                                            <strong class="fw-bold">@Formattage.Valeur((double)item.PrixVenteInitial) MGA</strong>
+                                        }
+                                    } else { @("?") }
+                                </span>
+                                @if (item.DateDebPromo != null)
+                                {
+                                    <span class="text-success">@item.PourcentagePromotion % de réduction</span>
+                                }
+                                <span>
+                                    <button type="button" class="btn but2-mod2 btn-sm" data-bs-toggle="modal" data-bs-target="#prix_@item.Id" data-whatever="@@mdo">
+                                        <i class="fe fe-settings"></i><span class="text-light">Option de Prix</span>
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div class="modal fade" id="prix_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                       
+                                        <div class="modal-body text-center">
+                                            <form asp-action="AjouterPrix" asp-route-id_produit="@item.Id" class="needs-validation mb-3" novalidate>
+                                                <h5 class="modal-title" id="varyModalLabel">Modifier Le <strong>Prix</strong> De cette Produit ( <strong>@item.Nom</strong> )</h5>
+                                                <label for="a">Prix d` achat</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" id="a" value="@(item.PrixAchat != null ? Formattage.Valeur((double)item.PrixAchat) : "?") MGA" class="form-control" placeholder="Username" aria-label="Username" disabled>
+                                                    <span class="input-group-text"><i class="fe fe-repeat"></i> en</span>
+                                                    <input name="Achat" type="number" class="form-control form-check" step="0.01" value="0" aria-label="Server" required>
+                                                </div>
+                                                <label for="a">Prix de Vente</label>
+                                                <div class="input-group mb-3">
+                                                    <input type="text" id="a" value="@(item.PrixVenteInitial != null ? Formattage.Valeur((double)item.PrixVenteInitial) : "?") MGA" class="form-control" placeholder="Username" aria-label="Username" disabled>
+                                                    <span class="input-group-text"><i class="fe fe-repeat"></i> en</span>
+                                                    <input name="Vente" type="number" class="form-control form-check" step="0.01" value="0" aria-label="Server" required>
+                                                </div>
+
+                                                <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Modifier Le Prix</span></button>
+                                            </form>
+                                            
+                                            <h5 class="modal-title" id="varyModalLabel">Options de Promotion</h5>
+                                            
+                                            @if(@item.PrixVenteInitial!=null) {
+                                                @if (item.DateDebPromo == null )
+                                                {
+                                                    <form asp-action="AjouterPromo" asp-route-id_produit="@item.Id" class="needs-validation mb-3" novalidate>
+                                                    
+                                                        <p>Prix Initial : <strong>@Formattage.Valeur((double)@item.PrixVenteInitial) MGA</strong></p>
+                                                        <label >Prix et Pourcentage (Approximation)</label>
+                                                        <div class="input-group mb-3">
+                                                            <input type="text" id="price_@item.Id" value="@item.PrixVenteInitial" oninput="calculatePercentage(0, '@item.Id' , @item.PrixVenteInitial)" class="form-control shadow-sm text-right border-danger" step="0.01" placeholder="Prix" aria-label="Username">
+                                                            <span class="input-group-text">MGA</span>
+                                                            <input name="promo" id="pourcent_@item.Id" type="text" oninput="calculatePercentage(1, '@item.Id', @item.PrixVenteInitial)" class="form-control shadow-sm text-right border-danger" step="0.01" value="0" aria-label="Server" required>
+                                                            <span class="input-group-text">%</span>
+                                                        </div>
+                                                    
+                                                        <div class="input-group mb-3">
+                                                            <input type="datetime-local" name="dateDeb" class="form-control shadow-sm " required>
+                                                            <span class="input-group-text">D</span>
+                                                            <input name="dateFin"  type="datetime-local" class="form-control shadow-sm " value="0"  required>
+                                                        </div>
+                                                    
+                                                        <button type="button" class="btn but2-mod2" data-toggle="modal" data-target="#promot_@item.Id">
+                                                            <i class="fa fa-plus"></i>
+                                                            <span>Ajouter promotion</span>
+                                                        </button>
+                                                    
+                                                        <div class="modal fade " id="promot_@item.Id" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                                                            <div class="modal-dialog modal-dialog-centered shadow" role="document">
+                                                                <div class="modal-content ">
+                                                                    <div class="modal-body text-center">
+                                                                        <div class="alert pal6_bg2 fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                                                            <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr d'ajouter cette promotion ?</strong>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="modal-footer">
+                                                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                                                    </div>
+                                                                                            
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                    </form>
+                                                } else if (item.DateDebPromoAvenir != null)
+                                                {
+                                                    <div class="alert pal6_bg2 fade show mr-2 ml-2 mb-3 mt-3 text-center shadow-lg" role="alert">
+                                                        <strong class="text-white"><i class="fa fa-warning"></i>Une Promotion à venir</strong>
+                                                    </div>
+                                                
+                                                    <p>Promotion du <strong>@Formattage.DateTime((DateTime)item.DateDebPromoAvenir)</strong> jusqu'au <strong>@Formattage.DateTime((DateTime)item.DateFinPromoAvenir)</strong></p>
+                                                    <p class="text-success">@item.PourcentageAvenir % de réduction</p>
+                                                }
+                                                else
+                                                {
+                                                    <div class="alert bg-white fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                                        <strong class="text-success"><i class="fa fa-warning"></i>Une dernière promotion en cours ou non terminée</strong>
+                                                    </div>
+                                                
+                                                    <p>Promotion du <strong>@Formattage.DateTime((DateTime)item.DateDebPromo)</strong> jusqu'au <strong>@Formattage.DateTime((DateTime)item.DateFinPromo)</strong></p>
+                                                    <p>prix initial <strong>@Formattage.Valeur((double)@item.PrixVenteInitial) MGA</strong> réduit à <strong>@Formattage.Valeur((double)@item.PrixVenteProm) MGA</strong></p>
+                                                    <p class="text-success">@item.PourcentagePromotion % de réduction</p>
+                                                }
+                                            }
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+
+                        <td>
+                            <a asp-controller="PreferenceProduit" asp-action="Index" asp-route-id_produit="@item.Id" class="btn but2-mod1 btn-sm">
+                                <i class="fe fe-navigation"></i> 
+                                <span>Stock(s) et Modèle</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="5"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagin1">
+            <a asp-action="Index" asp-route-isPagination="true"  asp-route-pagId="@(paginations.PageId-1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+            @if (paginations.PageId > 1 && paginations.PageId > 4)
+            {
+                       
+                <a asp-action="Index" asp-route-isPagination="true"  asp-route-pagId="1">1</a>
+                @if (paginations.PageId > 5)
+                {
+                    <span class="page-dots">...</span>
+                }
+            }
+            @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+            {
+                @if (i > 0 && i <= paginations.TotalPages)
+                {
+                    <a asp-action="Index" asp-route-isPagination="true"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+                }
+            }
+                                            
+            @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+            {
+                @if (paginations.PageId < paginations.TotalPages - 4)
+                {
+                    <span class="page-dots">...</span>
+                }
+                <a asp-action="Index" asp-route-isPagination="true"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+            }
+            <a asp-action="Index" asp-route-isPagination="true"  asp-route-pagId="@(paginations.PageId+1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+        </div>
+        
+    </div>
+</div>
+
+<script>
+function calculatePercentage(etat, itemId, init) {   
+    var prix = document.getElementById("price_" + itemId).value;
+    var pourcentage = document.getElementById("pourcent_" + itemId).value;
+
+    // Ajouter une protection contre la division par zéro
+    if (init !== 0) {
+        if (etat == 0) {
+            document.getElementById("pourcent_" + itemId).value = (100 - (prix / init) * 100).toFixed(2);
+        } else {
+            document.getElementById("price_" + itemId).value = (init - (pourcentage/100) * init).toFixed(2);
+        }
+    } else {
+        console.error("Prix initial est égal à zéro. Division par zéro évitée.");
+    }
+}
+</script>
+

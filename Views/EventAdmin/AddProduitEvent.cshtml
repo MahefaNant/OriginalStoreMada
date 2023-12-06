@@ -1,0 +1,275 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Evenements
+@using originalstoremada.Models.Evenements.views
+@using originalstoremada.Services
+@model List<originalstoremada.Models.Evenements.views.VProduitEventReste>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    Pagination<VProduitEventReste> paginations = ViewBag.paginations;
+    Evenement events = ViewBag.events;
+    bool isTerminer = ViewBag.isTerminer;
+    bool isEnCours = ViewBag.isEnCours;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Articles de l' événement #@Formattage.Numero(events.Id)</h1>
+    @if (isTerminer)
+    {
+        <button type="button" class="btn btn-danger disabled mb-3">
+            <i class="fa fa-bell"></i> Evénement términer
+        </button>
+    }
+    
+    @if (isEnCours)
+    {
+        <button type="button" class="btn btn-success disabled mb-3">
+            <i class="fa fa-bell"></i> Evénement en cours
+        </button>
+    }
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><a>articles du @Formattage.DateTime(events.DateDeb) - @Formattage.DateTime(events.DateFin)</a></li>
+      <li class="breadcrumb-item active"></li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+<div class="card mb-3 border-0 mt-2">
+    <div class="card-body border-0 bg-white">
+        Description de l'événement: <strong>@events.Description</strong>
+    </div>
+</div>
+
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+
+<a data-bs-toggle="modal" data-bs-target="#create" class="btn but2-mod2 btn-sm mb-3">
+    <i class="fe fe-plus text-white"></i> 
+    <span class="text-white">Ajouter plus d'articles</span>
+</a>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg1"></th>
+                    <th class="pal6_bg1">Designation</th>
+                    <th class="pal6_bg1">Prix &  Preference</th>
+                    <th class="pal6_bg1">Quantiter</th>
+                    <th class="pal6_bg1"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <a>
+                                <img class="img-thumbnail" src="~/images/produits/@(item.Image != null ? $"minimize_{item.Image}" : "locks/minimize_vide.jpg") " alt="">
+                                <i class="fe fe-edit-2" aria-hidden="true"></i>
+                            </a>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.Nom</span>
+                                <span>@item.CategorieProduit.Nom</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@Formattage.Valeur(item.Prix) <i class="fa fa-euro"></i></span>
+                                <span>@Formattage.Valeur((double)item.PrixAriary) MGA </span>
+                                <span>@item.Couleur / @item.Taille</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>Reste : <strong>@item.QuantiterReste</strong> </span>
+                                <span>Tous : <strong>@item.QuantiterInitiale</strong> </span>
+                            </div>
+                        </td>
+
+                        <td>
+                            <a class="btn but2-mod3 btn-sm">
+                                <i class="fe fe-navigation"></i> 
+                                <span>Modifier</span>
+                            </a>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="5"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <div class="pagin1">
+            <a asp-action="AddProduitEvent" asp-route-id_event="@events.Id"  asp-route-pagId="@(paginations.PageId -1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+            @if (paginations.PageId > 1 && paginations.PageId > 4)
+            {
+                                   
+                <a asp-action="AddProduitEvent" asp-route-id_event="@events.Id"  asp-route-pagId="1">1</a>
+                @if (paginations.PageId > 5)
+                {
+                    <span class="page-dots">...</span>
+                }
+            }
+            @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+            {
+                @if (i > 0 && i <= paginations.TotalPages)
+                {
+                    <a asp-action="AddProduitEvent" asp-route-id_event="@events.Id"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+                }
+            }
+                                                        
+            @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+            {
+                @if (paginations.PageId < paginations.TotalPages - 4)
+                {
+                    <span class="page-dots">...</span>
+                }
+                <a asp-action="AddProduitEvent" asp-route-id_event="@events.Id"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+            }
+            <a asp-action="AddProduitEvent" asp-route-id_event="@events.Id"  asp-route-pagId="@(paginations.PageId -1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+        </div>
+        
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="create" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-fullscreen-xl-down modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="exampleModalLabel">Commencez à créer un devis</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+        
+                <form method="post" asp-action="AddProduitEvent" class="needs-validation" enctype="multipart/form-data"  novalidate>
+                    <input type="hidden" name="IdEvenement" value="@events.Id"/>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="form-floating">
+                                <select required name="IdCategorie" asp-items="@ViewBag.categories" class="form-select" id="floatingSelect" aria-label="Floating label select example"></select>
+                                <label for="floatingSelect">Categorie</label>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group mb-3 col-md-6">
+                                <span class="input-group-text"><i class="fa fa-object-group"></i></span>
+                                <div class="form-floating">
+                                    <input required name="ProduitName" type="text" class="form-control" id="floatingInputGroup1" placeholder="Produit">
+                                    <label for="floatingInputGroup1">Produit</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa fa-paint-brush"></i></span>
+                                <div class="form-floating">
+                                    <input required name="Couleur" type="text" class="form-control" id="floatingInputGroup1" placeholder="Couleur">
+                                    <label for="floatingInputGroup1">Couleur</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa fa-braille"></i></span>
+                                <div class="form-floating">
+                                    <input required name="Taille" type="text" class="form-control" id="floatingInputGroup1" placeholder="Taille">
+                                    <label for="floatingInputGroup1">Taille</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa fa-euro"></i></span>
+                                <div class="form-floating">
+                                    <input required name="Prix" type="text" class="form-control" id="floatingInputGroup1" step="0.01" placeholder="Montant">
+                                    <label for="floatingInputGroup1">Montant-Euro</label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text"><i class="fa fa-sort-numeric-asc"></i></span>
+                                <div class="form-floating">
+                                    <input required name="QuantiterMax" type="text" class="form-control" id="floatingInputGroup1" placeholder="Montant">
+                                    <label for="floatingInputGroup1">Quantiter</label>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-6 text-center">
+                            <img id="imagePreview" src="~/images/produits/locks/minimize_vide.jpg" alt="Preview" class="image-preview img-thumbnail" style="max-width: 100%; max-height: 200px; margin-top: 10px;transition: opacity 0.3s ease-in-out;">
+                        </div>
+
+                        <label for="file_upload-input" class="drop_upload-container">
+                            <span class="drop_upload-title">Chosir Une Image</span>
+                            <input name="Images" class="btn form-control" type="file" accept="image!*" required id="file_upload-input">
+                        </label>
+                        
+                        <div class="container-fluid">
+                            <button type="submit" class="btn but2-mod2 but-block">
+                                <i class="fa fa-check"></i>
+                                <span>Valider</span>
+                            </button>
+                        </div>
+                    </div>
+                </form>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+   // Fonction pour prévisualiser l'image sélectionnée
+   function previewImage(input) {
+       var preview = document.getElementById('imagePreview');
+       var file = input.files[0];
+       var reader = new FileReader();
+
+       reader.onloadend = function () {
+           preview.src = reader.result;
+           preview.style.opacity = '1'; // Change l'opacité pour afficher l'image avec une transition
+       }
+
+       if (file) {
+           reader.readAsDataURL(file); // Lecture de l'image en tant que Data URL
+       } else {
+           preview.src = '#';
+           preview.style.opacity = '0'; // Masque l'image avec une transition si aucun fichier n'est sélectionné
+       }
+   }
+   
+
+   // Ajouter un écouteur d'événement pour l'événement 'change' de l'élément d'entrée de fichier
+   document.getElementById('file_upload-input').addEventListener('change', function () {
+       previewImage(this);
+   });
+</script>

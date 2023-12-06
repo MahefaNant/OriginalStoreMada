@@ -1,0 +1,65 @@
+@model IEnumerable<originalstoremada.Models.Boutiques.Boutique>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+}
+
+<a asp-action="Create" class="btn but2-mod2 btn-lg mb-3">
+    <i class="fe fe-plus"></i> 
+    <span>NOUVELLE POINT DE VENTE</span>
+</a>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Nom</th>
+                    <th class="pal6_bg2 text-white">Ville</th>
+                    <th class="pal6_bg2 text-white">Quartier</th>
+                    <th class="pal6_bg2 text-white">Adresse</th>
+                    <th class="pal6_bg2 text-white"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.Nom</span>
+                                <span>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn but2-mod3">
+                                        <i class="fe fe-edit"></i>
+                                        <span>Modifier</span>
+                                    </a>
+                                </span>
+                            </div>
+                        </td>
+                        <td>@item.Ville</td>
+                        <td>@item.Quartier</td>
+                        <td>@item.adresse</td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>Affectation Des Employers</span>
+                                <span>
+                                    <a asp-action="Affectation" asp-route-id_boutique="@item.Id" class="btn but2-mod3">
+                                        <i class="fe fe-edit"></i>
+                                        <span>Consulter</span>
+                                    </a>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <th colspan="5"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+</div>

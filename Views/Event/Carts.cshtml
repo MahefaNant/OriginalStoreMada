@@ -1,0 +1,153 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Evenements
+@model List<originalstoremada.Models.Evenements.views.VProduitEventReste>
+
+@{
+    Layout = RoutePath.ContentClient();
+    Evenement events = ViewBag.events;
+}
+
+<div class="card mb-3 border-0 mt-2">
+    <div class="card-header border-0 bg-white">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <div class="navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <div class="pagetitle">
+                                <h1>Mon panier <i class="fa fa-shopping-cart"></i> de l' événement en cours #@Formattage.Numero(events.Id)</h1>
+                                <nav>
+                                    <ol class="breadcrumb">
+                                        <li class="breadcrumb-item active"><a>articles du @Formattage.DateTime(events.DateDeb) - @Formattage.DateTime(events.DateFin)</a></li>
+                                        <li class="breadcrumb-item active"></li>
+                                    </ol>
+                                </nav>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card mb-3 border-0 mt-2">
+    <div class="card-header border-0 bg-white">
+        <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <div class="container-fluid">
+                <div class="navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav">
+                        <li class="nav-item">
+                            <button data-bs-toggle="modal" data-bs-target="#devis" type="button" class="btn but2-mod1 but-block mt-3">
+                                <i class="fe fe-check"></i><span>Faire une devis</span>
+                            </button>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <div class="tab2-wrap">
+                <table class="tab2">
+                    <thead>
+                    <tr>
+                        <th class="pal6_bg2 text-white"></th>
+                        <th class="pal6_bg2 text-white">Designation</th>
+                        <th class="pal6_bg2 text-white">Prix &  Preference</th>
+                        <th class="pal6_bg2 text-white">Quantiter</th>
+                        <th class="pal6_bg2 text-white"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr class="alert" role="alert">
+                            <td>
+                                <a>
+                                    <img class="img-thumbnail" src="~/images/produits/@(item.Image != null ? $"minimize_{item.Image}" : "locks/minimize_vide.jpg") " alt="">
+                                    <i class="fe fe-edit-2" aria-hidden="true"></i>
+                                </a>
+                            </td>
+                            <td>
+                                <div class="pl-3 email">
+                                    <span>@item.Nom</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pl-3 email">
+                                    <span>@Formattage.Valeur(item.Prix) <i class="fa fa-euro"></i></span>
+                                    <span>@Formattage.Valeur((double)item.PrixAriary) MGA </span>
+                                    <span>@item.Couleur / @item.Taille</span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="pl-3 email">
+                                    <span>Quantiter : <strong>@item.QuantiterReste</strong> </span>
+                                    <span></span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <a asp-action="DeleteToCarts" asp-route-IdproduitEvent="@item.Id" class="btn but2-mod1 btn-sm">
+                                    <i class="fa fa-trash"></i> 
+                                    <span>Supprimé</span>
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                    <tr>
+                        <td colspan="2"></td>
+                        <td colspan="1">
+                            <div class="pl-3 email">
+                                <span><strong>Total</strong></span>
+                                <span>@Formattage.Valeur(@ViewBag.sommeCarts[0]) <i class="fa fa-euro"></i></span>
+                                <span>@Formattage.Valeur(@ViewBag.sommeCarts[1]) MGA </span>
+                                <span></span>
+                            </div>
+                            
+                        </td>
+                        <td colspan="2"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<!-- devis -->
+<div class="modal" id="devis" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-warning"></i> Voulez-vous vraiment Valider ?
+                </div>
+                
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                <form method="POST">
+                    <button type="submit" asp-action="ToDevis" asp-route-IdEvent="@events.Id" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,77 @@
+@using originalstoremada.C_
+@model List<originalstoremada.Models.Boutiques.HomeImage>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Images d'accueil Client</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>Image</a></li>
+            <li class="breadcrumb-item active"></li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        @foreach (var item in Model)
+        {
+            <div class="col-md-4 mb-3">
+                <div class="card">
+                    <div class="card-body">
+                        <img src="~/images/homeClient/@item.Image" class="img-fluid rounded"/>
+                    </div>
+                    <div class="card-footer">
+
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne_@item.Id" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        # Modifier L'image
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne_@item.Id" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <form asp-action="UpdateHomeClientImage" asp-route-Id="@item.Id" class="needs-validation" enctype="multipart/form-data" novalidate>
+                                            <div class="form-floating mb-3">
+                                                <input name="Title" value="@item.Title" type="text" class="form-control" id="floatingInput" placeholder="Titre" required="">
+                                                <label for="floatingInput">Titre</label>
+                                            </div>
+                                            <div class="form-floating mb-3">
+                                                <input name="SubTitle" value="@item.SubTitle" type="text" class="form-control" id="floatingInput" placeholder="Sous-titre" required="">
+                                                <label for="floatingInput">Sous-titre</label>
+                                            </div>
+                                            <div class="p-4 form_upload">
+                                                <label for="file_upload-input" class="drop_upload-container">
+                                                    <span class="drop_upload-title">Changer l`image</span>
+                                                    <input name="Image" class="btn form-control" type="file" accept="image!*" id="file_upload-input">
+                                                </label>
+                                                <button type="submit" class="btn but2-mod2 btn-sm">
+                                                    <i class="fe fe-check-circle fe-24"></i>
+                                                    <span>Valider</span>
+                                                </button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>

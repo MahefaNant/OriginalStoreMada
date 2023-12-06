@@ -1,0 +1,202 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements.views
+@using NetTopologySuite.Index.HPRtree
+@using originalstoremada.Models.Payements
+@model List<VPayementProduit>
+
+@{
+    Layout = RoutePath.ContentClient();
+    VFacture facture = ViewBag.facture;
+    Dictionary<int, string> suivisFacture = ViewBag.suivisFacture;
+    TypePayement typePayementForm = ViewBag.typePayementForm;
+    AdresseLivraisonFacture adresseLivraison = ViewBag.adresseLivraison;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage($"FACTURES #{Formattage.Numero(facture.Id)}"))
+<!----------------->
+
+<hr/>
+
+<div class="container">
+  
+  <div class="card">
+      <div class="card-body">
+          
+          <div class="row">
+
+              <div class="col-md-6">
+                  
+                     @if (facture.DateSuspendue != null)
+                                {
+                                    <button type="button" class="btn btn-danger disabled">
+                                        <i class="fa fa-bell"></i> Facture suspendue
+                                    </button>
+                                    <strong>Suspendue le <span class="text-danger">@Formattage.DateTime((DateTime)facture.DateSuspendue)</span></strong>
+                                }
+                  
+                  <ul class="list-group list-group-flush">
+                      <li class="list-group-item">Facture #@Formattage.Numero(facture.Id)</li>
+                      <li class="list-group-item">@facture.EtatLivraisonType</li>
+                      <li class="list-group-item">@facture.EtatLivraison</li>
+                  </ul>
+              </div>
+              @if (typePayementForm != null && facture.DateSuspendue == null)
+              {
+                  <div class="col-md-6">
+                      <div class="card border-danger shadow grad_rose3">
+                          <div class="card-body mx-md-5">
+                              <h5 class="text-center">Payement Non Confirmé</h5>
+                              <ul class="list-group list-group-flush">
+                                  <li class="list-group-item">Type de Payement: @typePayementForm.Nom</li>
+                                  <li class="list-group-item">Montant à payer : <strong class="grad_rose4"> @Formattage.Valeur(facture.MontantFin) MGA </strong></li>
+                                  <li class="list-group-item">Envoyer au numero: <strong class="pal6_bg3 text-light">@Formattage.MobileMG(typePayementForm.NumeroResp)</strong> (@typePayementForm.NomNum)</li>
+                                  <li class="list-group-item">Responsable : @typePayementForm.NomResp</li>
+                                  <li class="list-group-item"><strong>*Mettre votre numero de facture <span class="text-danger">@Formattage.Numero(facture.Id)</span> comme raison</strong></li>
+                              </ul>
+                          </div>
+                      </div>
+                  </div>
+              }
+          </div>
+
+          @if (facture.DateSuspendue == null)
+          {
+              <div class="text-center">
+                  <a asp-action="DetailsFacturePdf" asp-route-id_facture="@facture.Id" class="btn but2-mod2 mt-3 mb-3">
+                      <i class="fa fa-download"></i>
+                      <span>Télécharger en Pdf</span>
+                  </a>
+              </div>
+          }
+          
+          
+          @if (suivisFacture[2].Contains("completed") && adresseLivraison != null && facture.DateSuspendue == null)
+          {
+              <div class="card border-danger shadow mt-3">
+                  <div class="card-header">*Information de Livraison</div>
+                  <div class="card-body mx-md-5">
+                      <ul class="list-group">
+                          <li class="list-group-item">Votre choix: @(adresseLivraison.IsInBoutque? "Recupération Directe sur Boutique" : "Par Livraison ")</li>
+                          <li class="list-group-item">@adresseLivraison.Quartier - @adresseLivraison.Ville</li>
+                          <li class="list-group-item">Long: @adresseLivraison.Longitude / Lat: @adresseLivraison.Latitude</li>
+                      </ul>
+                  </div>
+                  <div class="card-footer">
+                      <a class="btn but2-mod3 btn-sm">
+                          <i class="fa fa-map"></i><span>Consulter</span>
+                      </a>
+                  </div>
+              </div>
+          }
+          
+          <div class="row">
+              <div class="col-md-12">
+                  <div class="tab2-wrap">
+                      <table class="tab2">
+                          <thead>
+                          <tr>
+                              <th colspan="5">
+                                  <div class="stepper-wrapper">
+                                      <div class="stepper-item @suivisFacture[1]">
+                                          <div class="step-counter">1</div>
+                                          <div class="step-name">
+                                              <ul class="list-group">
+                                                  <li class="list-inline-item">Payement Effectuer</li>
+                                                  @if (facture.EstPayer != null)
+                                                  {
+                                                      <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.EstPayer)</li>
+                                                  }
+                                              </ul>
+                                          </div>
+                                      </div>
+                                      <div class="stepper-item @suivisFacture[2]">
+                                          <div class="step-counter">2</div>
+                                          <div class="step-name">
+                                              <ul class="list-group">
+                                                  <li class="list-inline-item">prêt à livrer où a récupéré</li>
+                                                  @if (facture.DatePret != null)
+                                                  {
+                                                      <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DatePret)</li>
+                                                  }
+                                              </ul>
+                                          </div>
+                                      </div>
+                                      <div class="stepper-item @suivisFacture[3]">
+                                          <div class="step-counter">3</div>
+                                          <div class="step-name">
+                                              <ul class="list-group">
+                                                  <li class="list-inline-item">Livraison ou Récupération effectuée</li>
+                                                  @if (facture.DateLivrer != null)
+                                                  {
+                                                      <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DateLivrer)</li>
+                                                  }
+                                              </ul>
+                                          </div>
+                                      </div>
+                                  </div>
+                              </th>
+                          </tr>
+                          </thead>
+                          <thead>
+                          <tr>
+                              <th></th>
+                              <th>Produit</th>
+                              <th>Date</th>
+                              <th>Montant</th>
+                              <th>Préférence</th>
+                          </tr>
+                          </thead>
+                          <tbody>
+                          @foreach (var item in Model)
+                          {
+                              <tr class="alert" role="alert">
+                                  <td>
+                                      <img width="100px" class="img-thumbnail" src="~/images/produits/@(item.PreferenceProduit.ContenueProduit.Image != null ? $"minimize_{item.PreferenceProduit.ContenueProduit.Image}" : "locks/vide.jpg") "/>
+                                  </td>
+                                  <td class="status">
+                                      <div class="pl-3 email">
+                                          <span>@item.PreferenceProduit.Produit.Nom</span>
+                                          <span>@item.PreferenceProduit.Produit.CategorieProduit.Nom</span>
+                                      </div>
+                                  </td>
+                                  <td>@Formattage.DateTime(item.Date)</td>
+                                  <td class="status">
+                                      <div class="pl-3 email">
+                                          <span>@Formattage.Valeur(item.Montant) MGA x @item.Quantiter</span>
+                                          <span>@Formattage.Valeur(item.MontantFin()) MGA</span>
+                                      </div>
+                                  </td>
+                                  <td class="status">
+                                      <div class="pl-3 email">
+                                          <span>Couleur: @item.PreferenceProduit.ContenueProduit.Couleur</span>
+                                          <span>Taille ou Pointure: @item.PreferenceProduit.Taille</span>
+                                      </div>
+                                  </td>
+                              </tr>
+                          }
+                          <tr>
+                              <td colspan="3"></td>
+                              <td colspan="1">Total</td>
+                              <td colspan="1">@Formattage.Valeur(facture.MontantSum) MGA</td>
+                          </tr>
+                          <tr>
+                              <td colspan="3"></td>
+                              <td colspan="1">Frais de Livraison</td>
+                              <td colspan="1">@Formattage.Valeur(facture.FraisLivraison) MGA</td>
+                          </tr>
+                          <tr>
+                              <td colspan="3"></td>
+                              <td colspan="1">Sous Total</td>
+                              <td colspan="1">@Formattage.Valeur(facture.MontantFin) MGA</td>
+                          </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+
+          </div>
+      </div>
+
+  </div>
+</div>

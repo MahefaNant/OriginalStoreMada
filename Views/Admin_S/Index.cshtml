@@ -1,0 +1,78 @@
+@model IEnumerable<originalstoremada.Models.Users.Admin>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<section class="section dashboard">
+
+    <div class="card top-selling overflow-auto">
+
+        <div class="card-body pb-0">
+            <h5 class="card-title">Admins <span></span></h5>
+            
+            <table class="table table-borderless">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Mail)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Nom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Prenom)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Adresse)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Niveau)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Code)
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Mail)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Nom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Prenom)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Adresse)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Niveau)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Code)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+

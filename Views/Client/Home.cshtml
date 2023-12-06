@@ -1,0 +1,235 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Boutiques
+@using originalstoremada.Models.Produits.views
+@model dynamic
+
+@{
+    ViewBag.Title = "Client Home";
+    Layout = RoutePath.ContentClient();
+	List<HomeImage> images = ViewBag.images;
+	List<VStockProduitGlobal> produits = ViewBag.produits;
+}
+
+<!-- Slider -->
+<section class="section-slide">
+	<div class="wrap-slick1 rs2-slick1">
+		<div class="slick1">
+			@foreach (var item in images)
+			{
+				<div class="item-slick1 bg-overlay1" style="background-image: url('images/homeClient/@item.Image');" data-thumb="images/homeClient/@item.Image" data-caption="Women’s Wear">
+					<div class="container h-full">
+						<div class="flex-col-c-m h-full p-t-100 p-b-60 respon5">
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInDown" data-delay="0">
+								<span class="ltext-202 txt-center cl0 respon2">
+									@item.Title
+								</span>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="fadeInUp" data-delay="800">
+								<h2 class="ltext-104 txt-center cl0 p-t-22 p-b-40 respon1">
+									@item.SubTitle
+								</h2>
+							</div>
+
+							<div class="layer-slick1 animated visible-false" data-appear="zoomIn" data-delay="1600">
+								<a asp-action="Index" asp-controller="ProduitShop" class="btn but2-mod2">
+									<i class="fa fa-shopping-cart"></i>
+									<span>Shop</span>
+								</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			}
+		</div>
+
+		<div class="wrap-slick1-dots p-lr-10"></div>
+	</div>
+</section>
+
+<section class="sec-product bg0 p-t-100 p-b-50" id="produits">
+	<div class="container-fluid">
+		<div class="p-b-32">
+			<h3 class="ltext-105 cl5 txt-center respon1">
+				Aperçu du magasin
+			</h3>
+		</div>
+		
+		<div class="tab01">
+			<ul class="nav nav-tabs" role="tablist">
+				<li class="nav-item p-b-10">
+					<a class="nav-link @(ViewBag.etat == 0 ? "active" : "") " data-toggle="tab" href="@Url.Action("Home", new { etat = 0 })#produits" role="tab">Meilleures ventes</a>
+				</li>
+				<li class="nav-item p-b-10">
+					<a class="nav-link @(ViewBag.etat == 1 ? "active" : "")" data-toggle="tab" href="@Url.Action("Home", new { etat = 1 })#produits" role="tab">Meilleures Favoris</a>
+				</li>
+			</ul>
+			
+			<div class="row isotope-grid">
+				@foreach (var item in produits)
+				{
+					<div class="col-sm-6 col-md-4 col-lg-3 p-b-35 isotope-item">
+						
+						<!-- Block2 -->
+						<div class="block2">
+							<div class="card shadow border-0">
+								<div class="card-body">
+									<div class="block2-pic hov-img0">
+										@* <img src="~/lib/CozaAssests/images/product-01.jpg" alt="IMG-PRODUCT"> *@
+										<a asp-controller="ProduitShop" asp-action="Details" asp-route-id_produit="@item.Id"><img src="~/images/produits/@(item.Image != null ? item.Image : "locks/vide.jpg")" alt=""></a>
+
+										<a asp-controller="ProduitShop" asp-action="Details" asp-route-id_produit="@item.Id" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 hov-btn1 bor2 p-lr-15 trans-04">
+											<span>Regarder</span>
+										</a>
+
+									</div>
+								</div>
+							</div>
+
+							<div class="block2-txt flex-w flex-t p-t-14">
+								<div class="block2-txt-child1 flex-col-l ">
+									<a class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+										<strong class="fw-bold text-dark">@item.Nom</strong>
+									</a>
+									<span class="stext-105 cl3">
+										@if (item.DateDebPromo != null)
+										{
+											<span class="fw-bold text-dark">@Formattage.Valeur((double)item.PrixVenteProm) MGA @(" / ")</span>
+											<del>@Formattage.Valeur((double)item.PrixVenteInitial) MGA</del>
+										}
+										else
+										{
+											<span class="fw-bold text-dark">@Formattage.Valeur((double)item.PrixVenteProm) MGA</span>
+										}
+									</span>
+								</div>
+
+								<div class="block2-txt-child2 flex-r p-t-3">
+									@if (item.IsMyFavorite)
+									{
+										<i class="fa fa-heart text-danger product-icon favoris" data-product-id="@item.Id"></i>
+									}
+									else
+									{
+										<i class="fa fa-heart-o product-icon favoris" data-product-id="@item.Id"></i>
+									}
+								</div>
+
+								<p>
+									<strong>@item.NombreFavoris </strong> à aimer
+									@if (item.DateDebPromo != null)
+									{
+										<strong class="text-success">@item.PourcentagePromotion % de réduction</strong>
+									}
+								</p>
+
+
+							</div>
+						</div>
+            
+							
+					</div>
+				}
+			</div>
+
+		</div>
+
+	</div>
+</section>
+
+<script>
+                                        
+	// JavaScript pour gérer le clic sur l'icône du cœur
+    document.addEventListener("click", function (event) {
+        var target = event.target;
+        if (target.classList.contains("favoris")) {
+            var productId = target.getAttribute("data-product-id");
+    
+            // Effectuer une requête AJAX vers le contrôleur pour mettre à jour l'icône
+            $.post("/ProduitShop/SetFavoris", { IdProduit: productId }, function (data) {
+				var etatFavoris = data.etatFavoris;
+                // Mettez à jour la classe CSS de l'icône en fonction de la réponse JSON
+                if (etatFavoris == 0) {
+					$("#notConnected").modal("show");
+                } else if (etatFavoris == 1) {
+					target.className = "fa fa-heart text-danger product-icon favoris";
+					$("#added").modal("show");
+                } else if (etatFavoris == 2) {
+                  	target.className = "fa fa-heart-o product-icon favoris";	
+				  	$("#removed").modal("show");
+			  	} else if (etatFavoris == 3) {
+					$("#error").modal("show");
+			  	}
+            });
+        }
+    });
+
+</script>
+
+@*---------MODAL 0-----------------*@
+
+<div class="modal fade rounded-5" id="notConnected" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<img src="~/images/OSM/osm-mini.png" class="rounded-2 mb-3" />
+				<p class="h5"><strong>Rejoignez-nous!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</a>
+				<a asp-action="Login" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-user"></i>Se Connecter</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@*---------MODAL 1-----------------*@
+
+<div class="modal fade rounded-5" id="added" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-check-circle fa-4x text-success"></i>
+				<p class="h5"><strong>Element Ajouter aux favoris!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-check-circle"></i>Ok</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@*---------MODAL 2-----------------*@
+
+<div class="modal fade rounded-5" id="removed" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-trash-o fa-4x text-danger"></i>
+				<p class="h5"><strong>Element supprimé du favoris!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-check-circle"></i>Ok</a>
+			</div>
+		</div>
+	
+	</div>
+</div>
+
+@*---------MODAL 3-----------------*@
+
+<div class="modal fade rounded-5" id="error" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-warning fa-4x text-warning"></i>
+				<p class="h5"><strong>Une erreur est survenue! Contacter nous!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Ok</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+

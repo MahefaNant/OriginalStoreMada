@@ -1,0 +1,194 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis
+@using originalstoremada.Models.Devis.Views
+@model originalstoremada.Models.Devis.CommandeDevis
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentClient();
+    IEnumerable<VCommanceDevis> commandes = ViewBag.commandes;
+    VDevisInfo devis = ViewBag.devis;
+  List<CommandeDevis> commandeDevis = ViewBag.commandeDevis;
+}
+
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage("Brouillon"))
+<!----------------->
+<br/>
+<section class="">
+  <div class="container">
+    <div class="billing_details">
+      <div class="row">
+        
+        <section class="section_tab1">
+          <div class="content_tab1">
+            <div class="container">
+            
+              <button type="button" data-bs-toggle="modal" data-bs-target="#create_devis" href="#" class="btn but2-mod2 btn-lg mb-3">
+                <i class="fa fa-plus"></i> <span>Ajouter d` autre élément</span>
+              </button>
+              <a asp-action="DemanderDevis" asp-route-id_devis="1" type="button" class="btn but2-mod1 btn-lg mb-3">
+                <i class="fa fa-check"></i><span>Valider et Demander</span>
+              </a>
+              
+              <div class="tab2-wrap">
+                <table class="tab2 table-responsive-xl">
+                  <thead>
+                  <tr>
+                    <th scope="col" ></th>
+                    <th scope="col" >Produit</th>
+                    <th scope="col">Prix Euro <i class="fa fa-euro"></i></th>
+                    <th scope="col">Couleur</th>
+                    <th scope="col">Taille</th>
+                    <th scope="col">Quantiter</th>
+                    <th scope="col">Url Ref</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  @foreach (var q in commandeDevis)
+                  {
+                    <form asp-action="UpdateSimulateCommandeDevis">
+                      <input type="hidden" name="Id" value="@q.Id"/>
+                      <input type="hidden" name="IdDevis" value="@q.IdDevis"/>
+                      <tr scope="row">
+                        <td>
+                          <div class="btn-group" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-outline-warning">
+                              <a asp-action="DeleteSimulateCommande" asp-route-id="@q.Id" asp-route-IDevis="@q.IdDevis" asp-route-isAll="false"><i class="fa fa-trash text-danger"></i></a>
+                            </button>
+                            <button type="submit" class="btn btn-outline-warning">
+                              <i class="fa fa-refresh text-danger">Actualiser</i>
+                            </button>
+                          </div>
+                        </td>
+                        <td>
+                          <input type="text" name="ProduitName" class="form-control input_mod1 " value="@q.ProduitName"/>
+                        </td>
+                        <td>
+                          <input type="text" name="PrixEuro" class="form-control input_mod1" value="@q.PrixEuro"/>
+                          @* <small class="d-block">Far far away, behind the word mountains</small> *@
+                        </td>
+                        <td><input type="text" name="Couleur" class="form-control input_mod1" value="@q.Couleur"/></td>
+                        <td><input type="text" name="Taille" class="form-control input_mod1" value="@q.Taille"/></td>
+                        <td><input type="text" name="Nombre" class="form-control input_mod1" value="@q.Nombre"/></td>
+                        <td><input type="text" name="ReferenceSite" class="form-control input_mod1" value="@q.ReferenceSite"/></td>
+                      </tr>
+                    </form>
+                  }
+                  <tr>
+                    <td></td> <td>@devis.TotalPrixEuro <i class="fa fa-euro"></i></td> 
+                    <td>Cours Euro: @Formattage.Valeur((double)devis.CoursEuro) MGA (instable)</td>
+                    <td colspan="4"> <i class="fa fa-arrow-right"></i> @Formattage.Valeur((double)devis.TotalPrixAriary1) MGA</td>
+                  </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+
+          </div>
+        </section>
+
+      </div>
+    </div>
+    
+  </div>
+
+</section>
+
+<!-- Modal -->
+<div class="modal fade" id="create_devis" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen-xl-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Ajoutez d` autres articles à votre devis</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body pal3_bg4">
+        
+        <form method="post" asp-action="CreateSimulateCommande">
+          <input type="hidden" name="IdDevis" value="@ViewBag.IdDevis"/>
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select required name="IdCategorie" asp-items="@ViewBag.categories" class="form-select" id="floatingSelect" aria-label="Floating label select example"></select>
+                <label for="floatingSelect">Categorie</label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3 col-md-6">
+                <span class="input-group-text"><i class="fa fa-object-group"></i></span>
+                <div class="form-floating">
+                  <input required name="ProduitName" type="text" class="form-control" id="floatingInputGroup1" placeholder="Produit">
+                  <label for="floatingInputGroup1">Produit</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group mb-3 col-12">
+              <span class="input-group-text"><i class="fa fa-mail-forward"></i></span>
+              <div class="form-floating">
+                <input required name="ReferenceSite" type="text" class="form-control" id="floatingInputGroup1" placeholder="Url">
+                <label for="floatingInputGroup1">Url de référence</label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-paint-brush"></i></span>
+                <div class="form-floating">
+                  <input required name="Couleur" type="text" class="form-control" id="floatingInputGroup1" placeholder="Couleur">
+                  <label for="floatingInputGroup1">Couleur</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-braille"></i></span>
+                <div class="form-floating">
+                  <input required name="Taille" type="text" class="form-control" id="floatingInputGroup1" placeholder="Taille">
+                  <label for="floatingInputGroup1">Taille</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-euro"></i></span>
+                <div class="form-floating">
+                  <input required name="PrixEuro" type="text" class="form-control" id="floatingInputGroup1" placeholder="Montant">
+                  <label for="floatingInputGroup1">Montant-Euro</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="wrap-num-product flex-w  m-r-0">
+                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                  <i class="fs-16 zmdi zmdi-minus"></i>
+                </div>
+
+                <input required class="mtext-104 cl3 txt-center num-product" type="number" name="Nombre" value="1">
+
+                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                  <i class="fs-16 zmdi zmdi-plus"></i>
+                </div>
+              </div>
+            </div>
+            
+            <button type="submit" class="flex-c-m stext-101 cl0 size-116 bg5 bor14 hov-btn3 p-lr-15 trans-04 pointer">
+              Valider
+            </button>
+
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

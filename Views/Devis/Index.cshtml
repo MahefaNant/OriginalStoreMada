@@ -1,0 +1,280 @@
+@using originalstoremada.C_
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Devis.Others
+@using originalstoremada.Models.Devis.Views
+@using originalstoremada.Services
+@model IEnumerable<originalstoremada.Models.Devis.Views.VDevisInfo>
+
+@{
+  ViewBag.Title = "title";
+  Layout = RoutePath.ContentClient();
+  // List<DevisSimulate> devisSimulates = ViewBag.devisSimulates;
+  List<VDevisInfo> devis = (@ViewBag.devis != null ? @ViewBag.devis : null)!;
+  Pagination<VDevisInfo>? paginations = ViewBag.paginations;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage("MES DEVIS"))
+<!----------------->
+
+<hr/>
+
+
+<div class="container">
+  
+  <div class="row">
+        
+    <div class="card border-0 mb-3">
+      <div class="card-body">
+        <div class="col-xxl-4 col-md-6">
+          <a type="button" data-bs-toggle="modal" data-bs-target="#create_devis" href="#">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Ajouter <span>| <i class="fa fa-plus-square"></i></span></h5>
+            
+                <div class="row">
+                  <div class="col-md-6"><i class="fa fa-plus fa-5x text-danger"></i></div>
+                  <div class="col-md-6">
+                    <h5 class="text-danger">Commencez à créer un devis.</h5>
+                  </div>
+                </div>
+            
+              </div>
+            </div>
+          </a>
+        </div>
+        
+        <a asp-action="MesPayement" class="btn but2-mod2 mb-3 mt-3">
+          <i class="fa fa-money"></i>
+          <span>Tous Les Payements Devis</span>
+        </a>
+
+      </div>
+    </div>
+
+  </div> 
+
+
+  <div class="row">
+    <div class="col-md-12">
+      <div class="tab2-wrap">
+        <table class="tab2">
+          <thead>
+          <tr>
+            <th colspan="6">
+              <a asp-action="Index" asp-route-type="0" type="button" class="btn btn@(ViewBag.type != 0 ? "-outline" : "")-secondary">Tous</a>
+              <a asp-action="Index" asp-route-type="1" type="button" class="btn btn@(ViewBag.type != 1 ? "-outline" : "")-secondary">Brouillons</a>
+              <a asp-action="Index" asp-route-type="2" type="button" class="btn btn@(ViewBag.type != 2 ? "-outline" : "")-secondary">En Attente de confirmation</a>
+              <a asp-action="Index" asp-route-type="3" type="button" class="btn btn@(ViewBag.type != 3 ? "-outline" : "")-secondary">Confirmer</a>
+              <a asp-action="Index" asp-route-type="4" type="button" class="btn btn@(ViewBag.type != 4 ? "-outline" : "")-secondary">Versement complet</a>
+              <a asp-action="Index" asp-route-type="5" type="button" class="btn btn@(ViewBag.type != 5 ? "-outline" : "")-secondary">Invalide</a>
+              <a asp-action="Index" asp-route-type="6" type="button" class="btn btn@(ViewBag.type!=6?"-outline":"")-secondary">Déjà Livré</a>
+            </th>
+          </tr>
+          </thead>
+          <thead>
+          <tr>
+            <th class="pal6_bg2 text-white">&nbsp;</th>
+            <th class="pal6_bg2 text-white">Numero Devis</th>
+            <th class="pal6_bg2 text-white">Total</th>
+            <th class="pal6_bg2 text-white">Cours Euro</th>
+            <th class="pal6_bg2 text-white">Status</th>
+            <th class="pal6_bg2 text-white">&nbsp;</th>
+          </tr>
+          </thead>
+          <tbody>
+          @foreach (var item in devis)
+          {
+            <tr class="alert" role="alert">
+              <td>
+                <a asp-action="@(item.EtatActuel.Etat == "brouillon" ? "Create" : "Details")" asp-route-id_devis="@item.Id" class="btn btn-sm but2-mod3" data-dismiss="alert" aria-label="Close">
+                  <i class="fa fa-eye"> </i><span>Consulter</span>
+                </a>
+              </td>
+              <td>
+                <div class="pl-3 email">
+                  <span>@(item.EtatActuel.Etat == "brouillon" ? "Brouillon #" : "Devis #")@Formattage.Numero(item.Id)</span>
+                  <span>
+                    @if (!item.EtatPayement && item.EtatActuel.Etat != "brouillon")
+                    {
+                      <a class="btn but2-mod1 btn-sm" asp-action="Payement" asp-route-id_devis="@item.Id">
+                        <i class="fa fa-bell text-danger"></i>
+                        <span><strong class="text-danger">Un Payement non Confirmé</strong></span>
+                      </a>
+                    }
+                  </span>
+                </div>
+              </td>
+              <td>
+                <div class="pl-3 email">
+                  <span>@Formattage.Valeur(item.TotalPrixAriary1) MGA</span>
+                  <span>@Formattage.Valeur(item.TotalPrixEuro) <i class="fa fa-euro"></i></span>
+                </div>
+    
+              </td>
+              <td>
+                @(item.CoursDevis == null ? $"{Formattage.Valeur((double)item.CoursEuro)} MGA (instable)" : $"{Formattage.Valeur((double)item.CoursDevis)} MGA (Fix)") )
+              </td>
+              <td >
+                <button class="btn btn-outline-@item.EtatActuel.Color disabled fw-bold"><i class="fa fa-circle-o"></i> @item.EtatActuel.Etat</button>
+              </td>
+
+              <td>
+                @if (@item.EtatActuel.Etat == "brouillon")
+                {
+                  <a type="button" asp-action="DeleteSimulateCommande" asp-route-IDevis="@item.Id" asp-route-isAll="true" class="btn btn-danger" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true"><i class="fa fa-trash"> Supprimer</i></span>
+                  </a>
+                }
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+          
+      @if (paginations != null)
+      {
+        <div class="pagin1">
+          <a asp-action="Index" asp-route-IsPag="true" asp-route-pagId="@(paginations.PageId -1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")" title="previous page"><i class="fa fa-chevron-left"></i></a>
+          @if (paginations.PageId > 1 && paginations.PageId > 4)
+          {
+                                       
+            <a asp-action="Index" asp-route-IsPag="true"  asp-route-pagId="1">1</a>
+            @if (paginations.PageId > 5)
+            {
+              <span class="page-dots">...</span>
+            }
+          }
+          @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+          {
+            @if (i > 0 && i <= paginations.TotalPages)
+            {
+              <a asp-action="Index" asp-route-IsPag="true"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+            }
+          }
+                                                            
+          @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+          {
+            @if (paginations.PageId < paginations.TotalPages - 4)
+            {
+              <span class="page-dots">...</span>
+            }
+            <a asp-action="Index" asp-route-IsPag="true"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+          }
+          <a asp-action="Index" asp-route-IsPag="true" asp-route-pagId="@(paginations.PageId+1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+        </div>
+      }
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="create_devis" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-fullscreen-xl-down modal-dialog-centered modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">Commencez à créer un devis</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        
+        <form method="post" asp-action="CreateSimulateCommande">
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="form-floating">
+                <select required name="IdCategorie" asp-items="@ViewBag.categories" class="form-select" id="floatingSelect" aria-label="Floating label select example"></select>
+                <label for="floatingSelect">Categorie</label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3 col-md-6">
+                <span class="input-group-text"><i class="fa fa-object-group"></i></span>
+                <div class="form-floating">
+                  <input required name="ProduitName" type="text" class="form-control" id="floatingInputGroup1" placeholder="Produit">
+                  <label for="floatingInputGroup1">Produit</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="input-group mb-3 col-12">
+              <span class="input-group-text"><i class="fa fa-mail-forward"></i></span>
+              <div class="form-floating">
+                <input required name="ReferenceSite" type="text" class="form-control" id="floatingInputGroup1" placeholder="Url">
+                <label for="floatingInputGroup1">Url de référence</label>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-paint-brush"></i></span>
+                <div class="form-floating">
+                  <input required name="Couleur" type="text" class="form-control" id="floatingInputGroup1" placeholder="Couleur">
+                  <label for="floatingInputGroup1">Couleur</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-braille"></i></span>
+                <div class="form-floating">
+                  <input required name="Taille" type="text" class="form-control" id="floatingInputGroup1" placeholder="Taille">
+                  <label for="floatingInputGroup1">Taille</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="input-group mb-3">
+                <span class="input-group-text"><i class="fa fa-euro"></i></span>
+                <div class="form-floating">
+                  <input required name="PrixEuro" type="text" class="form-control" id="floatingInputGroup1" placeholder="Montant">
+                  <label for="floatingInputGroup1">Montant-Euro</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-md-6">
+              <div class="wrap-num-product flex-w  m-r-0">
+                <div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+                  <i class="fs-16 zmdi zmdi-minus"></i>
+                </div>
+
+                <input required class="mtext-104 cl3 txt-center num-product" type="number" name="Nombre" value="1">
+
+                <div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+                  <i class="fs-16 zmdi zmdi-plus"></i>
+                </div>
+              </div>
+            </div>
+            
+            @*<div class="col-md-6 text-center">
+              <img id="imagePreview" src="~/images/produits/locks/minimize_vide.jpg" alt="Preview" class="image-preview img-thumbnail" style="max-width: 100%; max-height: 200px; margin-top: 10px;transition: opacity 0.3s ease-in-out;">
+            </div>
+
+            <label for="file_upload-input" class="drop_upload-container">
+              <span class="drop_upload-title">Chosir Une Image</span>
+              <input name="Images" class="btn form-control" type="file" accept="image!*" required id="file_upload-input">
+            </label>*@
+
+            <button type="submit" class="btn but2-mod2 but-block">
+              <i class="fa fa-check"></i>
+              <span>Valider</span>
+            </button>
+
+          </div>
+        </form>
+
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+

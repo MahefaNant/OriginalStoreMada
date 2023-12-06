@@ -1,0 +1,280 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Produits
+@using originalstoremada.Models.Produits.Others
+@using originalstoremada.Models.Produits.views
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.IdentityModel.Tokens
+@using originalstoremada.Models.Users
+@model originalstoremada.Models.Produits.views.VStockProduitGlobal
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentClient();
+  List<ContenueProduit> contenues = ViewBag.contenues;
+	ContenueProduit contenueSelected = ViewBag.contenueSelected;
+	List<VStockPreference> stocks = ViewBag.stocks;
+	List<VStockGlobalParPreference> preferences = ViewBag.preferences;
+	bool isFavoris = ViewBag.isFavoris;
+	Client? client = ViewBag.client;
+	// List<PrefProd> prefProds = ViewBag.prefProd;
+
+}
+
+
+@*----------------------------------*@
+
+<section class="sec-product-detail bg0 p-t-65 p-b-60">
+<div class="container">
+
+@if (ViewBag.error != null)
+{
+	<div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+		<strong>Invalide! @ViewBag.error</strong>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+	
+	
+
+<div class="bg0 p-t-60 p-b-30 p-lr-15-lg how-pos3-parent">
+		
+	<button class="how-pos3 hov3 trans-04 js-hide-modal1">
+		<img src="~/lib/CozaAssests/images/icons/icon-close.png" alt="CLOSE">
+	</button>
+
+	<div class="row">
+		<div class="col-md-6 col-lg-7 p-b-30">
+			<div class="p-l-25 p-r-30 p-lr-0-lg">
+				<div class="wrap-slick3 flex-sb flex-w">
+					<div class="wrap-slick3-dots"></div>
+					<div class="wrap-slick3-arrows flex-sb-m flex-w"></div>
+            
+					<div class="slick3 gallery-lb">
+            
+						@foreach (var item in contenues)
+						{
+							<div class="item-slick3" data-thumb="@Url.Content($"~/images/produits/{(item.Image != null ? item.Image : "locks/vide.jpg")}")">
+								<div class="wrap-pic-w pos-relative">
+									<img src="~/images/produits/@(item.Image != null ? item.Image : "locks/vide.jpg")" alt="IMG-PRODUCT" class="img-thumbnail">
+            
+									<a class="flex-c-m size-108 how-pos1 bor0 fs-16 cl10 bg0 hov-btn3 trans-04" href="~/images/produits/@(item.Image != null ? item.Image : "locks/vide.jpg")">
+										<i class="fa fa-expand "></i>
+									</a>
+								</div>
+							</div>
+						}
+        
+					</div>
+				</div>
+			</div>
+		</div>
+            
+		<div class="col-md-6 col-lg-5 p-b-30">
+			<div class="p-r-50 p-t-5 p-lr-0-lg">
+				<h4 class="mtext-105 cl2 js-name-detail p-b-14 fw-bold">
+					@Model.Nom
+				</h4>
+            
+				<span class="mtext-106 cl2">
+					@if (@Model.DateDebPromo == null)
+					{
+						@Formattage.Valeur((double)@Model.PrixVenteInitial)
+						<span>MGA</span>
+					}
+					else
+					{
+						@Formattage.Valeur((double)@Model.PrixVenteProm)
+						<span>MGA / <del>@Formattage.Valeur((double)@Model.PrixVenteInitial) MGA</del></span>
+					}
+				</span>
+            
+				@if (Model.DateDebPromo != null)
+				{
+					<p class="text-success">@Model.PourcentagePromotion % de réduction</p>
+				}
+            
+				<p class="stext-102 cl3 p-t-23">
+					Couleur @contenueSelected.Couleur
+				</p>
+            
+				<!--  -->
+				<form method="post" asp-controller="ProduitShop" asp-action="AddToCart">
+					<input type="hidden" name="id_produit" value="@Model.Id"/>
+					<div class="p-t-33">
+            							
+						<div class="mb-3">
+							@foreach (var item in contenues)
+							{
+								<a asp-action="Details" asp-route-id_produit="@ViewBag.id_produit" asp-route-id_contenue="@item.Id">
+									<img class="img-thumbnail @(item.Id == contenueSelected.Id ? "border-danger" : "")" src="~/images/produits/@(!item.Image.IsNullOrEmpty() ? $"minimize_{item.Image}" : "locks/minimize_vide.jpg")" alt="Img"/>
+								</a>
+							}
+						</div>
+            							
+						<div class="card">
+							<div class="card-body">
+								@foreach (var item in preferences)
+								{
+									<input @(item.Stock == 0 ? "disabled" : "") name="id_pref" value="@item.IdPreferenceProduit" required type="radio" id="b_@item.IdPreferenceProduit" class="btn-check" autocomplete="off">
+									<label class="btn btn-outline-secondary btn-lg" for="b_@item.IdPreferenceProduit">@item.Taille</label>
+								}
+							</div>
+						</div>
+            							
+            
+						<div class="flex-w flex-r-m p-b-10">
+							<div class="size-204 flex-w flex-m respon6-next">
+								<div class="wrap-num-product flex-w m-r-20 m-tb-10">
+									<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+										<i class="fs-16 zmdi zmdi-minus"></i>
+									</div>
+            
+									<input class="mtext-104 cl3 txt-center num-product" type="number" name="quantiter" value="1">
+            
+									<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+										<i class="fs-16 zmdi zmdi-plus"></i>
+									</div>
+								</div>
+            
+								<button class="btn but2-mod2" type="submit">
+									<i class="fa fa-plus-square"></i><span>Ajouter au panier</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</form>
+            					
+				@if (!isFavoris)
+				{
+					if (client != null)
+					{
+						<div class="text-center">
+							<button type="button" class="btn btn-outline-dark btn-lg " data-bs-toggle="modal" data-bs-target="#add">
+								Ajouter aux favoris <i class="fa fa-heart-o"></i>
+							</button>
+						</div>
+            							
+					}
+					else
+					{
+						<div class="text-center">
+							<button type="button" class="btn btn-outline-dark btn-lg " data-bs-toggle="modal" data-bs-target="#connect">
+								Ajouter aux favoris <i class="fa fa-heart-o"></i>
+							</button>
+						</div>	
+					}
+            						
+				}
+				else
+				{
+					<div class="text-center">
+						<button type="button" class="btn btn-outline-dark btn-lg text-danger" data-bs-toggle="modal" data-bs-target="#remove">
+							Supprimer du favoris <i class="fa fa-heart"></i>
+						</button>
+					</div>	
+				}
+            
+			</div>
+		</div>
+	</div>
+</div>
+		
+<div class="bor10 m-t-50 p-t-43 p-b-40">
+	<!-- Tab01 -->
+	<div class="tab01">
+		<!-- Nav tabs -->
+		<ul class="nav nav-tabs" role="tablist">
+			<li class="nav-item p-b-10">
+				<a class="nav-link active" data-toggle="tab" href="#description" role="tab">Description</a>
+			</li>
+		</ul>
+        
+		<!-- Tab panes -->
+		<div class="tab-content p-t-43">
+			<!-- - -->
+			<div class="tab-pane fade show active" id="description" role="tabpanel">
+				<div class="how-pos2 p-lr-15-md">
+					<p class="stext-102 cl6">
+						@Model.Description
+					</p>
+				</div>
+			</div>
+			
+		</div>
+	</div>
+</div>
+        		
+		
+</div>
+<div class="bg6 flex-c-m flex-w size-302 m-t-73 p-tb-15">
+	
+	<span class="stext-107 cl6 p-lr-25">
+		Categories: @Model.CategorieProduit.Nom
+	</span>
+</div>
+
+</section>
+
+
+@if (!isFavoris)
+{
+	if (client != null)
+	{
+		<div class="modal fade rounded-5" id="add" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content border-0">
+					<div class="modal-body text-center">
+						<p class="h5"><strong>Ajouter aux favoris?</strong></p>
+						
+					</div>
+					<div class="modal-footer border-0">
+						
+						<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</a>
+						<form method="post" asp-action="SetFavorisRhg" asp-route-IdProduit="@ViewBag.id_produit">
+							<button type="submit" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-check"></i>Valider</button>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	else
+	{
+		<div class="modal fade rounded-5" id="connect" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+			<div class="modal-dialog modal-dialog-centered">
+				<div class="modal-content border-0">
+					<div class="modal-body text-center">
+						<img src="~/images/OSM/osm-mini.png" class="rounded-2 mb-3" />
+						<p class="h5"><strong>Rejoignez-nous!</strong></p>
+					</div>
+					<div class="modal-footer border-0">
+						<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</a>
+						<a asp-controller="Client" asp-action="Login" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-user"></i>Se Connecter</a>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+	
+}
+else
+{
+	
+	<div class="modal fade rounded-5" id="remove" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content border-0">
+				<div class="modal-body text-center">
+					<p class="h5"><strong>supprimer du favoris?</strong></p>
+				</div>
+				<div class="modal-footer border-0">
+					<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</a>
+					<form method="post" asp-action="SetFavorisRhg" asp-route-IdProduit="@ViewBag.id_produit">
+						<button type="submit" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-check"></i>Valider</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+}
+
+

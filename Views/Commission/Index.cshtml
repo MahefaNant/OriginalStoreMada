@@ -1,0 +1,67 @@
+@using originalstoremada.Models.Produits
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<originalstoremada.Models.Produits.Commission>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    CategorieProduit categorie = @ViewBag.categorie;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" asp-route-id_categorie="@ViewBag.id_categorie">Create New</a>
+</p>
+
+<section class="section dashboard">
+    <div class="card top-selling @*overflow-auto*@">
+        <div class="card-body pb-0">
+            <h5 class="card-title">Commission Categorie @categorie.Nom</h5>
+            
+            <table class="table">
+                <thead>
+                <tr>
+                    <th>
+                        @Html.DisplayNameFor(model => model.MontantEuro)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateDeb)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.DateFin)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.CategorieProduit)
+                    </th>
+                    <th></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model) {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.MontantEuro)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateDeb)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.DateFin)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.CategorieProduit.Nom)
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.Id" asp-route-id_categorie="@ViewBag.id_categorie">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+

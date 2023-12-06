@@ -1,0 +1,33 @@
+@using originalstoremada.Models.Boutiques
+@using originalstoremada.C_
+@using Newtonsoft.Json
+@using originalstoremada.Services.Boutiques
+@{
+  IEnumerable<Boutique> boutiques = (IEnumerable<Boutique>)ViewData[BoutiqueService.BoutiquesAllName];
+  Boutique boutique = JsonConvert.DeserializeObject<Boutique>(Context.Request.Cookies[KeyStorage.KeyBoutiqueClient]);
+}
+
+<div style="width: 600px" class="offcanvas offcanvas-start" data-bs-scroll="true" data-bs-backdrop="false" tabindex="-1" id="boutiqueAll" aria-labelledby="offcanvasScrollingLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="offcanvasScrollingLabel">Boutique Oridginal Store</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    
+    <ul class="list-group">
+      <form method="post" asp-controller="Client" asp-action="ChangeBoutique">
+         @foreach (var item in boutiques)
+          {
+            <li class="list-group-item">
+              <input name="id_boutique" value="@item.Id" @(item.Id == boutique.Id ? "checked" : "") class="form-check-input me-1" type="checkbox"  id="check_@item.Id">
+              <label class="form-check-label stretched-link" for="check_@item.Id">@item.Quartier / @item.Ville - Lot_@item.adresse</label>
+            </li>
+          }
+         <div class="d-grid gap-2">
+           <button class="btn btn-success" type="submit">Valider</button>
+         </div>
+      </form>
+    </ul>
+
+  </div>
+</div>

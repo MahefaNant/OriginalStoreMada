@@ -1,0 +1,206 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis
+@using originalstoremada.Services
+@model List<originalstoremada.Models.Devis.Vol>
+
+@{
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    Pagination<Vol> paginations = ViewBag.paginations;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>Tous les Vols</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>Vols</a></li>
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+	<div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+		<strong>Invalide! @ViewBag.error</strong>
+		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+	</div>
+}
+
+<button type="button" class="btn but2-mod1 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#update">
+    <i class="fe fe-plus-circle fe-24"></i>
+    <span>Nouveau Vol</span>
+</button>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Date départ</th>
+                    <th class="pal6_bg2 text-white">Date d`arriver éstimée</th>
+                    <th class="pal6_bg2 text-white"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@Formattage.DateTime(item.DateDepart)</span>
+                                <span>
+                                    <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#cat_@item.Id">
+                                        <i class="fe fe-edit"></i><span>Modifier</span>
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
+                        <td>@Formattage.DateTime(item.DateArriverEstimer)</td>
+                        <td>
+                            <div class="pl-3 email">
+                                @if (item.DateArriver == null)
+                                {
+                                    <span>
+                                        <button type="button" class="btn but2-mod1 btn-sm" data-bs-toggle="modal" data-bs-target="#arriv_@item.Id">
+                                            <i class="fa fa-flag"></i><span class="text-white">Arrivez immédiatement</span>
+                                        </button>
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span>
+                                        <button class="btn but2-mod3 btn-sm">
+                                            <i class="fa fa-flag text-success"></i><span class="text-success">le vol est arrivé</span>
+                                        </button>
+                                    </span>
+                                    <span><strong>arrivé le @Formattage.DateTime((DateTime)item.DateArriver)</strong></span>
+                                    <span></span>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <div class="modal fade" id="cat_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="varyModalLabel">Modifier</h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form asp-action="Edit" asp-route-IdVol="@item.Id" class="needs-validation" novalidate>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="Id" value="@item.Id"/>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Date départ</label>
+                                            <input value="@Formattage.InputDateTime(@item.DateDepart)" name="DateDepart" type="datetime-local" class="form-control" id="recipient-name" placeholder="Numero responsable" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Date d`arriver éstimée</label>
+                                            <input value="@Formattage.InputDateTime(@item.DateArriverEstimer)" name="DateArriverEstimer" type="datetime-local" class="form-control" id="recipient-name" placeholder="Nom du compte" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="modal fade rounded-5" id="arriv_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+            
+                                <div class="alert pal6_bg2 fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                    <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr que le vol est terminé ?</strong>
+                                </div>
+
+                                <form asp-action="SetArriver" asp-route-id_vol="@item.Id" method="post">
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <tr>
+                    <th colspan="4"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        @if(paginations!=null) {
+            <div class="pagin1">
+            <a asp-action="Index" asp-route-pagId="@(paginations.PageId-1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+            @if (paginations.PageId > 1 && paginations.PageId > 4)
+            {
+                               
+                <a asp-action="Index"  asp-route-pagId="1">1</a>
+                @if (paginations.PageId > 5)
+                {
+                    <span class="page-dots">...</span>
+                }
+            }
+            @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+            {
+                @if (i > 0 && i <= paginations.TotalPages)
+                {
+                    <a asp-action="Index"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+                }
+            }
+                                                    
+            @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+            {
+                @if (paginations.PageId < paginations.TotalPages - 4)
+                {
+                    <span class="page-dots">...</span>
+                }
+                <a asp-action="Index"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+            }
+            <a asp-action="Index" asp-route-pagId="@(paginations.PageId+1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+        </div>
+        }
+    </div>
+</div>
+
+@*---------MODAL UPDATE-----------------*@
+
+<div class="modal fade rounded-5" id="update" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajout de nouveau <strong>vol</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Create" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Date départ</label>
+                        <input name="DateDepart" type="datetime-local" class="form-control" id="recipient-name" placeholder="Numero responsable" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Date d`arriver éstimée</label>
+                        <input name="DateArriver" type="datetime-local" class="form-control" id="recipient-name" placeholder="Nom du compte" required>
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*---------Faire ariver-----------------*@

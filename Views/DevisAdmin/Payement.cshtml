@@ -1,0 +1,354 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis.Views
+@using originalstoremada.Models.Others
+@using originalstoremada.Models.Payements
+@using originalstoremada.Models.Users
+@model List<originalstoremada.Models.Devis.Views.VCommanceDevis>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    VDevisInfo devis = ViewBag.devis;
+    Client client = ViewBag.client;
+    List<PayementDevis> payements = ViewBag.payements;
+    VPayementDevisEtat payementInfos = ViewBag.payementInfo;
+    Tranche[] tranches = ViewBag.tranches;
+    Dictionary<string, List<Tranche>>? nextRestes = ViewBag.nextRestes;
+    Dictionary<int, string> suivisDevis = ViewBag.suivisDevis;
+    PayementDevis payementNonConfirmerForm = ViewBag.payementNonConfirmerForm;
+}
+
+<div class="container-fluid">
+
+<nav aria-label="breadcrumb mt-3">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Mes devis</a></li>
+        <li class="breadcrumb-item active" aria-current="page"><a asp-action="Details" asp-route-id_devis="@devis.Id">Details</a></li>
+        <li class="breadcrumb-item active" aria-current="page">Payement</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-7">
+            <div class="card">
+                <div class="card-body">
+                
+                    @if (payementNonConfirmerForm != null)
+                    {
+                        <div class="row justify-content-center">
+                            <div class="col-md-6">
+                                <div class="card border-danger shadow grad_rose3">
+                                    <div class="card-body mx-md-5">
+                                        <h5 class="text-center">Demande de Payement Non Confirmé devis #@Formattage.Numero(devis.Id)</h5>
+                                        <ul class="list-group list-group-flush mb-3">
+                                            <li class="list-group-item">Type de Payement: @payementNonConfirmerForm.TypePayement.Nom</li>
+                                            <li class="list-group-item">Montant à payer : <strong class="grad_rose4"> @Formattage.Valeur(payementNonConfirmerForm.Montant) MGA </strong></li>
+                                            <li class="list-group-item">Demande de la part du client: <strong class="pal6_bg3 text-light">@payementInfos.Client.Nom @payementInfos.Client.Prenom</strong></li>
+                                            <li class="list-group-item">Mail du client: <strong class="pal6_bg3 text-light">@payementInfos.Client.Mail</strong></li>
+                                        </ul>
+                                        <button data-bs-toggle="modal" data-bs-target="#validerPayement" type="button" class="btn but2-mod2 but-block">
+                                            <i class="fa fa-check-circle"></i> Valider le Payement
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="tab2-wrap">
+                        <table class="tab2 table-responsive-xl">
+                            <thead>
+                            <tr>
+                                <th colspan="2">
+                                    <div class="stepper-wrapper">
+                                        <div class="stepper-item @suivisDevis[0]">
+                                            <div class="step-counter"><i class="fa fa-close"></i></div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item text-center">Effacer / Invalide</li>
+                                                    @if (devis.DateDelete != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateDelete)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisDevis[1]">
+                                            <div class="step-counter">1</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item text-center">Demander</li>
+                                                    @if (true)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.Date)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisDevis[2]">
+                                            <div class="step-counter">2</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item text-center">EValider</li>
+                                                    @if (devis.DateValidation != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateValidation)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisDevis[3]">
+                                            <div class="step-counter">3</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item text-center">Avance Payement</li>
+                                                    @if (devis.DatePayer != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DatePayer)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisDevis[4]">
+                                            <div class="step-counter">4</div>
+                                            <div class="step-name">En Livraison</div>
+                                        </div>
+                                        <div class="stepper-item @suivisDevis[5]">
+                                            <div class="step-counter">5</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item text-center">Livré</li>
+                                                    @if (devis.IsLivrer)
+                                                    {
+                                                        <li class="list-inline-item text-secondary"><i class="fa fa-check"></i></li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-warning" role="alert">
+                                        cours Euro <a href="#" class="alert-link">@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.CoursEuro)} MGA (instable)" : $"{Formattage.Valeur((double)devis.CoursDevis)} MGA (Fix)")</a>!
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <thead>
+                            </thead>
+                            <tbody>
+
+                            <tr>
+                                <td>Total Montant Articles</td>
+                                <td>
+                                    <div class="pl-3 email">
+                                        <span>@Formattage.Valeur(devis.TotalPrixAriary1) MGA</span>
+                                        <span>@Formattage.Valeur(devis.TotalPrixEuro) <i class="fa fa-euro"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Frais D`importation</td>
+                                <td>
+                                    <div class="pl-3 email">
+                                        <span>@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.TotalFraisImportationAriary)} MGA" : $"{Formattage.Valeur((double)devis.TotalFraisImportationReelAriary)} MGA")</span>
+                                        <span>@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.TotalFraisImportation)}" : $"{Formattage.Valeur((double)devis.TotalFraisImportationReel)}") <i class="fa fa-euro"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td>Commission</td>
+                                <td>
+                                    <div class="pl-3 email">
+                                        <span>@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.TotalCommissionAriary)} MGA" : $"{Formattage.Valeur((double)devis.TotalCommissionReelAriary)} MGA")</span>
+                                        <span>@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.TotalCommission)}" : $"{Formattage.Valeur((double)devis.TotalCommissionReel)}") <i class="fa fa-euro"></i></span>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="2">
+                                    <div class="alert alert-success" role="alert">
+                                        <i class="fa fa-check"></i> Total Final est de
+                                        <a href="#" class="alert-link">@(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.TotalPrixFinAriary1)} MGA (instable)" : $"{Formattage.Valeur((double)devis.TotalPrixFinAriaryReel)} MGA (Fix)")</a>!
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            <input type="hidden" name="id_devis" value="@devis.Id"/>
+            <div class="card">
+                <div class="card-header">
+                    Devis Ref_@devis.Id
+                </div>
+                <div class="card-body">
+                    @if (devis.DatePayer != null)
+                    {
+                        <div class="alert alert-danger" role="alert">
+                            <i class="fa fa-check-circle-o"></i> Versement complet!!
+                        </div>
+                    }
+                    
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th></th>
+                            <th>Payement effectué</th>
+                        </tr>
+                        </thead>
+
+                        <tbody>
+                        @foreach (var q in payements)
+                        {
+                            <tr>
+                                <th>@Formattage.DateTime(q.Date)</th>
+                                <th>@Formattage.Valeur(q.Montant) MGA</th>
+                            </tr>
+                        }
+                        <tr>
+                            <th colspan="2">
+                                <div class="alert alert-success" role="alert">
+                                    <i class="fa fa-check"></i> Total <i class="fa fa-arrow-right"></i> @Formattage.Valeur(payementInfos.MontantPayer) MGA
+                                </div>
+                                
+                            </th>
+                        </tr>
+                        </tbody>
+                    </table>
+
+                    <ul class="list-group">
+                        <li class="list-group-item bg17" aria-current="true">Tranche de Payement</li>
+                        @foreach (var t in tranches)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                @Formattage.Valeur(t.Valeur) MGA
+                                @if (t.EstPayee && t.EstPayeeSimulate)
+                                {
+                                    <span class="badge rounded-pill pal4_bg4 text-dark"><i class="fa fa-check"></i>Payé</span>
+                                } 
+                                @if (t.EstPayeeSimulate && !t.EstPayee)
+                                {
+                                    <span class="badge rounded-pill pal5_bg6 text-dark"><i class="fa fa-check"></i>Payé En simulation</span>
+                                }
+                                <span class="badge rounded-pill bg17 text-dark">@t.Pourcent %</span>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    
+                    @if (devis.DatePayer == null)
+                    {
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        Opération Terminer ?
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <div class="card border-danger shadow">
+                                            <div class="card-body mx-md-5">
+                                                *Si vous êtes certain que tous les paiements de ce devis ont été effectués avec succès, veuillez procéder à la finalisation du paiement.
+                                                <button data-bs-toggle="modal" data-bs-target="#finalisation" type="button" class="btn but2-mod1 but-block mt-3">
+                                                    <i class="fe fe-check"></i><span>Procéder</span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion-item">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                        Opération Terminer Déjà Effectuer
+                                    </button>
+                                </h2>
+                                <div id="flush-collapseOne" class="accordion-collapse collapse show" data-bs-parent="#accordionFlushExample">
+                                    <div class="accordion-body">
+                                        <div class="card border-danger shadow">
+                                            <div class="card-body mx-md-5">
+                                                *Versement complet pour ce devis. <code>validé le @Formattage.DateTime((DateTime)devis.DatePayer)</code>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+@if (payementNonConfirmerForm != null)
+{
+    <!-- Payement Confirmation -->
+    <div class="modal" id="validerPayement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fa fa-warning"></i> Voulez-vous vraiment donner suite à cette Payement?
+                    </div>
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fa fa-info"></i> Êtes-vous sûr que la transaction a été bien faite !
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                    <form method="POST">
+                        <button asp-action="ConfirmerPayementDevis" asp-route-id_devis="@devis.Id" type="submit" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+ @if (devis.DatePayer == null)
+ {
+     <!-- Finalisation -->
+     <div class="modal" id="finalisation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+         <div class="modal-dialog modal-dialog-centered">
+             <div class="modal-content">
+                 <div class="modal-body">
+
+                     <div class="alert alert-danger" role="alert">
+                         <i class="fa fa-warning"></i> Voulez-vous vraiment Valider le devis #@(Formattage.Numero(devis.Id)) ?
+                     </div>
+
+                     <div class="alert alert-warning" role="alert">
+                         <i class="fa fa-info"></i> *Si vous êtes certain que tous les paiements de ce devis ont été effectués avec succès, veuillez confirmé. !
+                     </div>
+
+                 </div>
+                 <div class="modal-footer">
+                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                     <form method="POST">
+                         <button type="submit" asp-action="FinaliserPayementDevis" asp-route-id_devis="@devis.Id" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+                     </form>
+                 </div>
+             </div>
+         </div>
+     </div>
+ }

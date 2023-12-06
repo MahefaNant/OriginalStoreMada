@@ -1,0 +1,50 @@
+@model originalstoremada.Models.Produits.Commission
+
+@{
+    ViewData["Title"] = "Edit";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+}
+
+<h1>Edit</h1>
+
+<h4>Commission</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="IdCategorie" class="control-label"></label>
+                <select asp-for="IdCategorie" class="form-control" asp-items="ViewBag.IdCategorie"></select>
+                <span asp-validation-for="IdCategorie" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MontantEuro" class="control-label"></label>
+                <input asp-for="MontantEuro" class="form-control" />
+                <span asp-validation-for="MontantEuro" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateDeb" class="control-label"></label>
+                <input asp-for="DateDeb" class="form-control" />
+                <span asp-validation-for="DateDeb" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DateFin" class="control-label"></label>
+                <input asp-for="DateFin" class="form-control" />
+                <span asp-validation-for="DateFin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

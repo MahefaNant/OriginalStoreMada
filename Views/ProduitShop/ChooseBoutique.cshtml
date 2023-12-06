@@ -1,0 +1,385 @@
+@using originalstoremada.C_
+@model List<originalstoremada.Models.Boutiques.Boutique>
+
+@{
+    Layout = @RoutePath.ContentClient();
+}
+
+ <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+
+
+<div class="container-fluid">
+    @if (ViewBag.error != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+            <strong>Invalide! @ViewBag.error</strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    }
+    
+    <div class="card mb-3">
+        <div class="card-body text-center">
+            <div class="row">
+                <div class="col-md-6 text-center">
+                   @if (ViewBag.InBoutique)
+                   {
+                       @Html.Raw(HTMLClient.TitlePage($"RECUPERATION"))
+                   }
+                   else
+                   {
+                       @Html.Raw(HTMLClient.TitlePage($"LiVRAISON"))
+                       <div class="card border-warning">
+                           <div class="card-body">
+                               <h5>Nos Boutique</h5>
+                                                      
+                               <ul class="list-group mb-3">
+                                   @foreach (var item in Model)
+                                   {
+                                       <li class="list-group-item">
+                                           <div class="form-check form-switch">
+                                               <input value="@($"{item.Longitude}/{item.Latitude}/{item.Id}")" name="IdB" class="form-check-input" type="radio" role="switch" id="IdBoutique">
+                                               <label class="form-check-label" for="IdBoutique">@item.Ville / @item.Quartier / @item.adresse</label>
+                                           </div>
+                                       </li>
+                                   }
+                               </ul>
+                           </div>
+                       </div>
+                   }
+                    
+                </div>
+    
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <form asp-action="ChooseBoutique" class="needs-validation" method="POST" novalidate>
+                                @if (ViewBag.InBoutique)
+                                {
+                                    <h5>Choisis parmi nos boutiques</h5>
+    
+    
+                                    <input type="hidden" name="Type" value="0"/>
+    
+                                    <ul class="list-group mb-3">
+                                        @foreach (var item in Model)
+                                        {
+                                            <li class="list-group-item">
+                                                <div class="form-check form-switch">
+                                                    <input value="@($"{item.Longitude}/{item.Latitude}/{item.Id}")" class="form-check-input" name="IdBoutique" type="radio" role="switch" id="IdBoutique" required>
+                                                    <label class="form-check-label" for="IdBoutique">@item.Ville / @item.Quartier / @item.adresse</label>
+                                                </div>
+                                            </li>
+                                        }
+                                    </ul>
+                                        
+                                }
+                                else
+                                {
+                                        
+                                    <input type="hidden" name="Type" value="1"/>
+
+                                    <div class="alert alert-danger mb-3" role="alert">
+                                        <i class="fa fa-info-circle"></i> Pointer vers la carte afin de spécifier le point de livraison!
+                                    </div>
+    
+                                    <div class="row g-3">
+                                        <div class="col-md-6">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text"><i class="fa fa-gift"></i></span>
+                                                <div class="form-floating">
+                                                    <input required name="Ville" type="text" class="form-control" id="floatingInputGroup1" placeholder="ville">
+                                                    <label for="floatingInputGroup1">Ville</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    
+                                        <div class="col-md-6">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text"><i class="fa fa-braille"></i></span>
+                                                <div class="form-floating">
+                                                    <input required name="Quartier" type="text" class="form-control" id="floatingInputGroup1" placeholder="quartier">
+                                                    <label for="floatingInputGroup1">Quartier</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            
+                                        <div class="col-md-6">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text"><i class="fa fa-gift"></i></span>
+                                                <div class="form-floating">
+                                                    <input required name="Longitude" type="text" class="form-control" id="LONG" placeholder="pointer sur la carte" readonly>
+                                                    <label for="LONG">Longitude</label>
+                                                </div>
+                                            </div>
+                                        </div>
+    
+                                        <div class="col-md-6">
+                                            <div class="input-group mb-3">
+                                                <span class="input-group-text"><i class="fa fa-braille"></i></span>
+                                                <div class="form-floating">
+                                                    <input required name="Latitude" type="text" class="form-control" id="LAT" placeholder="pointer sur la carte" readonly>
+                                                    <label for="LAT">Latitude</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+    
+                                }
+                                    
+                                <button type="button" class="btn but2-mod2 but-block" data-bs-toggle="modal" data-bs-target="#val">
+                                    <i class="fa fa-check"></i><span>Valider le choix</span>
+                                </button>
+    
+                                <div class="modal fade rounded-5" id="val" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                                    <div class="modal-dialog modal-dialog-centered">
+                                        <div class="modal-content">
+    
+                                            <div class="alert pal6_bg2 fade show mb-3 text-center" role="alert">
+                                                <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr de votre choix?</strong>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                                <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+    
+                            </form>
+                        </div>
+                    </div>
+                </div>
+    
+            </div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-12">
+            <div class="card">
+                <div class="card-body">
+    
+                    <div class="input-group mb-3">
+                        <input id="cityInput" type="text" class="form-control" placeholder="Rechercher" aria-label="Recipient's username" aria-describedby="button-addon2">
+                        <button onclick="searchCoordinates()" class="btn btn-dark" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+                    </div>
+                    <div class="card" id="myMap" style="/*width: 740px; */height: 600px;"></div>
+                    <input class="form-control" type="text" id="coordinatesInput" placeholder="Coordonnées" readonly>
+    
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</div>
+
+@*<div class="container-fluid">
+    <div class="row">
+        
+        <div class="col-md-6">
+            <form asp-controller="ProduitShop" asp-action="ChooseBoutique" method="post">
+                <div class="card">
+                    <div class="card-header">
+                        <input type="radio" class="btn-check" value="0" name="Type" id="surplace" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="surplace">Récupération sur place</label>
+                        <input type="radio" class="btn-check" value="1" name="Type" id="livr" autocomplete="off">
+                        <label class="btn btn-outline-danger" for="livr">Choix du point de livraison</label>
+                    </div>
+                    <div class="card-body">
+
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="card-header">
+                                    Notre Boutique
+                                </div>
+                                <ul class="list-group">
+                                    @foreach (var item in Model)
+                                    {
+                                        <li class="list-group-item">
+                                            <div class="form-check form-switch">
+                                                <input value="@($"{item.Longitude}/{item.Latitude}/{item.Id}")"  class="form-check-input" name="IdBoutique" type="radio" role="switch" id="IdBoutique">
+                                                <label class="form-check-label" for="IdBoutique">@item.Ville / @item.Quartier / @item.adresse</label>
+                                            </div>
+                                        </li>
+                                    }
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h4 class="mtext-105 cl2 txt-center p-b-30">
+                            Information de livraison
+                        </h4>
+                        
+                        <div class="card-header">
+                            <div class="alert alert-danger" role="alert">
+                                <i class="fa fa-info-circle"></i> Pointer vers la carte afin de spécifier le point de livraison!
+                            </div>
+                        </div>
+
+                        <div class="input-group mb-3 bor8 m-b-20 how-pos4-parent">
+                            <span class="input-group-text" id="basic-addon1">Ville</span>
+                            <input name="Ville" type="text" class="form-control stext-111 cl2 plh3 size-116 p-l-62 p-r-30" placeholder="ville" aria-label="ville" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3 bor8 m-b-20 how-pos4-parent">
+                            <span class="input-group-text" id="basic-addon1">Quartier</span>
+                            <input name="Quartier" type="text" class="form-control stext-111 cl2 plh3 size-116 p-l-62 p-r-30" placeholder="quartier" aria-label="quartier" aria-describedby="basic-addon1">
+                        </div>
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text">LONG</span>
+                            <input name="Longitude" type="text" class="form-control" id="LONG" placeholder="Username" aria-label="Username">
+                            <span class="input-group-text">LAT</span>
+                            <input name="Latitude" type="text" class="form-control" id="LAT" placeholder="Server" aria-label="Server">
+                        </div>
+
+                        <button class="flex-c-m stext-101 cl0 size-121 bg3 bor1 hov-btn3 p-lr-15 trans-04 pointer">
+                            Submit
+                        </button>
+
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="input-group mb-3">
+                                <input id="cityInput" type="text" class="form-control" placeholder="Recipient's username" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <button onclick="searchCoordinates()" class="btn btn-dark" type="button" id="button-addon2"><i class="fa fa-search"></i></button>
+                            </div>
+                            <div class="card" id="myMap" style="/*width: 740px; */height: 600px;"></div>
+                            <input class="form-control" type="text" id="coordinatesInput" placeholder="Coordonnées" readonly>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        
+    </div>
+</div>*@
+
+<script>
+    var map;
+    var coordinatesInput = document.getElementById('coordinatesInput');
+    var marker;
+    var markerLivrason;
+    var boutiques = document.querySelectorAll('input[id="IdBoutique"]');
+    var LONG = document.getElementById('LONG');
+    var LAT = document.getElementById('LAT');
+    var listeBOutiques = @Html.Raw(Json.Serialize(Model));
+
+    function loadMapScenario() {
+        map = L.map('myMap').setView([-18.8792, 47.5079], 6); // Coordonnées centrées sur Madagascar
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+        
+        for (var i=0; i<listeBOutiques.length;i++) {
+            var bout = listeBOutiques[i];
+            var LO = bout.longitude;
+            var LA = bout.latitude;
+            console.log(LO +" "+ LA);
+            var loc = L.latLng(LA, LO);
+            L.marker(loc, { icon: customIcon }).addTo(map);
+            
+            var circle = L.circle(loc, {
+                color: 'red',
+                fillColor: 'red',
+                fillOpacity: 0.2,
+                radius: 10000 // Rayon de 10 km en mètres
+            }).addTo(map);
+        }
+
+            map.on('click', function(e) {
+            displayCoordinates(e.latlng);
+            addOrUpdateMarkerLivraison(e.latlng);
+        });
+        
+        boutiques.forEach(function (radioButton) {
+            radioButton.addEventListener("change", function () {
+                if (this.checked) {
+                    console.log("asd");
+                    var selectedValue = this.value;
+                    var LOCS = selectedValue.split("/");
+                    var LONGITUDE = LOCS[0].replace(',', '.');
+                    var LATITUDE = LOCS[1].replace(',', '.');
+                   
+                    var location = L.latLng(LATITUDE, LONGITUDE);
+                    map.setView(location, 12);
+                    addOrUpdateMarker(location);
+                }
+            });
+        });
+    }
+
+    function searchCoordinates() {
+        var city = document.getElementById('cityInput').value;
+        geocodeLocation(city);
+    }
+
+    function geocodeLocation(city) {
+        var geocodeRequest = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(city);
+        
+        fetch(geocodeRequest)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var latitude = parseFloat(data[0].lat);
+                    var longitude = parseFloat(data[0].lon);
+
+                    var location = L.latLng(latitude, longitude);
+                    map.setView(location, 12);
+                    displayCoordinates(location);
+                    addOrUpdateMarkerLivraison(location);
+                } else {
+                    alert("Ville non trouvée.");
+                }
+            })
+            .catch(error => console.error("Erreur de géocodage : ", error));
+    }
+
+    function displayCoordinates(location) {
+        var latitude = location.lat.toFixed(6);
+        var longitude = location.lng.toFixed(6);
+        LONG.value = longitude.replace('.',',');
+        LAT.value = latitude.replace('.',',');
+        coordinatesInput.value = "Latitude : " + latitude + ", Longitude : " + longitude;
+    }
+    
+    var customIcon = L.icon({
+        iconUrl: '/images/OSM/panier.png', // URL de l'icône personnalisée
+        iconSize: [32, 32], // Taille de l'icône en pixels
+        iconAnchor: [16, 32], // Point d'ancrage de l'icône (position du bas au centre)
+    });
+
+
+    function addOrUpdateMarker(location) {
+        if (marker) {
+            marker.setLatLng(location);
+        } else {
+            marker = L.marker(location, { icon: customIcon } ).addTo(map);
+        }
+    }
+    
+    function addOrUpdateMarkerLivraison(location) {
+        if (markerLivrason) {
+            markerLivrason.setLatLng(location);
+        } else {
+            markerLivrason = L.marker(location).addTo(map);
+        }
+    }
+
+    // Appeler la fonction de chargement de la carte une fois que la page est chargée
+    window.onload = loadMapScenario;
+</script>
+
+

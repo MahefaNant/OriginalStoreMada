@@ -1,0 +1,191 @@
+:root {
+
+    --pal-bg1: #ffffff;
+    --pal-bg2: #f1f2f6;
+    --pal-bg3: #dfe4ea;
+    --pal-bg4: #ced6e0;
+
+    /*----------------*/
+    --pal1-bg1: #EBACA2;
+    --pal1-bg2: #CE6A6B;
+    --pal1-bg3: #BED3C3;
+    --pal1-bg4: #4A919E;
+    --pal1-bg5: #212E53;
+
+    /*----------------*/
+
+    --pal2-bg1: #FFEAF1;
+    --pal2-bg2: #FFC7D8;
+    --pal2-bg3: #FFB8CE;
+    --pal2-bg4: #FE94B4;
+    --pal2-bg5: #FA739D;
+
+    /*----------------*/
+
+    --pal3-bg1: #CFDBD5;
+    --pal3-bg2: #E8EDDF;
+    --pal3-bg3: #F5CB5C;
+    --pal3-bg4: #242423;
+    --pal3-bg5: #333533;
+
+    /*----------------*/
+
+    --pal4-bg1: #DCDFDA;
+    --pal4-bg2: #C8D6A2;
+    --pal4-bg3: #B7CE66;
+    --pal4-bg4: #8FB43A;
+    --pal4-bg5: #4B5943;
+
+    /*----------------*/
+
+    --pal5-bg1: #cd84f1;
+    --pal5-bg2: #c56cf0;
+    --pal5-bg3: #ffcccc;
+    --pal5-bg4: #ffb8b8;
+    --pal5-bg5: #ff4d4d;
+    --pal5-bg6: #ff3838;
+    --pal5-bg7: #ffaf40;
+    --pal5-bg8: #ff9f1a;
+    --pal5-bg9: #fffa65;
+    --pal5-bg10: #fff200;
+    
+    /*-----------------------*/
+
+    --pal6-bg1: #FDE9E7;
+    --pal6-bg2: #FF978D;
+    --pal6-bg3: #344E71;
+    --pal6-bg5: #f75959;
+    
+    /*-----------------------*/
+    /*GRADIENT*/
+    /*-----------------------*/
+
+    --grad_rose1: linear-gradient(45deg, #ff9a9e 0%, #fad0c4 99%, #fad0c4 100%);
+    --grad_rose2: linear-gradient(to top, #fad0c4 0%, #ffd1ff 100%);
+    --grad_rose3: linear-gradient(to right, #ffecd2 0%, #fcb69f 100%);
+    --grad_rose4: linear-gradient(to right, #ff8177 0%, #ff867a 0%, #ff8c7f 21%, #f99185 52%, #cf556c 78%, #b12a5b 100%);
+    
+    /*----------------------------*/
+
+    --grad_violet1: linear-gradient(to top, #a18cd1 0%, #fbc2eb 100%);
+    --grad_violet2: linear-gradient(to top, #fbc2eb 0%, #a6c1ee 100%);
+    
+    /*-------------------------*/
+    
+    --grad_gris1: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    --grad_gris2: linear-gradient(60deg, #29323c 0%, #485563 100%);
+    
+    /*------------------------------*/
+    --grad_noir1 : linear-gradient(90deg, rgba(2,0,37,1) 23%, rgba(0,0,0,1) 71%, rgba(0,39,47,1) 100%);
+}
+
+/*--------------------------------*/
+.pal_bg1 {background-color: var(--pal-bg1); }
+.pal_bg2 {background-color: var(--pal-bg2); }
+.pal_bg3 {background-color: var(--pal-bg3); }
+.pal_bg4 {background-color: var(--pal-bg4); }
+
+/*--------------------------------*/
+.pal2_bg1 {background-color: var(--pal2-bg1); }
+.pal2_bg2 {background-color: var(--pal2-bg2); }
+.pal2_bg3 {background-color: var(--pal2-bg3); }
+.pal2_bg4 {background-color: var(--pal2-bg4); }
+.pal2_bg5 {background-color: var(--pal2-bg5); }
+
+/*--------------------------------*/
+.pal3_bg1 {background-color: var(--pal3-bg1); }
+.pal3_bg2 {background-color: var(--pal3-bg2); }
+.pal3_bg3 {background-color: var(--pal3-bg3); }
+.pal3_bg4 {background-color: var(--pal3-bg4); }
+.pal3_bg5 {background-color: var(--pal3-bg5); }
+/*--------------------------------*/
+.pal4_bg1 {background-color: var(--pal4-bg1); }
+.pal4_bg2 {background-color: var(--pal4-bg2); }
+.pal4_bg3 {background-color: var(--pal4-bg3); }
+.pal4_bg4 {background-color: var(--pal4-bg4); }
+.pal4_bg5 {background-color: var(--pal4-bg5); }
+
+/*--------------------------------*/
+.pal5_bg1 {background-color: var(--pal5-bg1); }
+.pal5_bg2 {background-color: var(--pal5-bg2); }
+.pal5_bg3 {background-color: var(--pal5-bg3); }
+.pal5_bg4 {background-color: var(--pal5-bg4); }
+.pal5_bg5 {background-color: var(--pal5-bg5); }
+.pal5_bg6 {background-color: var(--pal5-bg6); }
+.pal5_bg7 {background-color: var(--pal5-bg7); }
+.pal5_bg8 {background-color: var(--pal5-bg8); }
+.pal5_bg9 {background-color: var(--pal5-bg9); }
+.pal5_bg10 {background-color: var(--pal5-bg10); }
+/*--------------------------------*/
+
+.pal6_bg1 {background-color: var(--pal6-bg1); }
+.pal6_bg2 {background-color: var(--pal6-bg2); }
+.pal6_bg3 {background-color: var(--pal6-bg3); }
+.pal6_bg4 {background-color: var(--pal5-bg3); }
+.pal6_bg5 {background-color: var(--pal6-bg5); }
+
+.pal6_col1 {color: var(--pal6-bg1); }
+.pal6_col2 {color: var(--pal6-bg2); }
+.pal6_col3 {color: var(--pal6-bg3); }
+.pal6_col3 {color: var(--pal5-bg3); }
+
+/*--------------------------------*/
+
+.grad_rose1 {
+    background: var(--grad_rose1);
+}
+
+.grad_rose2 {
+    background: var(--grad_rose2);
+}
+.grad_rose3 {
+    background: var(--grad_rose3);
+}
+.grad_rose4 {
+    background: var(--grad_rose4);
+}
+
+/*-----------------------------*/
+
+.grad_violet1 {
+    background: var(--grad_violet1);
+}
+.grad_violet2 {
+    background: var(--grad_violet2);
+}
+
+/*----------------------------*/
+.grad_gris1 {
+    background: var(--grad_gris1);
+}
+.grad_gris2 {
+    background: var(--grad_gris2);
+}
+/*----------------------------*/
+.grad_noir1{
+    background: var(--grad_noir1);
+}
+
+/*-----------------------------------*/
+
+@keyframes bellAnimation {
+    0% { transform: rotate(0); }
+    50% { transform: rotate(-20deg); }
+    100% { transform: rotate(0); }
+}
+
+.notifBell i. {
+    transition: transform 1s ease-in-out; /* Durée totale de l'animation est de 1 seconde */
+}
+
+.notifBell i.bell-moving {
+    animation: bellAnimation 1s ease-in-out infinite; /* Durée totale de l'animation est de 1 seconde */
+}
+
+.notifBell:nth-child(odd) i.bell-moving {
+    animation: bellAnimation 1s ease-in-out infinite; /* Durée totale de l'animation est de 1 seconde */
+}
+
+.notifBell:nth-child(even) i.bell-moving {
+    animation: bellAnimation 1s ease-in-out 0.5s infinite; /* Décalage de 0.5s pour les éléments pairs */
+}

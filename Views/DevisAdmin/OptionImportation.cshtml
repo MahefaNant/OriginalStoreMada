@@ -1,0 +1,464 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis
+@using originalstoremada.Models.Devis.Views
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<originalstoremada.Models.Devis.Views.VCommandeDevisResteInVol>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    List<VvolDevisLivraison> volCommande = ViewBag.volCommande;
+    List<Vol> vols = ViewBag.vols;
+  
+  List<VvolDevisLivraison> commsInLivr = ViewBag.commsInLivr;
+  List<VvolDevisLivraison>? adresses = ViewBag.adresses;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+  <h1>Option d'importation des commandes devis #@Formattage.Numero(ViewBag.id_devis)</h1>
+  <nav aria-label="breadcrumb mt-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a asp-action="Index">Mes devis</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a asp-action="Details" asp-route-id_devis="@ViewBag.id_devis">Details</a></li>
+      <li class="breadcrumb-item active" aria-current="page"><a asp-action="Payement" asp-route-id_devis="@ViewBag.id_devis">Payement</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Options d'importation</li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="card mb-3">
+
+
+  <div class="card-header border-0 text-center">
+    @if (commsInLivr.Any())
+    {
+      <button type="button" class="btn but2-mod2" data-bs-toggle="modal" data-bs-target="#livr">
+        <i class="fa fa-truck"></i>
+        <span>Option de Livraison</span>
+      </button>
+    }
+  </div>
+
+  <div class="card-body">
+    <h4 class="text-center">Articles avec option d'importation</h4>
+    <div class="tab2-wrap">
+      <table class="tab2">
+        <thead>
+        <tr>
+          <th scope="col" class="pal6_bg2 text-white"></th>
+          <th scope="col" class="pal6_bg2 text-white">Désignation</th>
+          <th scope="col" class="pal6_bg2 text-white">Référence et Vol</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var q in volCommande)
+        {
+          <tr scope="row">
+            <td style="width: 200px">
+              <a>
+                <img style="width: 100px" class="img-thumbnail" src="~/images/produits/@(q.CommandeDevis.image != null ? $"minimize_{q.CommandeDevis.image}" : "locks/minimize_vide.jpg") " alt="">
+              </a>
+            </td>
+            <td>
+              <div class="pl-3 email">
+                <span> @q.CommandeDevis.ProduitName</span>
+                <span>Quantiter: <strong>@q.Quantiter</strong></span>
+                <span>
+                  @if (q.Vol.DateArriver == null)
+                  {
+                    <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#update_@q.Id">
+                      <i class="fa fa-plus"></i>
+                      <span class="text-dark">Modifier</span>
+                    </button>
+                  }
+                 
+                </span>
+              </div>
+            </td>
+            <td>
+              <div class="pl-3 email">
+                <span>Vol du @Formattage.DateTime(q.Vol.DateDepart)</span>
+                @if (q.Vol.DateArriver != null)
+                {
+                  <strong>
+                    <button class="btn btn-success btn-sm disabled">
+                      <i class="fa fa-flag"></i> le vol est arrivé
+                    </button>
+
+                    @if (q.DateLivrer != null)
+                    {
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-truck"></i> Déjà Livrer</button>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <button class="btn btn-success btn-sm disabled"><i class="fa fa-check"></i> Déjà récupérer</button>
+                      }
+                    }
+                    else
+                    {
+                    
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confLivr_@q.Id"><i class="fa fa-times"></i> Livraison en attente</button>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#confLivr_@q.Id"><i class="fa fa-times"></i> Récupération en attente</button>
+                      }
+
+                      <div class="modal fade" id="confLivr_@q.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                          <form method="post" asp-action="ConfirmLivrer" asp-route-id_devis="@ViewBag.id_devis" asp-route-id_commande="@q.IdCommande" asp-route-id_voldevis="@q.Id">
+                            <div class="modal-content">
+
+                              <div class="modal-body">
+
+                                <div class="alert pal6_bg2 fade show mb-3 mt-3 text-center" role="alert">
+                                  
+                                    <i class="fa fa-warning"></i>
+                                    @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                                    {
+                                      <strong class="text-white">Êtes-vous certain que cet élément a déjà été livré ?</strong>
+                                    }
+                                    else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                                    {
+                                      <strong class="text-white">Êtes-vous sûr que cet élément a déjà été récupéré ? ?</strong>
+                                    }
+                                 
+                                </div>
+                              </div>
+                              <div class="modal-footer border-0">
+                                <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                              </div>
+                            </div>
+                          </form>
+                        </div>
+                      </div>
+                    }
+                    
+                  </strong>
+                  <span><strong>arrivé le @Formattage.DateTime((DateTime)q.Vol.DateArriver)</strong></span>
+                }
+                <span><a href="@q.CommandeDevis.ReferenceSite" target="_blank">@q.CommandeDevis.ReferenceSite</a></span>
+              </div>
+            </td>
+          </tr>
+          
+          @if (q.Vol.DateArriver == null) {
+            
+            <div class="modal fade" id="update_@q.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="varyModalLabel">Modification de l'option d'Importation</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                      <span aria-hidden="true">&times;</span>
+                    </button>
+                  </div>
+                  <form method="post" asp-action="SetOptionImportation" asp-route-id_devis="@q.IdDevis" asp-route-id_commande="@q.IdCommande" asp-route-id_vol="@q.IdVol" asp-route-etat="1" class="needs-validation" novalidate>
+                    <div class="modal-body">
+                      <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Quantiter</label>
+                        <input value="@q.Quantiter" name="quantiter" type="number" step="any" class="form-control" id="recipient-name" placeholder="quantiter" required>
+                      </div>
+                      <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Vols Disponible ( Date Départ )</label>
+                        <select class="form-select select2" name="id_vol2">
+                          <optgroup label="Date Départ du vol">
+                            @foreach(var v in vols)
+                            {
+                              if (v.Id == q.IdVol)
+                              {
+                                <option value="@v.Id" selected>@Formattage.DateTime(v.DateDepart)</option>
+                              }
+                              else
+                              {
+                                <option value="@v.Id">@Formattage.DateTime(v.DateDepart)</option>
+                              }
+                                  
+                            }
+                          </optgroup>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="modal-footer border-0">
+                      <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                      <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          }
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer border-0">
+    @if (!volCommande.Any())
+    {
+      <div class="alert pal6_bg2 fade show mb-3 text-center" role="alert">
+        <strong class="text-white"><i class="fa fa-warning"></i>Vide pour le moment!</strong>
+      </div>
+    }
+  </div>
+</div>
+
+
+<div class="card">
+  <div class="card-body">
+    <h4 class="text-center">Articles Libres</h4>
+    <div class="tab2-wrap">
+      <table class="tab2">
+        <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Désignation</th>
+          <th scope="col">Référence</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var q in Model)
+        {
+          <tr scope="row">
+            <td style="width: 200px">
+              <a>
+                <img style="width: 100px" class="img-thumbnail" src="~/images/produits/@(q.image != null ? $"minimize_{q.image}" : "locks/minimize_vide.jpg") " alt="">
+              </a>
+            </td>
+            <td>
+              <div class="pl-3 email">
+                <span>@q.ProduitName</span>
+                <span>Reste: <strong>@q.QuantiterReste</strong></span>
+                <span>
+                  <button type="button" class="btn but2-mod1 btn-sm" data-bs-toggle="modal" data-bs-target="#add_@q.Id">
+                    <i class="fa fa-plus"></i>
+                    <span class="text-white">Ajouter</span>
+                  </button>
+                </span>
+              </div>
+            </td>
+            <td>
+              <a href="@q.ReferenceSite" target="_blank">@q.ReferenceSite</a>
+            </td>
+          </tr>
+              
+          <div class="modal fade" id="add_@q.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="varyModalLabel">Ajouter des éléments aux vols sélectionnés</h5>
+                  <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <form asp-action="SetOptionImportation" asp-route-id_devis="@q.IdDevis" asp-route-id_commande="@q.Id" class="needs-validation" novalidate>
+                  <div class="modal-body">
+                    <div class="alert bg-white shadow-lg fade show mb-3 text-center" role="alert">
+                      <strong class="text-danger"><i class="fa fa-info"></i>Quantiter Reste: @q.QuantiterReste</strong>
+                    </div>
+
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Quantiter</label>
+                      <input value="@q.QuantiterReste" name="quantiter" type="number" step="any" class="form-control" id="recipient-name" placeholder="quantiter" required>
+                    </div>
+                    <div class="form-group">
+                      <label for="recipient-name" class="col-form-label">Vols Disponible ( Date Départ )</label>
+                      <select class="form-select select2" name="id_vol">
+                        <optgroup label="Date Départ du vol">
+                          @foreach (var v in vols)
+                          {
+                            <option value="@v.Id">@Formattage.DateTime(v.DateDepart)</option>
+                          }
+                        </optgroup >
+                      </select>
+                    </div>
+                  </div>
+                  <div class="modal-footer border-0">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        }
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <div class="card-footer border-0">
+      @if (!Model.Any())
+      {
+        <div class="alert pal6_bg2 fade show mb-3 text-center" role="alert">
+          <strong class="text-white"><i class="fa fa-warning"></i>Vide pour le moment!</strong>
+        </div>
+      }
+    </div>
+   
+</div>
+
+@if (commsInLivr.Any())
+{
+  <div class="modal fade" id="livr" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-xl modal-fullscreen-xl-down modal-fullscreen-sm-down modal-fullscreen-md-down" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="varyModalLabel">Options de Livraisons</h5>
+          <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        
+        <div class="modal-body">
+            
+          @if (adresses != null)
+          {
+            <div class="row">
+              
+              @foreach(var ad in adresses) {
+                <div class="col-md-6">
+                  <div class="card border-danger shadow mb-3">
+                    <div class="card-body mx-md-5">
+                      <ul class="list-group mb-3">
+                        <li class="list-group-item">Choix de Livraison: @(ad.IsInBoutque!=null && (bool)ad.IsInBoutque ? "Recupération Directe sur Boutique" : "Par Livraison ")</li>
+                        @if (ad.FraisLivraison != null)
+                        {
+                          <li class="list-group-item">Frais: @Formattage.Valeur((double)ad.FraisLivraison) MGA</li>
+                        }
+                        else
+                        {
+                          <li class="list-group-item">Vous pouvez le récupérer</li>
+                        }
+                        <li class="list-group-item">@ad.Quartier - @ad.Ville</li>
+                        <li class="list-group-item">Long: @ad.Longitude / Lat: @ad.Latitude</li>
+                      </ul>
+                      <a class="btn but2-mod3 btn-sm">
+                        <i class="fa fa-map"></i><span>Consulter</span>
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              }
+            </div>
+          }
+           
+            
+            
+          <div class="list-group mb-3 text-center">
+            @foreach (var q in commsInLivr)
+            {
+              <a href="#" class="list-group-item list-group-item-action">
+
+                <div class="d-flex w-100 justify-content-between">
+                  <h5 class="mb-1">
+                    <img style="width: 80px" class="img-thumbnail" src="~/images/produits/@(q.CommandeDevis.image != null ? $"minimize_{q.CommandeDevis.image}" : "locks/minimize_vide.jpg") " alt="">
+                  </h5>
+                    
+                  @if (q.InAdresse)
+                  {
+                    <small>
+                      <button class="btn but2-mod1 btn-sm">
+                        <i class="fa fa-bell text-danger"></i><span>Adresse sélectionnée</span>
+                      </button>
+                    </small>
+                  }
+                    
+                </div>
+
+                <p class="mb-1">@q.CommandeDevis.ProduitName</p>
+                <p class="text-body-secondary mb-1">Adresse : <strong>@q.Quartier - @q.Ville</strong></p>
+                <p class="text-body-secondary mb-1">
+                  @if (q.DateLivrer != null)
+                  {
+                    <button class="btn but2-mod3 btn-sm">
+                      <i class="fa fa-truck text-danger"></i>
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <span class="text-danger">Déjà Livrer</span>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <span class="text-danger">Déjà récupérer</span>
+                      }
+                                          
+                    </button>
+                  }
+                  else
+                  {
+                    <button class="btn but2-mod3 btn-sm">
+                      <i class="fa fa-warning text-danger"></i>
+                      @if (q.IsInBoutque != null && (bool)!q.IsInBoutque)
+                      {
+                        <span class="text-danger">Livraison en attente</span>
+                      } else if (q.IsInBoutque != null && (bool)q.IsInBoutque)
+                      {
+                        <span class="text-danger">Récupération en attente</span>
+                      }
+                                          
+                    </button>
+                  }
+                </p>
+                <small class="text-body-secondary mb-1">Quantiter : <strong>@q.Quantiter</strong></small>
+                
+
+              </a>
+            }
+          </div>
+
+          @if (ViewBag.aLivrer!=null && ViewBag.aLivrer > 0)
+          {
+            <div class="text-center">
+              <button type="button" data-bs-toggle="modal" data-bs-target="#pret" class="btn mb-2 but2-mod2 btn-sm">
+                <i class="fa fa-truck"></i> <span>Établir la mise en place de la livraison</span>
+              </button>
+            </div>
+          }
+        </div>
+        <div class="modal-footer border-0">
+          <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+  
+  <div class="modal fade" id="pret" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <form method="post" asp-action="SetCommandePret" asp-route-id_devis="@ViewBag.id_devis" class="needs-validation" novalidate>
+          <div class="modal-body">
+            
+            <div class="alert pal6_bg2 fade show mb-3 mt-3 text-center" role="alert">
+              <strong class="text-white"><i class="fa fa-warning"></i>Établir la mise en place de la livraison !</strong>
+            </div>
+
+            <div class="form-group">
+              <label for="recipient-name" class="col-form-label">Date Estimer de la Livraison</label>
+              <input type="datetime-local" class="form-control" name="dateEstim" id="recipient-name" required/>
+            </div>
+          </div>
+          <div class="modal-footer border-0">
+            <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+            <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+
+
+
+

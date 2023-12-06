@@ -1,0 +1,189 @@
+@using originalstoremada.C_
+@model dynamic
+
+@{
+    Layout = RoutePath.ContentClient();
+}
+
+@*<link rel="stylesheet" type="text/css" href="~/lib/login/assets/css/util.css">
+
+<link rel="stylesheet" type="text/css" href="~/lib/login/assets/css/main.css">*@
+<link rel="stylesheet" type="text/css" href="~/lib/login2/assets/style.css">
+
+
+<section class="ftco-section">
+	<div class="container">
+	
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center mb-5">
+                <h2 class="heading-section">Bonjour chez vous !</h2>
+                <h6>On est ravi de vous (re)voir !</h6>
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+			<div class="col-md-12 col-lg-10">
+				<div class="wrap d-md-flex">
+					<div class="pal6_bg2 text-wrap p-4 p-lg-5 text-center d-flex align-items-center order-md-last">
+						<div class="text w-100">
+						<img style="width: 50px" src="~/images/OSM/osm.jpg" alt="IMG" class="rounded-circle opacity-100 shadow-lg">
+							<h2>PAS ENCORE DE COMPTE ?</h2>
+							<p>Enchanté, nous c'est OriginalStore ! Que diriez-vous de créer un compte ?</p>
+							<a asp-action="SignUp" class="btn but2-mod3"><span>Créer un compte</span></a>
+						</div>
+					</div>
+					<div class="login-wrap p-4 p-lg-5">
+						<div class="d-flex">
+							<div class="w-100">
+								<h3 class="mb-4">DÉJÀ CLIENT ?</h3>
+								<h6 class="mb-4">Connectez-vous avec votre compte</h6>
+							</div>
+                        </div>
+                        <form class="signin-form needs-validation" asp-controller="Client" asp-action="Login" novalidate>
+                            @if (ViewData["RedirectController"] != null && ViewData["RedirectAction"] != null)
+                            {
+                                <input type="hidden" name="RedirectController" value="@ViewData["RedirectController"]"/>
+                                <input type="hidden" name="RedirectAction" value="@ViewData["RedirectAction"]"/>
+                            }
+                            <div class="form-group mb-3">
+                                <label class="label" for="mail">Email</label>
+                                <input type="email" class="form-control" name="mail" placeholder="email" required data-validate="Valid email is required: ex@abc.xyz">
+                            </div>
+
+                            <div class="form-group mb-3">
+                                <label class="label" for="password">Mot de passe</label>
+                                <input type="password" name="code" class="form-control" placeholder="Mot de passe" required>
+                            </div>
+                            
+                            <div class="form-group d-md-flex">
+                                <div class="w-50 text-left">
+                                    <label class="checkbox-wrap mb-0">Se souvenir
+                                        <input name="remember" type="checkbox" value="true" id="rememberMe" checked>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            @if (ViewBag.error != null)
+                            {
+                                <div class="alert alert-danger alert-dismissible fade show text-center mb-3" role="alert">
+                                    <strong>@ViewBag.error</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                                                                                                            
+                            @if (ViewBag.message != null)
+                            {
+                                <div class="alert alert-success alert-dismissible fade show text-center mb-3" role="alert">
+                                    <strong>Invalide! @ViewBag.message</strong>
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            }
+                            
+                            <div class="form-group">
+                                <button type="submit" class="btn but2-mod4">
+                                    <span>Se connecter</span>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+@*<div class="container">
+    <div class="limiter">
+        <div class="container-login100">
+            <div class="wrap-login100">
+                <div class="login100-pic js-tilt" data-tilt>
+                    <img src="~/images/OSM/osm.jpg" alt="IMG" class="rounded-circle opacity-100 shadow-lg">
+                </div>
+    
+                <form class="needs-validation" asp-controller="Client" asp-action="Login" novalidate>
+                    @if (ViewData["RedirectController"] != null && ViewData["RedirectAction"] != null)
+                    {
+                        <input type="hidden" name="RedirectController" value="@ViewData["RedirectController"]"/>
+                        <input type="hidden" name="RedirectAction" value="@ViewData["RedirectAction"]"/>
+                    }
+                    
+                    <div class="d-md-none col-12 mb-3">
+                        <div class="justify-content-center d-flex">
+                            <img src="~/images/OSM/osm-mini.png" alt="IMG" class="rounded">
+                        </div>
+                    </div>
+                    
+                    <span class="login100-form-title">
+                        Se Connecter
+                    </span>
+
+                    <div class="wrap-input100 validate-input" data-validate="Valid email is required: ex@abc.xyz">
+                        <input class="input100" type="text" name="mail" placeholder="Email" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-envelope" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="wrap-input100 validate-input" data-validate="Password is required">
+                        <input class="input100" type="password" name="code" placeholder="Password" required>
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" name="remember" value="true" id="rememberMe">
+                        <label class="form-check-label" for="rememberMe">Se souvenir</label>
+                    </div>
+
+                    <div class="container-login100-form-btn">
+                        <button class="btn but2-mod2 but-block">
+                            <span>Login</span>
+                        </button>
+                    </div>
+                    
+                    $1$<h4>PAS ENCORE DE COMPTE ?</h4>
+                                            <h6>Enchanté, nous c'est OriginalStore ! Que diriez-vous de créer un compte ?</h6>#1#
+
+                    $1$<div class="text-center p-t-12">
+                        <span class="txt1">
+                            Oublié
+                        </span>
+                        <a class="txt2" href="#">
+                            mail / mots de passe?
+                        </a>
+                    </div>#1#
+                    
+                    @if (ViewBag.error != null)
+                    {
+                        <div class="alert alert-danger alert-dismissible fade show text-center mb-3" role="alert">
+                            <strong>Invalide! @ViewBag.error</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+                    
+                    @if (ViewBag.message != null)
+                    {
+                        <div class="alert alert-success alert-dismissible fade show text-center mb-3" role="alert">
+                            <strong>Invalide! @ViewBag.message</strong>
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    }
+
+                    <div class="text-center p-t-136">
+                        <a class="txt2" asp-action="SignUp">
+                            Creer une nouvelle compte
+                            <i class="fa fa-long-arrow-right m-l-5" aria-hidden="true"></i>
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>*@
+
+@* <script src="~/lib/login/assets/js/main.js"></script> *@
+

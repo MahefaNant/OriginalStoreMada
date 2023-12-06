@@ -1,0 +1,365 @@
+@import url('palettes.css');
+
+.tab2-wrap {
+    overflow-x: scroll; }
+
+.tab2 {
+    min-width: 1000px !important;
+    width: 100%;
+    -webkit-box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29);
+    -moz-box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29);
+    box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29); }
+.tab2 thead th {
+    border: none;
+    padding: 30px;
+    font-size: 13px;
+    font-weight: bold;
+    color: gray; }
+.tab2 thead tr {
+    background: #fff;
+    border-bottom: 4px solid #eceffa; }
+.tab2 tbody tr {
+    margin-bottom: 10px;
+    border-bottom: 4px solid #f8f9fd; }
+.tab2 tbody tr:last-child {
+    border-bottom: 0; }
+.tab2 tbody th, .tab2 tbody td {
+    border: none;
+    padding: 30px;
+    font-size: 14px;
+    background: #fff;
+    color: black;
+    /*max-width: 130px;*/
+    vertical-align: middle; }
+.tab2 tbody .fix-w {
+    max-width: 130px
+}
+.tab2 tbody td.status span {
+    position: relative;
+    border-radius: 30px;
+    padding: 4px 10px 4px 10px; }
+.tab2 tbody td.status span:after {
+    /*position: absolute;*/
+    /*top: 9px;
+    left: 10px;
+    width: 10px;
+    height: 10px;*/
+    content: '';
+    border-radius: 50%; }
+.tab2 tbody td.status .active {
+    background: #cff6dd;
+    color: #1fa750; }
+.tab2 tbody td.status .active:after {
+    background: #23bd5a; }
+.tab2 tbody td.status .waiting {
+    background: #fdf5dd;
+    color: #cfa00c; }
+.tab2 tbody td.status .waiting:after {
+    background: #f2be1d; }
+.tab2 tbody td .img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; }
+.tab2 tbody td .email span {
+    display: block; }
+.tab2 tbody td .email span:last-child {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.3); }
+.tab2 tbody td .close span {
+    font-size: 12px;
+    color: #dc3545; }
+
+.checkbox-wrap {
+    display: block;
+    position: relative;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 500;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none; }
+
+/* Hide the browser's default checkbox */
+.checkbox-wrap input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0; }
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 0; }
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "\f0c8";
+    font-family: "FontAwesome";
+    position: absolute;
+    color: rgba(0, 0, 0, 0.1);
+    font-size: 20px;
+    margin-top: -14px;
+    -webkit-transition: 0.3s;
+    -o-transition: 0.3s;
+    transition: 0.3s; }
+@media (prefers-reduced-motion: reduce) {
+    .checkmark:after {
+        -webkit-transition: none;
+        -o-transition: none;
+        transition: none; } }
+
+/* Show the checkmark when checked */
+.checkbox-wrap input:checked ~ .checkmark:after {
+    display: block;
+    content: "\f14a";
+    font-family: "FontAwesome";
+    color: rgba(0, 0, 0, 0.2); }
+
+/* Style the checkmark/indicator */
+.checkbox-primary {
+    color: #40bfc1; }
+.checkbox-primary input:checked ~ .checkmark:after {
+    color: #40bfc1; }
+
+/* -----------------------Table 3-------------------------- */
+
+.tab3-wrap {
+    overflow-x: scroll; }
+
+.tab3 {
+    min-width: 1000px !important;
+    width: 100%;
+    -webkit-box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29);
+    -moz-box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29);
+    box-shadow: 0px 5px 12px -12px rgba(0, 0, 0, 0.29); }
+.tab3 thead th {
+    border: none;
+    padding: 30px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--pal2-bg5); }
+.tab3 thead tr {
+    background: var(--pal3-bg4);
+    border-bottom: 4px solid #eceffa; }
+.tab3 tbody tr {
+    margin-bottom: 10px;
+    border-bottom: 4px solid #f8f9fd; }
+.tab3 tbody tr:last-child {
+    border-bottom: 0; }
+.tab3 tbody th, .tab3 tbody td {
+    border: none;
+    padding: 30px;
+    font-size: 14px;
+    background: var(--pal3-bg4);
+    color: #fff;
+    vertical-align: middle; }
+.tab3 tbody td.status span {
+    position: relative;
+    border-radius: 30px;
+    padding: 4px 10px 4px 25px; }
+.tab3 tbody td.status span:after {
+    position: absolute;
+    top: 9px;
+    left: 10px;
+    width: 10px;
+    height: 10px;
+    content: '';
+    border-radius: 50%; }
+.tab3 tbody td.status .active {
+    background: #cff6dd;
+    color: #1fa750; }
+.tab3 tbody td.status .active:after {
+    background: #23bd5a; }
+.tab3 tbody td.status .waiting {
+    background: #fdf5dd;
+    color: #cfa00c; }
+.tab3 tbody td.status .waiting:after {
+    background: #f2be1d; }
+.tab3 tbody td .img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%; }
+.tab3 tbody td .email span {
+    display: block; }
+.tab3 tbody td .email span:last-child {
+    font-size: 12px;
+    color: rgba(0, 0, 0, 0.3); }
+.tab3 tbody td .close span {
+    font-size: 12px;
+    color: #dc3545; }
+
+
+/*------------------------------------------*/
+/*---------------------Calendarr-----------*/
+
+/*
+
+<div class="container">
+                <div class="timetable-img text-center">
+                    <img src="img/content/timetable.png" alt="">
+                </div>
+                <div class="table-responsive">
+                    <table class="table_cal table_cal-bordered text-center">
+                        <thead>
+                            <tr class="bg-light-gray">
+                                <th class="text-uppercase">Time
+                                </th>
+                                <th class="text-uppercase">Monday</th>
+                                <th class="text-uppercase">Tuesday</th>
+                                <th class="text-uppercase">Wednesday</th>
+                                <th class="text-uppercase">Thursday</th>
+                                <th class="text-uppercase">Friday</th>
+                                <th class="text-uppercase">Saturday</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                            <tr>
+                                <td class="align-middle">10:00am</td>
+                                <td>
+                                    <span class="bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13">Music</span>
+                                    <div class="margin-10px-top font-size14">10:00-11:00</div>
+                                    <div class="font-size13 text-light-gray">Ivana Wong</div>
+                                </td>
+                                <td class="bg-light-gray">
+
+                                </td>
+                                <td>
+                                    <span class="bg-purple padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13">Art</span>
+                                    <div class="margin-10px-top font-size14">10:00-11:00</div>
+                                    <div class="font-size13 text-light-gray">Kate Alley</div>
+                                </td>
+                                <td>
+                                    <span class="bg-green padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13">Yoga</span>
+                                    <div class="margin-10px-top font-size14">10:00-11:00</div>
+                                    <div class="font-size13 text-light-gray">Marta Healy</div>
+                                </td>
+                                <td>
+                                    <span class="bg-pink padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13">English</span>
+                                    <div class="margin-10px-top font-size14">10:00-11:00</div>
+                                    <div class="font-size13 text-light-gray">James Smith</div>
+                                </td>
+                                <td class="bg-light-gray">
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+*/
+
+
+.bg-light-gray {
+    background-color: #f7f7f7;
+}
+.table_cal-bordered thead td, .table_cal-bordered thead th {
+    border-bottom-width: 2px;
+}
+.table_cal thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #dee2e6;
+}
+.table_cal-bordered td, .table_cal-bordered th {
+    border: 1px solid #dee2e6;
+}
+
+
+.bg-sky.box-shadow {
+    box-shadow: 0px 5px 0px 0px #00a2a7
+}
+
+.bg-orange.box-shadow {
+    box-shadow: 0px 5px 0px 0px #af4305
+}
+
+.bg-green.box-shadow {
+    box-shadow: 0px 5px 0px 0px #4ca520
+}
+
+.bg-yellow.box-shadow {
+    box-shadow: 0px 5px 0px 0px #dcbf02
+}
+
+.bg-pink.box-shadow {
+    box-shadow: 0px 5px 0px 0px #e82d8b
+}
+
+.bg-purple.box-shadow {
+    box-shadow: 0px 5px 0px 0px #8343e8
+}
+
+.bg-lightred.box-shadow {
+    box-shadow: 0px 5px 0px 0px #d84213
+}
+
+
+.bg-sky {
+    background-color: #02c2c7
+}
+
+.bg-orange {
+    background-color: #e95601
+}
+
+.bg-green {
+    background-color: #5bbd2a
+}
+
+.bg-yellow {
+    background-color: #f0d001
+}
+
+.bg-pink {
+    background-color: #ff48a4
+}
+
+.bg-purple {
+    background-color: #9d60ff
+}
+
+.bg-lightred {
+    background-color: #ff5722
+}
+
+.padding-15px-lr {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+.padding-5px-tb {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+.margin-10px-bottom {
+    margin-bottom: 10px;
+}
+.border-radius-5 {
+    border-radius: 5px;
+}
+
+.margin-10px-top {
+    margin-top: 10px;
+}
+.font-size14 {
+    font-size: 14px;
+}
+
+.text-light-gray {
+    color: #d6d5d5;
+}
+.font-size13 {
+    font-size: 13px;
+}
+
+.table_cal-bordered td, .table_cal-bordered th {
+    border: 1px solid #dee2e6;
+}
+.table_cal td, .table_cal th {
+    padding: .75rem;
+    vertical-align: top;
+    border-top: 1px solid #dee2e6;
+}

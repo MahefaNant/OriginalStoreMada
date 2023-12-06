@@ -1,0 +1,513 @@
+@using originalstoremada.Models.Produits.views
+@using originalstoremada.Models.Produits
+@using originalstoremada.C_
+@using originalstoremada.Models.Boutiques
+@using Microsoft.IdentityModel.Tokens
+@model List<originalstoremada.Models.Produits.views.VStockPreference>
+
+@{
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    VImagePrincipalPrixProduit produit = ViewBag.produit;
+    ContenueProduit contenueSelected = ViewBag.contenueSelected;
+    bool niveauAdmin = ViewBag.niveauAdmin;
+    List<Boutique> boutiques = ViewBag.boutiques;
+    List<ContenueProduit> contenues = ViewBag.contenues;
+    List<PreferenceProduit> preferenceProduits = ViewBag.preferenceProduits;
+    Boutique? boutiquesAffect = ViewBag.boutiquesAffect;
+}
+
+@*<div class="container mt-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card position-relative">
+        <img src="~/images/produits/@(principalContent!=null ? $"{principalContent.Image}" : "locks/vide.jpg")" class="img-thumbnail" class="card-img-top" alt="Votre Image">
+        <!-- Bouton d'expansion -->
+        <button type="button" class="btn btn-primary position-absolute top-0 end-0 m-3" data-bs-toggle="modal" data-bs-target="#imageModal">
+          <i class="fa fa-expand"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>*@
+
+<div class="container-fluid">
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-sm-12 col-md-12 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                    
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="position-relative">
+                            <img src="~/images/produits/@(contenueSelected != null ? $"{contenueSelected.Image}" : "locks/vide.jpg")" class="img-thumbnail" alt="IMG">
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>Designation: </strong>@produit.Nom</li>
+                            <li class="list-group-item">
+                                <strong>Genre: </strong>@produit.Type
+                                @(produit.PourEnfant ? "/ Pour Enfant" : "")
+                            </li>
+                            <li class="list-group-item"><strong>Prix d`achat: </strong>@Formattage.Valeur((double)produit.PrixAchat) MGA
+                            </li>
+                            <li class="list-group-item">
+                                <strong>Prix de Vente: </strong>
+                                @if (produit.DateDebPromo != null)
+                                {
+                                    @Formattage.Valeur((double)produit.PrixVenteProm)
+                                    <span>MGA / <del>@Formattage.Valeur((double)produit.PrixVenteInitial) MGA</del></span>
+                                }
+                                else
+                                {
+                                    <span>@Formattage.Valeur((double)produit.PrixVenteInitial) MGA</span>
+                                }
+                            </li>
+                        </ul>
+                            
+                        @if (contenueSelected != null)
+                        {
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    <strong>Couleur: </strong>@contenueSelected.Couleur
+                                    @if (contenueSelected.IsPrincipal)
+                                    {
+                                        <strong>( Image Principale )</strong>
+                                    }
+                                </li>
+                            </ul>
+                            
+                            <button type="button" class="btn but2-mod1 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addS">
+                                <i class="fe fe-plus-circle fe-24"></i>
+                                <span>Ajout De stock</span>
+                            </button>
+                            
+                            <button type="button" class="btn but2-mod2 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#addT">
+                                <i class="fe fe-plus-circle fe-24"></i>
+                                <span>Ajout De Taille</span>
+                            </button>
+                        }
+                        
+                    </div>
+                </div>
+                    
+            </div>
+        </div>
+    </div>
+        
+    <div class="col-sm-12 col-md-12 col-lg-6">
+        <div class="card shadow mb-4">
+            <div class="card-body">
+                <h4>Ajout de couleur et taille</h4>
+                    
+                <form asp-action="Create" asp-route-id_produit="@produit.Id"  enctype="multipart/form-data" class="needs-validation" novalidate>
+                        
+                    <label for="file_upload-input" class="drop_upload-container">
+                        <span class="drop_upload-title">Choisir des images</span>
+                        <input name="Images" class="btn form-control" type="file" accept="image/*" required id="file_upload-input">
+                    </label>    
+
+                    <div class="row">
+                            
+                        <div class="col-md-6 text-center">
+                            <img id="imagePreview" src="~/images/produits/locks/minimize_vide.jpg" alt="Preview" class="image-preview img-thumbnail" style="max-width: 100%; max-height: 200px; margin-top: 10px;transition: opacity 0.3s ease-in-out;">
+                        </div>
+
+                        <div class="col-md-6">
+
+                            <label for="inputPassword5" class="form-label">Couleur</label>
+                            <input type="text" name="Couleur" id="inputPassword5" class="form-control border-danger mb-3" aria-describedby="Description coleur">
+                                
+                            <label for="addC1" class="form-label">Ajout de taille</label>
+                            <div class="input-group mb-3">
+                                <input type="text" id="addC1" class="form-control" placeholder="Taille" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="ajouterBouton('addC1', 'container1')">Ajouter</button>
+                            </div>
+
+                            <div id="container1"></div>
+
+                            <button type="submit" class="btn but2-mod2 but-block">
+                                <i class="fa fa-check"></i>
+                                <span>Ajouter</span>
+                            </button>
+
+                        </div>
+                    </div>
+
+                </form>
+                    
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card mb-3">
+    <div class="card-body">
+        <div class="row">
+            @foreach (var item in contenues)
+            {
+                <div class="col-6 col-sm-4 col-md-4 col-lg-2">
+                    <div class="card">
+                        <div class="card-body">
+                            <a asp-action="Index" asp-route-id_produit="@ViewBag.id_produit" asp-route-id_contenue="@item.Id">
+                                <img class="img-thumbnail @(item.Id == contenueSelected.Id ? "border-danger" : "")" src="~/images/produits/@(!item.Image.IsNullOrEmpty() ? $"{item.Image}" : "locks/vide.jpg")" alt="Img"/>
+                            </a>
+                            <button type="button" class="btn btn-danger mt-1" data-bs-toggle="modal" data-bs-target="#toPrinc_@item.Id">
+                                <i class="fa fa-refresh"></i> Modifier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade rounded-5" id="toPrinc_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content text-center">
+
+                            @if (!item.IsPrincipal)
+                            {
+                                <div class="container-fluid">
+                                    <div class="card border-warning mt-3">
+                                        <div class="card-body">
+                                            <div class="alert bg-white shadow fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                                <strong class="text-danger"><i class="fa fa-warning"></i>Changer cette image en image principale ?</strong>
+                                            </div>
+                                        
+                                            <form asp-controller="ContenueProduit" asp-action="ToPrincipal" asp-route-id_produit="@ViewBag.id_produit" asp-route-id_contenue="@item.Id" method="post">
+                                                <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Changer l'image principale</span></button>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            }
+                            
+                            <div class="alert bg-white shadow fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                <strong class="text-danger"><i class="fa fa-warning"></i>Modifier La coleur ?</strong>
+                            </div>
+                            
+                            <form asp-controller="ContenueProduit" asp-action="Update" asp-route-id_produit="@ViewBag.id_produit" asp-route-id_contenue="@item.Id" enctype="multipart/form-data" class="needs-validation" novalidate>
+                                <div class="container-fluid">
+                                    <label for="inputPassword5" class="form-label">Couleur</label>
+                                    <input type="text" value="@item.Couleur" name="couleur" id="inputPassword5" class="form-control border-danger mb-3 text-center" aria-describedby="Description coleur">
+                                    <label for="file_upload-input" class="drop_upload-container">
+                                        <span class="drop_upload-title">Choisir l'image</span>
+                                        <input name="Images" class="btn form-control" type="file" accept="image/*" id="file_upload-input">
+                                    </label>
+                                    
+                                    <button type="submit" class="btn mb-2 but2-mod2 btn-sm"><i class="fe fe-check"></i> <span>Modifier</span></button>
+                                    
+                                </div>
+                            </form>
+
+                            <div class="modal-footer">
+                                <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2 ">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Couleur</th>
+                    <th class="pal6_bg2 text-white">Taille</th>
+                    <th class="pal6_bg2 text-white">Boutique</th>
+                    <th class="pal6_bg2 text-white">Stock</th>
+                </tr>
+                </thead>
+                <tbody>
+                
+                @for (int i=0;i<Model.Count();i++)
+                {
+                    var item = Model[i];
+                    <tr class="alert" role="alert">
+                        <td>
+                            @item.ContenueProduit.Couleur
+                        </td>
+                        <td>
+                            @item.Taille
+                        </td>
+                        <td>
+                            @(item.IdBoutique != null ? $"{item.Boutique.Quartier} {item.Boutique.Ville}" : "?")
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span><strong>stock: @(item.Stock != null ? item.Stock : "?")</strong></span>
+                                <span>
+                                    <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#Id_@i">
+                                        <i class="fe fe-plus"></i><span class="text-dark">Ajouter</span>
+                                    </button>
+                                </span>
+                            </div>
+
+                            <div class="modal fade" id="Id_@i" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="varyModalLabel">Ajout de <strong>Stock</strong> du pointure ( <strong>@item.Taille</strong> )</h5>
+                                            <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <form asp-action="UpdateStock" asp-route-IdProduit="@item.IdProduit" asp-route-Idpref="@item.IdPreferenceProduit" class="needs-validation" novalidate>
+                                            <div class="modal-body">
+
+                                                <img src="~/images/produits/@(item.ContenueProduit != null ? $"minimize_{item.ContenueProduit.Image}" : "locks/minimize_vide.jpg")" class="img-thumbnail mb-2" alt="IMG">
+                                                <p>Couleur: <strong>@item.ContenueProduit.Couleur</strong></p>
+                                                <p>Taille: <strong>@item.Taille</strong></p>
+
+                                                <div class="mb-1"></div>
+                                                @if (niveauAdmin)
+                                                {
+                                                    if (@item.IdBoutique == null)
+                                                    {
+                                                        <label for="simple-select2">Boutique</label>
+                                                        <div class="input-group mb-3">
+                                                            <select name="IdBoutique" class="form-control" id="simple-select2">
+                                                                <optgroup label="Tous">
+                                                                    @foreach (var q in boutiques)
+                                                                    {
+                                                                        <option value="@q.Id"><span class="text-sm-left">@q.Quartier / @q.Ville</span></option>
+                                                                    }
+                                                                </optgroup>
+                                                            </select>
+                                                        </div>
+                                                    }
+                                                    else
+                                                    {
+                                                        <input type="hidden" name="IdBoutique" value="@item.Boutique.Id"/>
+                                                        <p>Boutique: <strong>@item.Boutique.Quartier / @item.Boutique.Ville</strong></p>
+                                                    }
+                                                }else if(boutiquesAffect!=null)
+                                                {
+                                                    <p>Boutique <strong>@boutiquesAffect.Quartier / @boutiquesAffect.Ville</strong></p>
+                                                }
+
+                                                <label for="a">Quatiter de stock</label>
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text"><i class="fe fe-info"></i></span>
+                                                    <input name="Stock" type="number" class="form-control form-check" step="0.01" value="1" aria-label="Server" required>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                                <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+</div>
+
+@*---------MODAL addS-----------------*@
+
+@if (contenueSelected != null) {
+    <div class="modal fade" id="addS" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="varyModalLabel">Ajout de Stock couleur: <strong>@contenueSelected.Couleur</strong></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form asp-action="UpdateStock" asp-route-IdProduit="@contenueSelected.IdProduit" class="needs-validation" novalidate>
+                    <div class="modal-body">
+                        
+                        <img src="~/images/produits/@(contenueSelected != null ? $"minimize_{contenueSelected.Image}" : "locks/minimize_vide.jpg")" class="img-thumbnail mb-2" alt="IMG">
+                        
+                        @if (niveauAdmin)
+                        {
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">Boutique</span>
+                                <select name="IdBoutique" class="form-control" id="simple-select2">
+                                    <optgroup label="Tous">
+                                        @foreach (var q in boutiques)
+                                        {
+                                            <option value="@q.Id"><span class="text-sm-left">@q.Quartier / @q.Ville</span></option>
+                                        }
+                                    </optgroup>
+                                </select>
+                            </div>
+
+                        }
+                        else if(boutiquesAffect!=null)
+                        {
+                            <p>Boutique <strong>@boutiquesAffect.Quartier / @boutiquesAffect.Ville</strong></p>
+                        }
+
+                        <div class="input-group mb-3">
+                            <span class="input-group-text" id="basic-addon1">Taille</span>
+                            <select name="Idpref" class="form-control" id="simple-select2">
+                                <optgroup label="Tous">
+                                    @foreach (var q in preferenceProduits)
+                                    {
+                                        <option value="@q.Id"><span class="text-sm-left">@q.Taille</span></option>
+                                    }
+                                </optgroup>
+                            </select>
+                        </div>
+
+                        <label for="a">Quatiter de stock</label>
+                        <div class="input-group mb-3">
+                            <span class="input-group-text"><i class="fe fe-info"></i></span>
+                            <input name="Stock" type="number" class="form-control form-check" step="0.01" value="1" aria-label="Server" required>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal fade" id="addT" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="varyModalLabel">Ajout de Tailles ou Pointures / couleur: <strong>@contenueSelected.Couleur</strong></h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <form asp-action="AddTaille" asp-route-id_produit="@contenueSelected.IdProduit" asp-route-id_contenue="@contenueSelected.Id" class="needs-validation" novalidate>
+                    <div class="modal-body">
+                        
+                        <img src="~/images/produits/@(contenueSelected != null ? $"minimize_{contenueSelected.Image}" : "locks/minimize_vide.jpg")" class="img-thumbnail mb-2" alt="IMG">
+                        <div class="mb-2"></div>
+                        
+                        <h6>Tailles ou pointures existant</h6>
+                        
+                        @foreach (var item in preferenceProduits)
+                        {
+                            <button class="btn btn-lg btn-outline-secondary mb-1 mr-1 disabled">@item.Taille</button>
+                        }
+                        
+                        <div class="card border-warning">
+                            <div class="card-body">
+                                <h6>Tailles ou pointures à ajouter</h6>
+                                                        
+                                <label for="addC2" class="form-label">Ajout de taille</label>
+                                <div class="input-group mb-3">
+                                    <input type="text" id="addC2" class="form-control" placeholder="Taille" aria-label="Recipient's username" aria-describedby="button-addon2">
+                                    <button class="btn btn-outline-secondary" type="button" id="button-addon2" onclick="ajouterBouton('addC2', 'container2')">Ajouter</button>
+                                </div>
+                                                        
+                                <div id="container2"></div>
+                                <div class="text-center">
+                                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+}
+
+<script>
+   // Fonction pour prévisualiser l'image sélectionnée
+   function previewImage(input) {
+       var preview = document.getElementById('imagePreview');
+       var file = input.files[0];
+       var reader = new FileReader();
+
+       reader.onloadend = function () {
+           preview.src = reader.result;
+           preview.style.opacity = '1'; // Change l'opacité pour afficher l'image avec une transition
+       }
+
+       if (file) {
+           reader.readAsDataURL(file); // Lecture de l'image en tant que Data URL
+       } else {
+           preview.src = '#';
+           preview.style.opacity = '0'; // Masque l'image avec une transition si aucun fichier n'est sélectionné
+       }
+   }
+   
+
+   // Ajouter un écouteur d'événement pour l'événement 'change' de l'élément d'entrée de fichier
+   document.getElementById('file_upload-input').addEventListener('change', function () {
+       previewImage(this);
+   });
+</script>
+                      
+
+<script>
+    function ajouterBouton(addC1 , container) {
+        // Récupérer la valeur de l'input
+        var inputValue = document.getElementById(addC1).value;
+
+        if (inputValue.trim() === "") {
+            alert("Veuillez saisir une valeur");
+            return;
+        }
+
+        // Créer un nouvel élément input de type checkbox
+        var nouveauCheckbox = document.createElement('input');
+        nouveauCheckbox.type = 'checkbox';
+        nouveauCheckbox.name = "tailles";
+        nouveauCheckbox.className = 'btn-check';
+        nouveauCheckbox.id = 'checkbox-' + inputValue;
+        nouveauCheckbox.value = inputValue;
+        nouveauCheckbox.checked = true; // Coché par défaut
+
+        // Créer une étiquette pour le checkbox (optionnel)
+        var label = document.createElement('label');
+        label.className = 'btn btn-lg btn-outline-secondary mb-1 mr-1';
+        label.setAttribute('for', 'checkbox-' + inputValue);
+        label.innerText = inputValue;
+
+        // Ajouter le nouvel input checkbox et l'étiquette au conteneur des boutons
+        document.getElementById(container).appendChild(nouveauCheckbox);
+        document.getElementById(container).appendChild(label);
+
+        // Ajouter un gestionnaire d'événements pour le changement d'état de la case à cocher
+        nouveauCheckbox.addEventListener('change', function () {
+            if (!this.checked) {
+                // Si la case à cocher est décochée, supprimer le bouton et l'étiquette associée
+                this.nextSibling.remove(); // Supprimer l'étiquette
+                this.remove(); // Supprimer la case à cocher
+            }
+        });
+
+        // Effacer le contenu de l'input après avoir ajouté le bouton
+        document.getElementById(addC1).value = "";
+    }
+</script>
+
+

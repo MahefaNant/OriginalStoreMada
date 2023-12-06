@@ -1,0 +1,337 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Produits.views
+@using originalstoremada.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Produits
+@using originalstoremada.Models.Produits.Others
+@model IEnumerable<originalstoremada.Models.Produits.views.VStockProduitGlobal>
+
+@{
+    ViewBag.Title = "title";
+  Layout = RoutePath.ContentClient();
+  Pagination<VStockProduitGlobal> paginations = ViewBag.paginations;
+	List<CategorieProduit> categs = ViewBag.allCategories;
+	List<TypeProduit> types = ViewBag.allType;
+	List<Price> pricesCherch = ViewBag.PricesCherch;
+}
+
+<!-- Product -->
+<div class="m-t-23 p-b-140">
+<div class="container-fluid">
+<form asp-action="Index" method="get">
+	<div class="flex-w flex-sb-m p-b-52">
+		<div class="flex-w flex-l-m filter-tope-group m-tb-10">
+			<a asp-action="Index" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 @(ViewBag.IdCategorie==null ? "how-active1" : "") ">
+				Tous les produits
+			</a>
+
+			<input type="hidden" name="@(ViewBag.IdCategorie!=null? "IdCategorie" : "")" value="@(ViewBag.IdCategorie!=null?ViewBag.IdCategorie : "")"/>
+				
+			@foreach (var item in categs)
+			{
+				<a asp-action="Index" asp-route-IdCategorie="@item.Id" class="stext-106 cl6 hov1 bor3 trans-04 m-r-32 m-tb-5 @(ViewBag.IdCategorie!=null && @ViewBag.IdCategorie == item.Id ? "how-active1" : "")">
+					@item.Nom
+				</a>
+			}
+
+		</div>
+
+		<div class="flex-w flex-c-m m-tb-10">
+			<div class="flex-c-m stext-106 cl6 size-104 bor4 pointer hov-btn3 trans-04 m-r-8 m-tb-4 js-show-filter">
+				<i class="icon-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-filter-list"></i>
+				<i class="icon-close-filter cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+				Filter
+			</div>
+
+			<div class="flex-c-m stext-106 cl6 size-105 bor4 pointer hov-btn3 trans-04 m-tb-4 js-show-search">
+				<i class="icon-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-search"></i>
+				<i class="icon-close-search cl2 m-r-6 fs-15 trans-04 zmdi zmdi-close dis-none"></i>
+				Search
+			</div>
+		</div>
+
+		<!-- Search product -->
+		<div class="dis-none panel-search w-full p-t-10 p-b-15">
+			<div class="bor8 dis-flex p-l-15">
+				<button class="size-113 flex-c-m fs-16 cl2 hov-cl1 trans-04">
+					<i class="zmdi zmdi-search"></i>
+				</button>
+
+				<input class="mtext-107 cl2 size-114 plh2 p-r-15" type="text" name="search-product" placeholder="Search">
+			</div>
+		</div>
+
+		<!-- Filter -->
+		<div class="dis-none panel-filter w-full p-t-10">
+			<div class="wrap-filter flex-w bg6 w-full p-lr-40 p-t-27 p-lr-15-sm">
+				<div class="filter-col1 p-r-15 p-b-27">
+					<div class="mtext-102 cl2 p-b-15">
+						Sort By
+					</div>
+
+					<ul>
+						@foreach (var item in types)
+						{
+							<li class="p-b-6">
+								<div class="form-check form-switch">
+									<input @(item.IsCheked ? "checked" : "") value="@item.Id" class="form-check-input" name="Type" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+									<label class="form-check-label" for="flexSwitchCheckDefault">@item.Nom</label>
+								</div>
+							</li>
+						}
+					</ul>
+				</div>
+
+				<div class="filter-col2 p-r-15 p-b-27">
+					<div class="mtext-102 cl2 p-b-15">
+						Prix
+					</div>
+
+					<ul>
+						@foreach (var item in pricesCherch)
+						{
+							<li class="p-b-6">
+								<div class="form-check form-switch">
+									<input  @(ViewBag.Price!=null && ViewBag.Price == $"{item.Min}-{item.Max}" ? "checked": "" ) 
+										class="form-check-input" type="radio" name="Prix" value="@($"{item.Min}-{item.Max}")" role="switch" id="flexSwitchCheckDefault">
+									<label class="form-check-label" for="flexSwitchCheckDefault">@item.Min MGA - @item.Max MGA</label>
+								</div>
+							</li>
+						}
+					</ul>
+				</div>
+
+				<div class="filter-col3 p-r-15 p-b-27">
+					<div class="mtext-102 cl2 p-b-15">
+						Autres
+					</div>
+
+					<ul>
+						<li class="p-b-6">
+							<div class="form-check form-switch">	
+								<input @(ViewBag.PourEnfant!=null && ViewBag.PourEnfant== "true"? "checked": "")  value="true"  name="PourEnfant" class="form-check-input" type="checkbox"  id="flexSwitchCheckDefault">
+								<label class="form-check-label" for="flexSwitchCheckDefault">Pour Enfant</label>
+							</div>
+							<div class="form-check form-switch">
+								<input @(ViewBag.EnPromotion!=null && ViewBag.EnPromotion== "true"? "checked": "") value="true" name="EnPromotion" class="form-check-input" type="checkbox" id="flexSwitchCheckDefault">
+								<label class="form-check-label" for="flexSwitchCheckDefault">En Promotion</label>
+							</div>
+						</li>
+
+					</ul>
+				</div>
+
+				<div class="filter-col4 p-b-27">
+					<div class="mtext-102 cl2 p-b-15">
+						Tags
+					</div>
+
+					<div class="flex-w p-t-4 m-r--5">
+						<button type="submit" class="flex-c-m stext-107 cl6 size-301 bor7 p-lr-15 hov-tag1 trans-04 m-r-5 m-b-5">
+							Appliquer Filtre
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+
+
+<div class="row isotope-grid">
+	@foreach (var item in Model)
+	{
+		<div class="col-sm-6 col-md-3 col-lg-3 p-b-35 isotope-item">
+			
+			<!-- Block2 -->
+			<div class="block2">
+				<div class="card shadow border-0">
+					<div class="card-body">
+						<div class="block2-pic hov-img0">
+							@* <img src="~/lib/CozaAssests/images/product-01.jpg" alt="IMG-PRODUCT"> *@
+							<a asp-action="Details" asp-route-id_produit="@item.Id"><img src="~/images/produits/@(item.Image != null ? item.Image : "locks/vide.jpg")" class="rounded" alt=""></a>
+
+							<a asp-action="Details" asp-route-id_produit="@item.Id" class="block2-btn flex-c-m stext-103 cl2 size-102 bg0 hov-btn1 bor2 p-lr-15 trans-04">
+								<span>Regarder</span>
+							</a>
+						
+						</div>
+						
+					</div>
+				</div>
+
+				<div class="block2-txt flex-w flex-t p-t-14">
+					<div class="block2-txt-child1 flex-col-l ">
+						<a href="product-detail.html" class="stext-104 cl4 hov-cl1 trans-04 js-name-b2 p-b-6">
+							<strong class="fw-bold text-dark">@item.Nom</strong>
+						</a>
+						<span class="stext-105 cl3">
+							@if (item.DateDebPromo != null)
+							{
+								<span class="fw-bold text-dark">@Formattage.Valeur((double)item.PrixVenteProm) MGA @(" / ")</span>
+								<del>@Formattage.Valeur((double)item.PrixVenteInitial) MGA</del>
+							}
+							else
+							{
+								<span class="fw-bold text-dark">@Formattage.Valeur((double)item.PrixVenteProm) MGA</span>
+							}
+						</span>
+					</div>
+
+					<div class="block2-txt-child2 flex-r p-t-3">
+						@if (item.IsMyFavorite)
+						{
+							<i class="fa fa-heart text-danger product-icon favoris" data-product-id="@item.Id"></i>
+						}
+						else
+						{
+							<i class="fa fa-heart-o product-icon favoris" data-product-id="@item.Id"></i>
+						}
+					</div>
+                            
+					<p>
+						<strong>@item.NombreFavoris </strong> à aimer
+						@if (item.DateDebPromo != null)
+						{
+							<strong class="text-success">@item.PourcentagePromotion % de réduction</strong>
+						}
+					</p>
+				</div>
+			</div>
+
+		</div>
+			
+	}
+</div>
+
+<!-- Load more -->
+
+<div class="pagin1">
+	<a asp-action="Index" asp-route-isPag="true"  asp-route-pagId="@(paginations.PageId -1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")"  title="previous page"><i class="fa fa-chevron-left"></i></a>
+	@if (paginations.PageId > 1 && paginations.PageId > 4)
+	{
+                           
+		<a asp-action="Index" asp-route-isPag="true"  asp-route-pagId="1">1</a>
+		@if (paginations.PageId > 5)
+		{
+			<span class="page-dots">...</span>
+		}
+	}
+	@for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+	{
+		@if (i > 0 && i <= paginations.TotalPages)
+		{
+			<a asp-action="Index" asp-route-isPag="true" asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+		}
+	}
+                                                
+	@if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+	{
+		@if (paginations.PageId < paginations.TotalPages - 4)
+		{
+			<span class="page-dots">...</span>
+		}
+		<a asp-action="Index" asp-route-isPag="true" asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+	}
+	<a asp-action="Index" asp-route-isPag="true"  asp-route-pagId="@(paginations.PageId -1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")"  title="next page"><i class="fa fa-chevron-right"></i></a>
+</div>
+
+</div>
+</div>
+
+<script>
+                                        
+	// JavaScript pour gérer le clic sur l'icône du cœur
+    document.addEventListener("click", function (event) {
+        var target = event.target;
+        if (target.classList.contains("favoris")) {
+            var productId = target.getAttribute("data-product-id");
+    
+            // Effectuer une requête AJAX vers le contrôleur pour mettre à jour l'icône
+            $.post("/ProduitShop/SetFavoris", { IdProduit: productId }, function (data) {
+				var etatFavoris = data.etatFavoris;
+                // Mettez à jour la classe CSS de l'icône en fonction de la réponse JSON
+                if (etatFavoris == 0) {
+					$("#notConnected").modal("show");
+                } else if (etatFavoris == 1) {
+					target.className = "fa fa-heart text-danger product-icon favoris";
+					$("#added").modal("show");
+                } else if (etatFavoris == 2) {
+                  	target.className = "fa fa-heart-o product-icon favoris";	
+				  	$("#removed").modal("show");
+			  	} else if (etatFavoris == 3) {
+					$("#error").modal("show");
+			  	}
+            });
+        }
+    });
+
+</script>
+
+@*---------MODAL 0-----------------*@
+
+<div class="modal fade rounded-5" id="notConnected" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<img src="~/images/OSM/osm-mini.png" class="rounded-2 mb-3" />
+				<p class="h5"><strong>Rejoignez-nous!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</a>
+				<a asp-controller="Client" asp-action="Login" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-user"></i>Se Connecter</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@*---------MODAL 1-----------------*@
+
+<div class="modal fade rounded-5" id="added" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-check-circle fa-4x text-success"></i>
+				<p class="h5"><strong>Element Ajouter aux favoris!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-check-circle"></i>Ok</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+@*---------MODAL 2-----------------*@
+
+<div class="modal fade rounded-5" id="removed" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-trash-o fa-4x text-danger"></i>
+				<p class="h5"><strong>Element supprimé du favoris!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-check-circle"></i>Ok</a>
+			</div>
+		</div>
+	
+	</div>
+</div>
+
+@*---------MODAL 3-----------------*@
+
+<div class="modal fade rounded-5" id="error" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<i class="fa fa-warning fa-4x text-warning"></i>
+				<p class="h5"><strong>Une erreur est survenue! Contacter nous!</strong></p>
+			</div>
+			<div class="modal-footer border-0">
+				<a type="button" class="btn mb-2 but2-mod2 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Ok</a>
+			</div>
+		</div>
+	</div>
+</div>
+
+

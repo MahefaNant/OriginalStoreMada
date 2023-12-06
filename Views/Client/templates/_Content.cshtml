@@ -1,0 +1,18 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.C_
+@{
+    Layout = RoutePath.HtmlTemplateClient();
+}
+
+<section class="animsition">
+    <partial name="@RoutePath.NavClient()"/>
+    
+    @RenderBody()
+
+    <partial name="@RoutePath.FooterClient()"/>
+
+
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</section>
+

@@ -1,0 +1,50 @@
+@using originalstoremada.C_
+@model originalstoremada.Models.Users.Admin
+
+@{
+    Layout = RoutePath.HtmlTemplateAdmin();
+}
+
+<div class="wrapper vh-100">
+    <div class="row align-items-center h-100">
+        <form asp-controller="Admin" asp-action="SignUp" method="POST" class="col-lg-3 col-md-4 col-10 mx-auto text-center needs-validation" novalidate>
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center">
+                <img src="~/images/OSM/osm-mini.png" class="navbar-brand-img rounded-circle brand-md"/>
+            </a>
+            <h1 class="h6 mb-3">S'inscrire en tant qu'employer</h1>
+            <div class="form-group">
+                <label for="inputEmail" class="sr-only">Email address</label>
+                <input name="mail" type="email" id="inputEmail" class="form-control form-control-lg" placeholder="Email" required>
+            </div>
+            <div class="form-group">
+                <label for="t" class="sr-only">Nom</label>
+                <input name="Nom" type="text" id="t" class="form-control form-control-lg" placeholder="Votre nom" required>
+            </div>
+            <div class="form-group">
+                <label for="t" class="sr-only">Prénom</label>
+                <input name="Prenom" type="text" id="t" class="form-control form-control-lg" placeholder="Votre Prénom" required>
+            </div>
+            <div class="form-group">
+                <label for="t" class="sr-only">Adresse</label>
+                <input name="Adresse" type="text" id="t" class="form-control form-control-lg" placeholder="Votre Adresse" required>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="sr-only">Mot de passe</label>
+                <input name="RCode" type="password" id="inputPassword" class="form-control form-control-lg" placeholder="Mot de passe" required>
+            </div>
+            <div class="form-group">
+                <label for="inputPassword" class="sr-only">Retaper Mdp</label>
+                <input name="Code" type="password" id="inputPassword" class="form-control form-control-lg" placeholder="Mot de passe" required>
+            </div>
+            <button class="btn btn-lg but2-mod2 but-block" type="submit"><span>Ajouter</span></button>
+            <p class="mt-5 mb-3 text-muted">© OSM</p>
+            @if (ViewBag.error != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                    <strong>Invalide! @ViewBag.error</strong>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </form>
+    </div>
+</div>

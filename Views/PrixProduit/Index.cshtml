@@ -1,0 +1,71 @@
+@using originalstoremada.Models.Produits
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model IEnumerable<originalstoremada.Models.Produits.PrixProduit>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    Produit produit = @ViewBag.produit;
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create" asp-route-id_produit="@ViewBag.id_produit">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PrixAchat)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PrixVente)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateDeb)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DateFin)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Produit)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrixAchat)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PrixVente)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateDeb)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DateFin)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Produit.Id)
+            </td>
+            <td>
+                <div class="btn-group">
+                    <a type="button" class="dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="ri ri-apps-2-fill"></i>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" asp-action="Edit" asp-route-id="@item.Id" asp-route-id_produit="@ViewBag.id_produit"><i class="ri ri-edit-fill"></i> Edit</a></li>
+                        <li><a class="dropdown-item" asp-action="Details" asp-route-id="@item.Id"><i class="ri ri-archive-fill"></i>Details</a></li>
+                        <li><a class="dropdown-item" asp-action="Delete" asp-route-id="@item.Id"><i class="ri ri-delete-back-2-fill"></i> Delete</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                    </ul>
+                </div>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

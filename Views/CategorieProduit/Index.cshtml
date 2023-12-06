@@ -1,0 +1,169 @@
+@using originalstoremada.C_
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<originalstoremada.Models.Produits.views.VCategorieProduit>
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+  <h1>Tous les catégories produit</h1>
+  <nav>
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active"><a>catégories produit</a></li>
+      <li class="breadcrumb-item">Creation</li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+
+<button type="button" class="btn but2-mod1 btn-sm mb-3" data-bs-toggle="modal" data-bs-target="#update">
+    <i class="fe fe-plus-circle fe-24"></i>
+    <span>Nouvelle Catégorie</span>
+</button>
+
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <thead>
+                <tr>
+                    <th class="pal6_bg2 text-white">Designation</th>
+                    <th class="pal6_bg2 text-white"></th>
+                    <th class="pal6_bg2 text-white"></th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="alert" role="alert">
+                        <td>
+                            <div class="pl-3 email">
+                                <span>@item.Nom (@item.Code)</span>
+                                <span>
+                                    <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#cat_@item.Id">
+                                        <i class="fe fe-edit"></i><span>Changer</span>
+                                    </button>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>Frais d` importation</span>
+                                <span>
+                                    <strong>@Formattage.Valeur(item.MontantFraisImportation) <i class="fa fa-euro"></i></strong>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="pl-3 email">
+                                <span>Commission</span>
+                                <span>
+                                    <strong>@Formattage.Valeur(item.MontantCommssion) <i class="fa fa-euro"></i></strong>
+                                </span>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <div class="modal fade" id="cat_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="varyModalLabel">Modifier <strong>@item.Nom</strong></h5>
+                                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <form asp-action="Edit" asp-route-id="@item.Id" class="needs-validation" novalidate>
+                                    <div class="modal-body">
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Designation</label>
+                                            <input name="Nom" value="@item.Nom" type="text" class="form-control" id="recipient-name">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="recipient-name" class="col-form-label">Code</label>
+                                            <input name="Code" value="@item.Code" type="text" class="form-control" id="recipient-name">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col">
+                                                <div class="form-group">
+                                                    <label for="recipient-name" class="col-form-label">Frais d`importation</label>
+                                                    <div class="input-group">
+                                                        <input name="Frais" value="@item.MontantFraisImportation" type="number" step="0.01" class="form-control" id="recipient-name" aria-describedby="inputGroupPrepend2" required>
+                                                        <span class="input-group-text" id="inputGroupPrepend2"><i class="fa fa-euro"></i></span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="col">
+                                                <div class="col">
+                                                    <div class="form-group">
+                                                        <label for="recipient-name" class="col-form-label">Commission</label>
+                                                        <div class="input-group">
+                                                            <input name="Commission" value="@item.MontantCommssion" type="number" step="0.01" class="form-control" id="recipient-name" aria-describedby="inputGroupPrepend2" required>
+                                                            <span class="input-group-text" id="inputGroupPrepend2"><i class="fa fa-euro"></i></span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                }
+                <tr>
+                    <th colspan="3"></th>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+@*---------MODAL UPDATE-----------------*@
+
+<div class="modal fade" id="update" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajout de nouveau <strong>vol</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="Create" asp-route-ver="0" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nom du catégorie</label>
+                        <input name="Nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du catégorie" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Code</label>
+                        <input name="Code" type="text" class="form-control" id="recipient-name" placeholder="Code (ex: Short = SHO)" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label"><i class="fa fa-euro"></i> Frais de Livraison</label>
+                        <input name="Frais" type="number" step="0.01" class="form-control" id="recipient-name" placeholder="frais" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label"><i class="fa fa-euro"></i> Commission</label>
+                        <input name="Commission" type="number" step="0.01" class="form-control" id="recipient-name" placeholder="commission" required>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

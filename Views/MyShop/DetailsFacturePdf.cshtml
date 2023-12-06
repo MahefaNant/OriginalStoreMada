@@ -1,0 +1,187 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements
+@using originalstoremada.Models.Payements.views
+@model dynamic
+
+@{
+    Layout = RoutePath.HtmlTemplateClient();
+    List<VPayementProduit> payementProduits = Model.payementProduits;
+    VFacture facture = Model.facture;
+    Dictionary<int, string> suivisFacture = Model.suivisFacture;
+    TypePayement typePayementForm = Model.typePayementForm;
+    AdresseLivraisonFacture adresseLivraison = Model.adresseLivraison;
+    List<TypePayement> nums = Model.nums;
+    DateTime now = Model.now;
+}
+
+
+<div class="container">
+  
+    <div class="card">
+        <div class="card-body">
+            <div class="text-center">
+                <h1 class="fw-bold text-dark">Facture #@Formattage.Numero(facture.Id)</h1>
+                <h6>Fait le @Formattage.DateTime(now)</h6>
+            </div>
+            <div class="row">
+                <div class="col-6">
+
+                    <div class="row">
+                       
+                        <div class="col-5">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Nos Contacts</strong></li>
+                                @foreach (var n in nums)
+                                {
+                                    <li class="list-group-item">@Formattage.MobileMG(n.NumeroResp)</li>
+                                }
+
+                            </ul>
+                        </div>
+                    </div>
+
+                    <hr class="bor4 border-warning"/>
+
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">Facture du <strong>@Formattage.Date(facture.Date)</strong></li>
+                                <li class="list-group-item">@facture.EtatLivraisonType</li>
+                                <li class="list-group-item">@facture.EtatLivraison</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="col-6 text-center">
+                    
+                    
+                    <img style="width: 100px" class="rounded" src="~/images/OSM/osm-mini.png"/>
+                    
+                    <h2 class="mb-3"><strong class="fw-bold text-dark ">Original</strong>Store-Mada</h2>
+                    
+                    <div class="card border-0 shadow">
+                        <div class="card-body">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item"><strong>Client</strong></li>
+                                <li class="list-group-item">@facture.Client.Nom @facture.Client.Prenom </li>
+                                <li class="list-group-item">Adresse: <strong>@facture.Client.Adresse</strong></li>
+                                <li class="list-group-item">@facture.Client.Mail</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-12">
+                    <div class="tab2-wrap">
+                        <table class="tab2">
+                            <thead>
+                            <tr>
+                                <th colspan="5">
+                                    <div class="stepper-wrapper">
+                                        <div class="stepper-item @suivisFacture[1]">
+                                            <div class="step-counter">1</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item">Payement Effectuer</li>
+                                                    @if (facture.EstPayer != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.EstPayer)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisFacture[2]">
+                                            <div class="step-counter">2</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item">prêt à livrer où a récupéré</li>
+                                                    @if (facture.DatePret != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DatePret)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="stepper-item @suivisFacture[3]">
+                                            <div class="step-counter">3</div>
+                                            <div class="step-name">
+                                                <ul class="list-group">
+                                                    <li class="list-inline-item">Livraison ou Récupération effectuée</li>
+                                                    @if (facture.DateLivrer != null)
+                                                    {
+                                                        <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DateLivrer)</li>
+                                                    }
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </th>
+                            </tr>
+                            </thead>
+                            <thead>
+                            <tr>
+                                <th></th>
+                                <th>Produit</th>
+                                <th>Montant</th>
+                                <th>Préférence</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach (var item in Model.payementProduits)
+                            {
+                                <tr class="alert" role="alert">
+                                    <td>
+                                        <img width="100px" class="img-thumbnail" src="~/images/produits/@(item.PreferenceProduit.ContenueProduit.Image != null ? $"minimize_{item.PreferenceProduit.ContenueProduit.Image}" : "locks/vide.jpg") "/>
+                                    </td>
+                                    <td class="status">
+                                        <div class="pl-3 email">
+                                            <span><strong>@item.PreferenceProduit.Produit.Nom</strong></span>
+                                            <span>@item.PreferenceProduit.Produit.CategorieProduit.Nom</span>
+                                        </div>
+                                    </td>
+                                    <td class="status">
+                                        <div class="pl-3 email">
+                                            <span><strong>@Formattage.Valeur(item.Montant) MGA</strong> x @item.Quantiter</span>
+                                            <span><strong>@Formattage.Valeur(item.MontantFin()) MGA</strong></span>
+                                            <span></span>
+                                        </div>
+                                    </td>
+                                    <td class="status">
+                                        <div class="pl-3 email">
+                                            <span>Couleur: <strong>@item.PreferenceProduit.ContenueProduit.Couleur</strong></span>
+                                            <span>Taille ou Pointure: <strong>@item.PreferenceProduit.Taille</strong></span>
+                                            <span></span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="1">Total</td>
+                                <td colspan="1"><strong>@Formattage.Valeur(facture.MontantSum) MGA</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="1">Frais de Livraison</td>
+                                <td colspan="1"><strong>@Formattage.Valeur(facture.FraisLivraison) MGA</strong></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td colspan="1">Sous Total</td>
+                                <td colspan="1"><strong>@Formattage.Valeur(facture.MontantFin) MGA</strong></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>

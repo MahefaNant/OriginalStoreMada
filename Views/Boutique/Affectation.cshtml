@@ -1,0 +1,128 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Boutiques
+@using originalstoremada.Models.Users
+@model originalstoremada.Models.Boutique.AffectationEmployer
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentAdmin();
+    IEnumerable<Admin> employers = ViewBag.employers;
+    Boutique boutique = ViewBag.boutique;
+}
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="wrapper-cd1 mb-3">
+    <div class="circle-1-cd1"></div>
+    <div class="card-cd1">
+        <section class="top-cd1">
+            <span class="u-l-cd1">Affectation des Employers</span>
+            <span class="u-l-cd1">Information boutique:</span>
+        </section>
+        <section class="bottom-cd1">
+            <ul class="users-cd1">
+                <li class="user-cd1">
+                    <span class="user-name-cd1">Nom</span>
+                    <span class="user-occupation-cd1">@boutique.Nom</span>
+                </li>
+                <li class="user-cd1">
+                    <span class="user-name-cd1">Ville</span>
+                    <span class="user-occupation-cd1">@boutique.Ville</span>
+                </li>
+                <li class="user-cd1">
+                    <span class="user-name-cd1">Quartier</span>
+                    <span class="user-occupation-cd1">@boutique.Quartier</span>
+                </li>
+                <li class="user-cd1">
+                    <span class="user-name-cd1">Adresse</span>
+                    <span class="user-occupation-cd1">@boutique.adresse</span>
+                </li>
+            </ul>
+        </section>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="tab2-wrap">
+            <table class="tab2">
+                <form asp-action="Affectation" method="POST">
+                    <input type="hidden" name="id_boutique" value="@boutique.Id"/>
+                    <thead>
+                    <tr>
+                        <th colspan="6">
+                            <button type="submit" class="btn but2-mod2">
+                                <i class="fe fe-navigation"></i>
+                                <span>Affecter les employés cochers</span>
+                            </button>
+                        </th>
+                    </tr>
+                    </thead>
+                    <thead>
+                    <tr>
+                        <th class="pal6_bg2 text-white"></th>
+                        <th class="pal6_bg2 text-white">Nom</th>
+                        <th class="pal6_bg2 text-white">Prenom</th>
+                        <th class="pal6_bg2 text-white">Adresse</th>
+                        <th class="pal6_bg2 text-white">Adresse Boutique</th>
+                        <th class="pal6_bg2 text-white">Etat</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var q in employers)
+                    {
+                        <tr class="alert" role="alert">
+                            <td>
+                                @if (q.AffectationEmployer == null)
+                                {
+                                    <input class="form-check" type="checkbox" value="@q.Id" name="id_admins"/>
+                                }
+                            </td>
+                            <td>@q.Nom</td>
+                            <td>@q.Prenom</td>
+                            <td>@q.Adresse</td>
+                            @if (q.AffectationEmployer != null)
+                            {
+                                <td>@q.AffectationEmployer.Boutique.adresse</td>
+                                <td class="alert" role="alert">
+                                    <div class="pl-3 email">
+                                        <span>
+                                            <span class="active">Déja affecter</span>
+                                        </span>
+                                        <span>
+                                            <a asp-action="AffectationRemove" asp-route-id_affectation="@q.AffectationEmployer.Id" class="btn but2-mod1 btn-sm">
+                                                <i class="fe fe-code text-white"></i>
+                                                <span class="text-white">Libérer</span>
+                                            </a>
+                                        </span>
+                                    </div>
+                                </td>
+                            }
+                            else
+                            {
+                                <td>?</td>
+                                <td>
+                                    <button class="btn btn-warning btn-sm disabled">Libre</button>
+                                </td>
+                            }
+                        </tr>
+                    }
+                    <tr>
+                        <th colspan="5"></th>
+                    </tr>
+                    </tbody>
+                </form>
+            </table>
+        </div>
+        
+    </div>
+</div>
+
+
+

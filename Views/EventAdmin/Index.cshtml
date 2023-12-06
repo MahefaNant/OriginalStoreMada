@@ -1,0 +1,231 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Evenements
+@using originalstoremada.Services
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@model List<originalstoremada.Models.Evenements.Evenement>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    Pagination<Evenement> paginations = ViewBag.paginations;
+}
+
+
+<!-- Page Title -->
+<div class="pagetitle">
+    <h1>LES EVENEMENTS</h1>
+    <nav>
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item active"><a>EVENEMENTS</a></li>
+            <li class="breadcrumb-item active"></li>    
+        </ol>
+    </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<button class="btn but2-mod2 btn-lg mb-3" data-bs-toggle="modal" data-bs-target="#createEvent">
+    <i class="fe fe-plus"></i> 
+    <span>COMMENCER A CREER UN EVENEMENT</span>
+</button>
+<a asp-action="Calendrier" class="btn but2-mod1 btn-sm mb-3">
+    <i class="fe fe-plus"></i> 
+    <span>Calendrier</span>
+</a>
+
+
+<div class="row">
+    @foreach (var item in Model)
+    {
+        <div class="card shadow mb-3">
+            <div class="card-body">
+                <a asp-action="AddProduitEvent" asp-route-id_event="@item.Id" class="btn but2-mod1 btn-sm mb-3">
+                    <i class="fe fe-plus"></i> 
+                    <span>Ajouter un article</span>
+                </a>
+                <div class="col-md-12">
+                    <div class="tab2-wrap">
+                        <table class="tab2">
+                            <thead>
+                            <tr>
+                                <th class="pal6_bg1">Date début</th>
+                                <th class="pal6_bg1">Date de clôturation</th>
+                                <th class="pal6_bg1">Description</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+
+                            <tr class="alert" role="alert">
+                                <td>
+                                    <div class="pl-3 email">
+                                        <span>@Formattage.DateTime(item.DateDeb)</span>
+                                        <span>
+                                            <button type="button" class="btn but2-mod3 btn-sm" data-bs-toggle="modal" data-bs-target="#update_@item.Id">
+                                                <i class="fe fe-edit"></i><span class="text-dark">Modifier</span>
+                                            </button>
+                                        </span>
+                                    </div>
+                                </td>
+                                <td>@Formattage.DateTime(item.DateFin)</td>
+                                <td>
+                                    <p class="truncate-text"><a href="" data-bs-toggle="modal" data-bs-target="#update_@item.Id">@item.Description</a></p></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    
+                    <div class="accordion accordion-flush" id="accordionFlushExample">
+                        <div class="accordion-item">
+                            <h2 class="accordion-header">
+                                <button class="accordion-button collapsed shadow mt-3" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    <strong><i class="fe fe-mouse-pointer"></i> Images des articles</strong>
+                                </button>
+                            </h2>
+                            <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                                <div class="accordion-body">
+                                    <div class="card border-0 shadow">
+                                        <div class="card-body mx-md-5">
+                                            <div class="scroll-h mt-3">
+                                                @foreach(var p in item.VProduitEventReste) {
+                                                <a asp-action="AddProduitEvent" asp-route-id_event="@item.Id">
+                                                    <img class="img-thumbnail" src="~/images/produits/minimize_@p.Image"/>
+                                                </a>
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        @*---------MODAL UPDATE-----------------*@
+
+        <div class="modal fade" id="update_@item.Id" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="varyModalLabel">Modifification d' <strong>événement</strong></h5>
+                        <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <form asp-action="UpdateEvent" class="needs-validation" novalidate>
+                        <input type="hidden" name="Id" value="@item.Id"/>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Date débute de l' événement</label>
+                                <input name="DateDeb" value="@Formattage.InputDateTime(item.DateDeb)" type="datetime-local" class="form-control" id="recipient-name" placeholder="Nom du catégorie" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Date clôture de l'événement</label>
+                                <input name="DateFin" value="@Formattage.InputDateTime(item.DateFin)" type="datetime-local" class="form-control" id="recipient-name" placeholder="Numero responsable" required>
+                            </div>
+                            <div class="form-floating">
+                                <textarea name="Description" class="form-control" placeholder="Descrire l`événement" id="floatingTextarea2" style="height: 100px" required="">@item.Description</textarea>
+                                <label for="floatingTextarea2">Description de l` événement</label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                            <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    }
+    
+    <div class="pagin1">
+        <a class="@(paginations.PageId == 1 ? "page-disabled" : "")" href="#" title="previous page"><i class="fa fa-chevron-left"></i></a>
+        @if (paginations.PageId > 1 && paginations.PageId > 4)
+        {
+                           
+            <a asp-action="Index"  asp-route-pagId="1">1</a>
+            @if (paginations.PageId > 5)
+            {
+                <span class="page-dots">...</span>
+            }
+        }
+        @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+        {
+            @if (i > 0 && i <= paginations.TotalPages)
+            {
+                <a asp-action="Index"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+            }
+        }
+                                                
+        @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+        {
+            @if (paginations.PageId < paginations.TotalPages - 4)
+            {
+                <span class="page-dots">...</span>
+            }
+            <a asp-action="Index"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+        }
+        <a class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")" href="#" title="next page"><i class="fa fa-chevron-right"></i></a>
+    </div>
+
+</div>
+
+@*---------MODAL CREATEEVENT-----------------*@
+
+<div class="modal fade" id="createEvent" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Ajouter un nouveau <strong>Événement</strong></h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-action="CreateEvent" class="needs-validation" novalidate>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Date de l'événement</label>
+                        <input name="Date" type="date" class="form-control" id="recipient-name" required>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Heure début</label>
+                                <input name="heureDeb" type="time" class="form-control" id="recipient-name" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label">Heure Fin</label>
+                                <input name="heureFin" type="time" class="form-control" id="recipient-name" required>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    
+                    <div class="form-floating">
+                        <textarea name="Description" class="form-control" placeholder="Descrire l`événement" id="floatingTextarea2" style="height: 100px" required=""></textarea>
+                        <label for="floatingTextarea2">Description de l` événement</label>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*----------------*@
+
+
+

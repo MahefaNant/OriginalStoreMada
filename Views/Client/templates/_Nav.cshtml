@@ -1,0 +1,333 @@
+@using originalstoremada.Models.Produits.Others
+@using originalstoremada.C_
+@using Newtonsoft.Json
+@using originalstoremada.Models.Users
+@using originalstoremada.Services.Produits
+@{
+	List<Cart> carts = new List<Cart>();
+	if (Context.Request.Cookies[KeyStorage.Carts] != null)
+	{
+		try
+		{
+			carts = JsonConvert.DeserializeObject<List<Cart>>(Context.Request.Cookies[KeyStorage.Carts]);
+		}
+		catch (Exception e)
+		{
+			Context.Response.Cookies.Delete(KeyStorage.Carts);
+		}
+	}
+
+	Client client = null;
+	if (Context.Request.Cookies[KeyStorage.KeyClient] != null) client = JsonConvert.DeserializeObject<Client>(Context.Request.Cookies[KeyStorage.KeyClient]);
+
+}
+
+<!-- Header -->
+<header class="header-v2 shadow">
+	<!-- Header desktop -->
+	<div class="container-menu-desktop trans-03">
+
+		<div class="wrap-menu-desktop">
+		
+			<nav class="limiter-menu-desktop p-l-45">
+
+				<!-- Logo desktop -->
+				<a asp-controller="Client" asp-action="Home" class="logo">
+					@* <img src="~/images/OSM/osm-mini.png" class="rounded"> *@
+					<strong class="h2 fw-bold text-dark">Original</strong><span class="h2 text-secondary">-Store</span>
+				</a>
+
+				<!-- Menu desktop -->
+				<div class="menu-desktop">
+					<ul class="main-menu">
+						<li class="ACC">
+							<a asp-controller="Client" asp-action="Home"> <i class="fa fa-home"></i> Accueil</a>
+						</li>
+
+						<li class="SHO">
+							<a asp-controller="ProduitShop" asp-action="Index"><i class="fa fa-shopping-cart"></i> Shop</a>
+						</li>
+
+						@if (Context.Request.Cookies[KeyStorage.KeyClient] != null)
+						{
+							<li class="FAC notifBell">
+								<a asp-controller="MyShop" asp-action="Facture"><i class="fa fa-book"></i> Mes Factures <i  class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+							</li>
+						}
+						
+						<li class="EVT notifBell">
+							<a asp-controller="Event" asp-action="Calendrier"><i class="fa fa-calendar"></i> Evenement <i class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+						</li>
+						
+
+						<li class="DEV notifBell">
+							<a asp-controller="Devis" asp-action="Index"><i class="fa fa-refresh"></i> Devis (FR) <i  class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+						</li>
+						
+					</ul>
+				</div>
+
+				<!-- Icon header -->
+				<div class="wrap-icon-header flex-w flex-r-m h-full">
+					<div class="flex-c-m h-full p-r-24">
+						<div class="icon-header-item">
+							
+							@if (Context.Request.Cookies[KeyStorage.KeyClient] != null)
+							{
+								<button type="button" data-bs-toggle="modal" data-bs-target="#logOut" class="btn but2-mod1"><i class="fa fa-sign-out"></i><span>Se déconnecter</span></button>
+							}
+							else
+							{
+								<a  asp-controller="Client" asp-action="Login" class="btn but2-mod1"><i class="fa fa-sign-in"></i><span>Se connecter</span></a>
+							}
+						</div>
+					</div>
+
+					<div class="flex-c-m h-full p-l-18 p-r-25 bor5">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="@carts.Count()">
+							<i class="zmdi zmdi-shopping-cart"></i>
+						</div>
+					</div>
+
+					<div class="flex-c-m h-full p-lr-19">
+						<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 js-show-sidebar">
+							<i class="zmdi zmdi-menu"></i>
+						</div>
+					</div>
+				</div>
+			</nav>
+		</div>
+	</div>
+
+	<!-- Header Mobile -->
+	<div class="wrap-header-mobile">
+		<!-- Logo moblie -->		
+		<div class="logo-mobile">
+			<strong class="h3 fw-bold text-dark">Original-</strong><span class="h3 text-secondary">Store</span>
+		</div>
+
+		<!-- Icon header -->
+		<div class="wrap-icon-header flex-w flex-r-m h-full m-r-15">
+			<div class="flex-c-m h-full p-r-10">
+				<div class="icon-header-item">
+					
+				</div>
+				
+			</div>
+
+			<div class="flex-c-m h-full p-lr-10 bor5">
+				<div class="icon-header-item cl2 hov-cl1 trans-04 p-lr-11 icon-header-noti js-show-cart" data-notify="@carts.Count()">
+					<i class="zmdi zmdi-shopping-cart"></i>
+				</div>
+			</div>
+		</div>
+
+		<!-- Button show menu -->
+		<div class="btn-show-menu-mobile hamburger hamburger--squeeze">
+			<span class="hamburger-box">
+				<span class="hamburger-inner"></span>
+			</span>
+		</div>
+	</div>
+
+
+	<!-- Menu Mobile -->
+	<div class="menu-mobile">
+		<ul class="main-menu-m">
+			@*<li>
+				<a href="index.html">Home</a>
+				<ul class="sub-menu-m">
+					<li><a href="index.html">Homepage 1</a></li>
+					<li><a href="home-02.html">Homepage 2</a></li>
+					<li><a href="home-03.html">Homepage 3</a></li>
+				</ul>
+				<span class="arrow-main-menu-m">
+					<i class="fa fa-angle-right" aria-hidden="true"></i>
+				</span>
+			</li>*@
+
+			<li class="ACC">
+				<a asp-controller="Client" asp-action="Home"><i class="fa fa-home"></i> Accueil</a>
+			</li>
+            
+			<li class="SHO">
+				<a asp-controller="ProduitShop" asp-action="Index"><i class="fa fa-shopping-cart"></i> Shop</a>
+			</li>
+            
+			@if (Context.Request.Cookies[KeyStorage.KeyClient] != null)
+			{
+				<li class="FAC notifBell">
+					<a asp-controller="MyShop" asp-action="Facture"><i class="fa fa-book"></i> Mes Factures <i  class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+				</li>
+			}
+            
+			<li class="EVT notifBell" style="width: 180px">
+				<a asp-controller="Event" asp-action="Calendrier"><i class="fa fa-calendar"></i> Evenement <i class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+			</li>
+            						
+            
+			<li class="DEV notifBell">
+				<a asp-controller="Devis" asp-action="Index"><i class="fa fa-refresh"></i> Devis (FR) <i  class="fa bell"></i> <b class="notifLab text-secondary"></b></a>
+			</li>
+			
+			<li>
+				@if (Context.Request.Cookies[KeyStorage.KeyClient] != null)
+				{
+					<button type="button" data-bs-toggle="modal" data-bs-target="#logOut" class="btn but2-mod1"><i class="fa fa-sign-out"></i><span>Se déconnecter</span></button>
+				}
+				else
+				{
+					<a  asp-controller="Client" asp-action="Login" class="btn but2-mod1"><i class="fa fa-sign-in"></i><span>Se connecter</span></a>
+				}
+			</li>
+		</ul>
+	</div>
+
+	<script>
+		document.addEventListener('DOMContentLoaded', function () {
+			// Fonction pour charger le nombre d'événements à intervalles réguliers
+			function chargerNotif(url , labelLi) {
+				// Appeler le contrôleur via AJAX pour obtenir le nombre d'événements
+				var xhr = new XMLHttpRequest();
+				xhr.open('GET', url, true);
+				xhr.onreadystatechange = function () {
+					if (xhr.readyState === 4 && xhr.status === 200) {
+						// Les données JSON sont retournées avec succès, vous pouvez les traiter ici
+						var resultat = JSON.parse(xhr.responseText);
+						var res = resultat.res;
+						var color = resultat.color;
+						// Mettre à jour le data-label1 de la balise <li>
+						var label1LiList = document.querySelectorAll(labelLi);
+	
+						 label1LiList.forEach(function (label1Li) {
+							 if(res >= 1) {
+								var icon = label1Li.querySelector('.bell');
+								var lab = label1Li.querySelector('.notifLab');
+								if (icon) {
+									icon.classList.add('fa-bell', color , 'bell-moving');
+								}
+								if (lab) {
+									lab.innerHTML = res;
+								}
+							} else {
+								var icon = label1Li.querySelector('.bell');
+								if (icon) {
+									icon.classList.remove('fa-bell' ,color, 'bell-moving');
+								}
+								var lab = label1Li.querySelector('.notifLab');
+								if (lab) {
+									lab.innerHTML = "";
+								}
+							}
+						 });
+					}
+				};
+				xhr.send();
+			}
+			chargerNotif('/Event/EventExist' , '.EVT');
+			chargerNotif('/MyShop/NotifFacture' , '.FAC');
+			chargerNotif('/Devis/NotifDevis/' , '.DEV');
+		  	setInterval(function () {
+				  chargerNotif('/Event/EventExist', '.EVT');
+				  chargerNotif('/MyShop/NotifFacture', '.FAC');
+				  chargerNotif('/Devis/NotifDevis/' , '.DEV');
+			  }, 30000);
+			});
+	</script>
+	
+	<!-- Modal Search -->
+	<div class="modal-search-header flex-c-m trans-04 js-hide-modal-search">
+		<div class="container-search-header">
+			<button class="flex-c-m btn-hide-modal-search trans-04 js-hide-modal-search">
+				<img src="~/lib/CozaAssests/images/icons/icon-close2.png" alt="CLOSE">
+			</button>
+
+			<form class="wrap-search-header flex-w p-l-15">
+				<button class="flex-c-m trans-04">
+					<i class="zmdi zmdi-search"></i>
+				</button>
+				<input class="plh3" type="text" name="search" placeholder="Search...">
+			</form>
+		</div>
+	</div>
+
+</header>
+
+<!-- Cart -->
+<div class="wrap-header-cart js-panel-cart">
+	<div class="s-full js-hide-cart"></div>
+
+	<div class="header-cart flex-col-l p-l-65 p-r-25">
+		<div class="header-cart-title flex-w flex-sb-m p-b-8">
+			<span class="mtext-103 cl2">
+				Votre Panier
+			</span>
+
+			<div class="fs-35 lh-10 cl2 p-lr-5 pointer hov-cl1 trans-04 js-hide-cart">
+				<i class="zmdi zmdi-close"></i>
+			</div>
+		</div>
+			
+		<div class="header-cart-content flex-w js-pscroll">
+			<ul class="header-cart-wrapitem w-full">
+				
+				@foreach (var item in carts)
+				{
+					<li class="header-cart-item flex-w flex-t m-b-12">
+						<div class="header-cart-item-img">
+							<img src="~/images/produits/@item.Image" alt="IMG">
+						</div>
+
+						<div class="header-cart-item-txt p-t-8">
+							<a href="#" class="header-cart-item-name m-b-18 hov-cl1 trans-04">
+								@item.Nom ( @item.Categorie )
+							</a>
+							
+							<ul class="list-group list-group-horizontal">
+                              <li class="list-group-item list-group-item-secondary">@item.Couleur</li>
+                              <li class="list-group-item list-group-item-danger">@item.Taille</li>
+							</ul>
+
+							<span class="header-cart-item-info">
+								@item.Quantiter x @Formattage.Valeur(item.PrixVente) MGA
+							</span>
+						</div>
+					</li>
+				}
+			</ul>
+				
+			<div class="w-full">
+				<div class="header-cart-total w-full p-tb-40">
+					Total: @Math.Round(ProduitShopService.SommeCart(carts) , 2) MGA
+				</div>
+
+				<div class="header-cart-buttons flex-w w-full">
+					<a asp-controller="ProduitShop" asp-action="Carts" class="btn but2-mod2 but-block">
+						<i class="fa fa-shopping-cart"></i><span>Voir</span>
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="modal fade rounded-5" id="logOut" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content border-0">
+			<div class="modal-body text-center">
+				<img src="~/images/OSM/osm-mini.png" class="rounded-2 mb-3" />
+				<p class="h5"><strong>Souhaitez-vous vraiment vous déconnecter ?</strong></p>
+				@if (client != null)
+				{
+					<p class="h5">Compte : <strong>@client.Nom @client.Prenom</strong> @client.Mail</p>
+				}
+			</div>
+			
+			<div class="modal-footer border-0">
+				<a class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Non</a>
+				<a asp-controller="Client" asp-action="LogOut" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-check"></i>Oui</a>
+			</div>
+			
+		</div>
+	</div>
+</div>

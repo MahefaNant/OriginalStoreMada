@@ -1,0 +1,194 @@
+@using originalstoremada.Models.Boutiques
+@using originalstoremada.C_
+@model originalstoremada.Models.Boutiques.Boutique
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    List<Boutique> boutiques = ViewBag.boutiques;
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+<div class="row">
+    <div class="col-md-5">
+        <div class="card top-selling overflow-auto">
+            <div class="card-body pb-0">
+                <h5 class="card-title">Page d'ajout d'une nouvelle Boutique</h5>
+                
+                @if (ViewBag.error != null)
+                {
+                	<div class="alert alert-danger alert-dismissible fade show mb-3 text-center" role="alert">
+                		<strong>Invalide! @ViewBag.error</strong>
+                		<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                	</div>
+                }
+
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-group">
+                        <label asp-for="Nom" class="control-label"></label>
+                        <input asp-for="Nom" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Ville" class="control-label"></label>
+                        <input asp-for="Ville" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Quartier" class="control-label"></label>
+                        <input asp-for="Quartier" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="adresse" class="control-label"></label>
+                        <input asp-for="adresse" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label"></label>
+                        <input asp-for="Description" class="form-control"/>
+                    </div>
+                    <hr/>
+                    <a href="https://www.google.com/maps" target="_blank">https://www.google.com/maps</a>
+                    <div class="form-group">
+                        <label asp-for="Longitude" class="control-label"></label>
+                        <input type="text" asp-for="Longitude" id="LONGITUDE" class="form-control"/>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Latitude" class="control-label"></label>
+                        <input type="text" asp-for="Latitude" id="LATITUDE" class="form-control"/>
+                    </div>
+                    
+                    <div class="form-group">
+                        <button type="button" class="btn but2-mod2" data-bs-toggle="modal" data-bs-target="#ADD">
+                            <span>AJOUTER</span>
+                        </button>
+                    </div>
+                    
+                    <div class="modal fade rounded-5" id="ADD" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                
+                                <div class="alert pal6_bg2 fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                                    <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr de valider l'ajout ?</strong>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="col-md-7">
+        <div class="card top-selling overflow-auto">
+            <div class="card-body pb-0">
+                <h5 class="card-title">Précisez la longitude et la latitude (non obligatoire)</h5>
+                
+                <div class="input-group mb-3">
+                    <input id="cityInput" type="text" class="form-control" placeholder="recherche de ville ou quartier " aria-label="Recipient's username" aria-describedby="button-addon2">
+                    <button onclick="searchCoordinates()" class="btn btn-dark" type="button" id="button-addon2"><i class="ri ri-search-fill"></i></button>
+                </div>
+
+                <div id="myMap" style="width: 800px; height: 600px;"></div>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script>
+    var map;
+    var LONGITUDE = document.getElementById('LONGITUDE');
+    var LATITUDE = document.getElementById('LATITUDE');
+    var marker;
+    var listeBOutiques = @Html.Raw(Json.Serialize(boutiques));
+
+    function loadMapScenario() {
+        map = L.map('myMap').setView([-18.8792, 47.5079], 6); // Coordonnées centrées sur Madagascar
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        map.on('click', function(e) {
+            displayCoordinates(e.latlng);
+            addOrUpdateMarker(e.latlng);
+        });
+        
+        for (var i=0; i<listeBOutiques.length;i++) {
+            var bout = listeBOutiques[i];
+            var LO = bout.longitude;
+            var LA = bout.latitude;
+            console.log(LO +" "+ LA);
+            var loc = L.latLng(LA, LO);
+            L.marker(loc, { icon: customIcon }).addTo(map);
+            
+            var circle = L.circle(loc, {
+                color: 'red',
+                fillColor: 'red',
+                fillOpacity: 0.2,
+                radius: 10000 // Rayon de 10 km en mètres
+            }).addTo(map);
+        }
+    }
+
+    function searchCoordinates() {
+        var city = document.getElementById('cityInput').value;
+        geocodeLocation(city);
+    }
+
+    function geocodeLocation(city) {
+        var geocodeRequest = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(city);
+        
+        fetch(geocodeRequest)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var latitude = parseFloat(data[0].lat);
+                    var longitude = parseFloat(data[0].lon);
+
+                    var location = L.latLng(latitude, longitude);
+                    map.setView(location, 12);
+                    displayCoordinates(location);
+                    addOrUpdateMarker(location);
+                } else {
+                    alert("Ville non trouvée.");
+                }
+            })
+            .catch(error => console.error("Erreur de géocodage : ", error));
+    }
+
+    function displayCoordinates(location) {
+        var latitude = location.lat.toFixed(6);
+        var longitude = location.lng.toFixed(6);
+
+        LONGITUDE.value = longitude.replace('.', ',');
+        LATITUDE.value = latitude.replace('.', ',');
+    }
+
+    function addOrUpdateMarker(location) {
+        if (marker) {
+            marker.setLatLng(location);
+        } else {
+            marker = L.marker(location).addTo(map);
+        }
+    }
+    
+     var customIcon = L.icon({
+            iconUrl: '/images/OSM/panier.png', // URL de l'icône personnalisée
+            iconSize: [32, 32], // Taille de l'icône en pixels
+            iconAnchor: [16, 32], // Point d'ancrage de l'icône (position du bas au centre)
+        });
+
+    // Appeler la fonction de chargement de la carte une fois que la page est chargée
+    window.onload = loadMapScenario;
+</script>

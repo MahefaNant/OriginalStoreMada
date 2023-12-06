@@ -1,0 +1,241 @@
+@using originalstoremada.Models.Produits
+@model originalstoremada.Models.Produits.Produit
+
+@{
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+    Produit produit = ViewBag.produit;
+}
+
+<div class="row align-items-center h-100">
+    
+            
+       
+    <form asp-action="SaveAvancer" class="col-lg-6 col-md-8 col-10 mx-auto needs-validation" novalidate>
+        <div class="card">
+            <div class="card-body">
+                <div class="mx-auto text-center my-4">
+                    <a class="navbar-brand mx-auto mt-2 flex-fill text-center" asp-controller="Admin" asp-action="Home">
+                        <img src="~/images/OSM/osm-mini.png" class="navbar-brand-img brand-md rounded"/>
+                    </a>
+                    @if (ViewData["id_produit"] == null)
+                    {
+                        <h2 class="my-3">Création d'un nouveau modèle produit</h2>
+                    }
+                    else
+                    {
+                        <h2 class="my-3">Modification d'un produit</h2>
+                    }
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="Categorie">Categorie</label>
+                        <div class="input-group mb-3">
+                            <select asp-for="IdCategorie" id="Categorie" class="form-control select2" asp-items="ViewBag.IdCategorie" required></select>
+                            @if (ViewBag.isBoss)
+                            {
+                                <div class="input-group-append">
+                                    <a data-bs-toggle="modal" data-bs-target="#createCateg" class="btn btn-outline-secondary" type="button"><i class="fe fe-plus"></i></a>
+                                </div>
+                            }
+
+                        </div>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="Type">Type/Genre</label>
+                        <div class="input-group mb-3">
+                            <select asp-for="IdType" id="Type" class="form-control select2" asp-items="ViewBag.IdType" required></select>
+                            @if (ViewBag.isBoss)
+                            {
+                                <div class="input-group-append">
+                                    <a data-bs-toggle="modal" data-bs-target="#createType" class="btn btn-outline-secondary" type="button"><i class="fe fe-plus"></i></a>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="NomProduit">Nom du produit</label>
+                    <input value="@(Model != null ? Model.Nom : "")" asp-for="Nom" class="form-control" id="NomProduit" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="Fournisseur">Fournisseur</label>
+                        <input value="@(Model != null ? Model.Fournisseur : "")" asp-for="Fournisseur" type="text" id="Fournisseur" class="form-control" required>
+                    </div>
+                    <div class="form-group col-md-6">
+                        <label for="enfant">Pour Enfant</label>
+                        <div class="custom-control custom-switch">
+                            <input value="@(Model != null ? Model.PourEnfant : "false")" asp-for="PourEnfant" type="checkbox" class="custom-control-input" id="customSwitch1">
+                            <label class="custom-control-label" for="customSwitch1">Oui ?</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="desc">Description</label>
+                    <textarea value="@(Model != null ? Model.Description : "")" asp-for="Description" class="form-control" id="example-desc" rows="4" required></textarea>
+                </div>
+
+                @if (ViewData["id_produit"] == null)
+                {
+
+                    <hr class="my-4">
+                    <div class="form-row">
+                        <div class="form-group col-md-6">
+                            <label for="achat">Prix d' achat</label>
+                            <input name="Achat" type="number" step="0.01" class="form-control" id="achat" required>
+                        </div>
+                        <div class="form-group col-md-6">
+                            <div class="custom-control custom-switch">
+                                <label for="vente">Prix de vente</label>
+                                <input name="Vente" type="number" step="0.01" class="form-control" id="vente" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    @*<div class="form-group">
+                        <div class="mb-3">
+                            <label for="formFile" class="form-label">Choisir les contenues Image de cette produit</label>
+                            <input name="Images" class="form-control" type="file" id="formFile" multiple required>
+                        </div>
+                    </div>*@
+                }
+                else
+                {
+                    <input type="hidden" asp-for="Id" value="@ViewData["id_produit"]"/>
+                }
+
+                @if (ViewData["id_produit"] == null)
+                {
+                    <button class="btn but2-mod2 but-block btn-lg" type="submit">
+                        <i class="fe fe-check-circle"></i>
+                        <span>Valider</span>
+                    </button>
+                }
+                else
+                {
+                    <button class="btn but2-mod2 but-block btn-lg" type="button" data-bs-toggle="modal" data-bs-target="#mod">
+                        <i class="fe fe-check-circle"></i>
+                        <span>Modifier</span>
+                    </button>
+                }
+
+                <p class="mt-5 mb-3 text-muted text-center">© 2020</p>
+            </div>
+        </div>
+        
+        <div class="modal fade rounded-5" id="mod" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    
+                    <div class="alert pal6_bg2 fade show mr-2 ml-2 mb-3 mt-3 text-center" role="alert">
+                        @if (ViewData["id_produit"] == null)
+                        {
+                            <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr de valider l'ajout ?</strong>
+                        }
+                        else
+                        {
+                            <strong class="text-white"><i class="fa fa-warning"></i>Êtes-vous sûr de valider les modifications ?</strong>
+                        }
+                        
+                    </div>
+        
+                    
+                    <div class="modal-footer">
+                        <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                        <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                    </div>
+                   
+                </div>
+            </div>
+        </div>
+    </form>
+      
+</div>
+
+@*-------------------MODAL CATEG---------------------------------*@
+
+<div class="modal fade" id="createCateg" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Nouvelle catégorie</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="CategorieProduit" asp-action="Create" asp-route-ver="1" class="needs-validation" novalidate>
+                @if (ViewData["id_produit"] != null)
+                {
+                    <input type="hidden" name="id_produit" value="@ViewData["id_produit"]"/>
+                }
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nom du catégorie:</label>
+                        <input name="Nom" type="text" class="form-control" id="recipient-name" placeholder="Nom du catégorie" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Code:</label>
+                        <input name="Code" type="text" class="form-control" id="recipient-name" placeholder="Code (ex: SHO pour short)" required>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label"><i class="fa fa-euro"></i> Frais de Livraison</label>
+                                <input name="Frais" type="number" step="0.01" class="form-control" id="recipient-name" placeholder="frais" required>
+                            </div>
+                        </div>
+                        <div class="col">
+                            <div class="form-group">
+                                <label for="recipient-name" class="col-form-label"><i class="fa fa-euro"></i> Commission</label>
+                                <input name="Commission" type="number" step="0.01" class="form-control" id="recipient-name" placeholder="commission" required>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*-------------------MODAL Type---------------------------------*@
+
+<div class="modal fade" id="createType" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Nouveau Type(genre)</h5>
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="TypeProduit" asp-action="Create">
+                @if (ViewData["id_produit"] != null)
+                {
+                    <input type="hidden" name="id_produit" value="@ViewData["id_produit"]"/>
+                }
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nom du type ou genre:</label>
+                        <input name="Nom" type="text" class="form-control" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 but2-mod3 btn-sm" data-bs-dismiss="modal"><i class="fa fa-close"></i>Annuler</button>
+                    <button type="submit" class="btn mb-2 but2-mod1 btn-sm"><i class="fe fe-check"></i> <span>Valider</span></button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,338 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements
+@using originalstoremada.Models.Payements.views
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Users
+@model List<originalstoremada.Models.Payements.views.VPayementProduit>
+
+@{
+    Layout = RoutePath.ContentAdmin();
+    VFacture facture = ViewBag.facture;
+    Dictionary<int, string> suivisFacture = ViewBag.suivisFacture;
+    TypePayement typePayementForm = ViewBag.typePayementForm;
+    Client client = ViewBag.client;
+    AdresseLivraisonFacture adresseLivraison = ViewBag.adresseLivraison;
+}
+
+<div class="card">
+    <div class="card-body">
+    
+        @if (ViewBag.error != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Invalide! @ViewBag.error</strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+        
+        @if (facture.DateSuspendue != null)
+        {
+            <button type="button" class="btn btn-danger disabled">
+                <i class="fa fa-bell"></i> Facture suspendue
+            </button>
+            <strong>Suspendue le <span class="text-danger">@Formattage.DateTime((DateTime)facture.DateSuspendue)</span></strong>
+        }
+    
+        <hr/>
+
+        <div class="row">
+            <div class="col-md-6">
+                <ul class="list-group list-group-flush">
+                    <li class="list-group-item">Facture #@Formattage.Numero(facture.Id)</li>
+                    <li class="list-group-item">@facture.EtatLivraisonType</li>
+                    <li class="list-group-item">@facture.EtatLivraison</li>
+                </ul>
+            </div>
+            @if (typePayementForm != null && facture.DateSuspendue==null)
+            {
+                <div class="card border-danger shadow grad_rose3">
+                    <div class="card-body mx-md-5">
+                        <h5 class="text-center">Demande de Payement Non Confirmé devis #@Formattage.Numero(facture.Id)</h5>
+                        <ul class="list-group list-group-flush mb-3">
+                            <li class="list-group-item">Type de Payement: @typePayementForm.Nom</li>
+                            <li class="list-group-item">Montant à payer : <strong class="grad_rose4"> @Formattage.Valeur(facture.MontantFin) MGA </strong></li>
+                            <li class="list-group-item">Demande de la part du client: <strong class="pal6_bg3 text-light">@client.Nom @client.Prenom</strong></li>
+                            <li class="list-group-item">Mail du client: <strong class="pal6_bg3 text-light">@client.Mail</strong></li>
+                        </ul>
+                        <button data-bs-toggle="modal" data-bs-target="#validerPayement" type="button" class="btn but2-mod2 but-block mb-3">
+                            <i class="fa fa-check-circle"></i><span>Valider le Payement</span>
+                        </button>
+                        
+                        <button data-bs-toggle="modal" data-bs-target="#suspendre" type="button" class="btn but2-mod3">
+                            <i class="fa fa-close text-danger"></i> <span class="text-danger">Suspendre cette Facture</span>
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+         
+        @if (facture.EstPayer != null)
+        {
+            @if (facture.DatePret == null)
+            {
+                @if (facture.IsInBoutique)
+                {
+                    <button data-bs-toggle="modal" data-bs-target="#validerRecup" type="button" class="btn but2-mod2">
+                        <i class="fa fa-check-circle"></i><span>Valider si les produits sont disponibles</span>
+                    </button>
+                }
+                else
+                {
+                    <button data-bs-toggle="modal" data-bs-target="#validerLivr" type="button" class="btn but2-mod2">
+                        <i class="fa fa-check-circle"></i><span>Valider si les produits sont disponibles</span>
+                    </button>
+                }
+            }
+            else if(facture.DateLivrer == null)
+            {
+                <button data-bs-toggle="modal" data-bs-target="#validerFinal" type="button" class="btn but2-mod2">
+                    <i class="fa fa-check-circle"></i><span>Finaliser si les produits sont récupéré ou Livrer</span>
+                </button>
+            }     
+        }
+        
+        @if (suivisFacture[2].Contains("completed") && adresseLivraison != null)
+        {
+            <div class="card border-danger shadow mt-3">
+                <div class="card-header">*Information de Livraison</div>
+                <div class="card-body mx-md-5">
+                    <ul class="list-group">
+                        <li class="list-group-item">Votre choix: @(adresseLivraison.IsInBoutque? "Recupération Directe sur Boutique" : "Par Livraison ")</li>
+                        <li class="list-group-item">@adresseLivraison.Quartier - @adresseLivraison.Ville</li>
+                        <li class="list-group-item">Long: @adresseLivraison.Longitude / Lat: @adresseLivraison.Latitude</li>
+                    </ul>
+                </div>
+                <div class="card-footer">
+                    <a class="btn but2-mod3 btn-sm">
+                        <i class="fa fa-map"></i><span>Consulter</span>
+                    </a>
+                </div>
+            </div>
+        }
+
+        <div class="row">
+            <div class="col-md-12">
+                <div class="tab2-wrap">
+                    <table class="tab2 table-responsive-xl">
+                        <thead>
+                        <tr>
+                            <th colspan="5">
+                                <div class="stepper-wrapper">
+                                    <div class="stepper-item @suivisFacture[1]">
+                                        <div class="step-counter">1</div>
+                                        <div class="step-name">
+                                            <ul class="list-group">
+                                                <li class="list-inline-item">Payement Effectuer</li>
+                                                @if (facture.EstPayer != null)
+                                                {
+                                                    <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.EstPayer)</li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="stepper-item @suivisFacture[2]">
+                                        <div class="step-counter">2</div>
+                                        <div class="step-name">
+                                            <ul class="list-group">
+                                                <li class="list-inline-item">prêt à livrer où a récupéré</li>
+                                                @if (facture.DatePret != null)
+                                                {
+                                                    <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DatePret)</li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="stepper-item @suivisFacture[3]">
+                                        <div class="step-counter">3</div>
+                                        <div class="step-name">
+                                            <ul class="list-group">
+                                                <li class="list-inline-item">Livraison ou Récupération effectuée</li>
+                                                @if (facture.DateLivrer != null)
+                                                {
+                                                    <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)facture.DateLivrer)</li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </th>
+                        </tr>
+                        </thead>
+                        <thead>
+                        <tr>
+                            <th class="pal6_bg2 text-white"></th>
+                            <th class="pal6_bg2 text-white">Produit</th>
+                            <th class="pal6_bg2 text-white">Date</th>
+                            <th class="pal6_bg2 text-white">Montant</th>
+                            <th class="pal6_bg2 text-white">Préférence</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr class="alert" role="alert">
+                                <td>
+                                    <img width="80px" src="~/images/produits/@(item.PreferenceProduit.ContenueProduit.Image != null ? $"minimize_{item.PreferenceProduit.ContenueProduit.Image}" : "locks/minimize_vide.jpg") "/>
+                                </td>
+                                <td class="status">
+                                    <div class="pl-3 email">
+                                        <span>@item.PreferenceProduit.Produit.Nom</span>
+                                        <span>@item.PreferenceProduit.Produit.CategorieProduit.Nom</span>
+                                    </div>
+                                </td>
+                                <td>@Formattage.DateTime(item.Date)</td>
+                                <td class="status">
+                                    <div class="pl-3 email">
+                                        <span>@Formattage.Valeur(item.Montant) MGA x @item.Quantiter</span>
+                                        <span>@Formattage.Valeur(item.MontantFin()) MGA</span>
+                                    </div>
+                                </td>
+                                <td class="status">
+                                    <div class="pl-3 email">
+                                        <span>Couleur: @item.PreferenceProduit.ContenueProduit.Couleur</span>
+                                        <span>Taille ou Pointure: @item.PreferenceProduit.Taille</span>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                        <tr>
+                            <td colspan="3"></td>
+                            <td colspan="1">Total</td>
+                            <td colspan="1">@Formattage.Valeur(facture.MontantSum) MGA</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td colspan="1">Frais de Livraison</td>
+                            <td colspan="1">@Formattage.Valeur(facture.FraisLivraison) MGA</td>
+                        </tr>
+                        <tr>
+                            <td colspan="3"></td>
+                            <td colspan="1">Sous Total</td>
+                            <td colspan="1">@Formattage.Valeur(facture.MontantFin) MGA</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*--------------VALIDATION------------------------*@
+
+<!-- valider Recuperation -->
+<div class="modal" id="validerRecup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+        
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-warning"></i> Valider si les produits sont disponibles et prêt à être récupéré!
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                <a asp-action="SetProduitPret" asp-route-id_facture="@facture.Id" class="btn btn-primary"><i class="fa fa-check"></i> Confirmer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- valider Livraison -->
+<div class="modal" id="validerLivr" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form class="needs-validation" asp-action="SetProduitPret" asp-route-id_facture="@facture.Id" novalidate>
+                <div class="modal-body">
+
+                    <div class="alert alert-danger mb-3" role="alert">
+                        <i class="fa fa-warning"></i> Valider si les produits sont disponibles et prêt à être Livrer!
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="exampleFormControlInput1" class="form-label">Date Estimer pour la livraison</label>
+                        <input type="datetime-local" class="form-control" name="dateEstim" required id="exampleFormControlInput1">
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i>Confirmer</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<!-- valider Final -->
+<div class="modal" id="validerFinal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body">
+        
+                <div class="alert alert-danger" role="alert">
+                    <i class="fa fa-warning"></i> Finaliser si les produits sont récupéré ou Livrer avec succée!
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                <a asp-action="FinaliserLivraison" asp-route-id_facture="@facture.Id" class="btn btn-primary"><i class="fa fa-check"></i> Confirmer</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@if (typePayementForm != null && facture.DateSuspendue==null)
+{
+    <!-- Payement Confirmation -->
+    <div class="modal" id="validerPayement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fa fa-warning"></i> Voulez-vous vraiment donner suite à cette Payement?
+                    </div>
+
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fa fa-info"></i> Êtes-vous sûr que la transaction a été bien faite !
+                    </div>
+                    
+                    <div class="alert alert-warning" role="alert">
+                        <i class="fa fa-info"></i> Des stocks du boutique seront réduite automatiquement !
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                    <form method="POST">
+                        <button asp-action="ValiderPayement" asp-route-id_facture="@facture.Id" type="submit" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="suspendre" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body">
+
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fa fa-warning"></i> Etes vous sûr de vouloir suspendre la facture numero # @Formattage.Numero(facture.Id)?
+                    </div>
+                    
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+                    <form method="POST">
+                        <button asp-action="SuspendrePayement" asp-route-id_facture="@facture.Id" type="submit" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+}

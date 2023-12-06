@@ -1,0 +1,71 @@
+11 Aout 
+    - Login,inscription (client)
+    - Template Page Admin and Client
+13 Aout (weekend)
+    - Login , Insertion(admin)
+14 Aout 
+    - Controlle Redirection
+    - crud boutique ( without map )
+    - Affectation Employer
+15 Aout
+    - Crud categorie produit
+    - Crud Frais d`importation
+    - Crud commission
+    - Image Sevice ( Function )
+    - Soin Design
+16 Aout
+    - CRUD produit
+        - image multiple
+        - add image principal
+        - ajout taille dispo pour un produit
+        - ajout couleur dispo pour un produit
+17 Aout
+    - ajout prix produit
+18 Aout 
+    - view and model image_principal & 
+    - ajoute modele produit 
+19 Aout(Weekend)
+    - Modification ( controlle redirection admin)
+    - Ajout stock produit ( admin, employer )
+        - dynamiquement ( insertion auto modele )
+        - depuis model existant
+21 Aout
+    - affichage modif
+    - creation Ouverture Achat
+    - Creation devis et commande devis
+    - Liste Commande devis par devis (inclus total)
+22 Aout 
+    - view devis ( total price, ...)
+    - suivi devis
+    - demande devis
+    - documentation api
+    - test call Open exchange rates
+    - documentation ngrok
+    - installation ngrok
+    
+27 Aout ( WEEKEND )
+    - modif view et creation view produit coter client
+    - modification importation image produit 
+    - Verification Boutique client
+    - Affichage produits client avec pagination
+28 Aout 
+    - Choose Boutique n`importe ou cotee client
+29 Aout
+    - Cours Euro Auto par Api en arriere Systeme
+30 Aout 
+    - Soin Design
+    - Payement Devis
+    - Payement a tranche limiter
+31 Aout
+    - Payement Modif
+    - Vol
+    - vol_devis
+    
+5 Sept 
+    - Pagination
+    - Ajout type produit ( femme, enfant, homme )
+    - Filtre Recherche avanceer 
+
+        
+    
+    

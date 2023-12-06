@@ -1,0 +1,248 @@
+@using originalstoremada.C_
+@using originalstoremada.Services.Devis
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Devis.Views
+@using originalstoremada.Models.Payements
+@model List<originalstoremada.Models.Devis.Views.VCommanceDevis>
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentAdmin();
+  VDevisInfo devis = ViewBag.devis;
+  Dictionary<int, string> suivisDevis = ViewBag.suivisDevis;
+  AdresseLivraisonDevis? adresseLivraison = ViewBag.adresseLivraison;
+}
+
+<!-- Page Title -->
+<div class="pagetitle">
+  <h1>Devis</h1>
+  <nav aria-label="breadcrumb mt-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a asp-action="Index">Les devis</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Details</li>
+    </ol>
+  </nav>
+</div>
+<!-- End Page Title -->
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@{ bool etatValider = devis.EtatActuel.Etat != DevisService.Envoyer ; }
+@if (!etatValider)
+{
+  <button data-bs-toggle="modal" data-bs-target="#valider"  class="btn but2-mod1 btn-lg"><i class="fe fe-check"></i> <span>Valider</span></button>
+  <button data-bs-toggle="modal" data-bs-target="#nonvalider"  class="btn but2-mod2 btn-lg"><i class="fe fe-x"></i> <span>Non Valider</span></button>
+}
+else
+{
+  <a asp-action="Payement" asp-route-id_devis="@devis.Id" class="btn but2-mod1 btn-lg"><i class="fa fa-money"></i> Payement Détails</a>
+}
+
+@if (devis.DatePayer != null)
+{
+  <a asp-action="OptionImportation" asp-route-id_devis="@devis.Id" class="btn but2-mod2 btn-lg"><i class="fa fa-plane"></i> Options D'Importation</a>
+}
+      
+
+<hr/>
+
+<div class="alert alert-danger" role="alert">
+  Etat actuel de cette devis "<a href="#" class="alert-link">@devis.EtatActuel.Etat</a>"
+</div>
+@if (devis.DateDelete != null)
+{
+  <div class="alert alert-danger" role="alert">
+    Dernier Remarque: "<a href="#" class="alert-link">@devis.Remarque</a>"
+  </div>
+}
+<hr/>
+
+<div class="tab2-wrap">
+  <table class="tab2">
+    <thead>
+    <tr>
+      <th colspan="7">
+        @if (devis.DateDelete != null)
+        {
+          <div class="alert alert-danger" role="alert">
+            Dernier Remarque: "<a href="#" class="alert-link">@devis.Remarque</a>"
+          </div>
+        }
+        <div class="stepper-wrapper">
+          <div class="stepper-item @suivisDevis[0]">
+            <div class="step-counter"><i class="fa fa-close"></i></div>
+            <div class="step-name">
+              <ul class="list-group">
+                <li class="list-inline-item text-center">Effacer / Invalide</li>
+                @if (devis.DateDelete != null)
+                {
+                  <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateDelete)</li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="stepper-item @suivisDevis[1]">
+            <div class="step-counter">1</div>
+            <div class="step-name">
+              <ul class="list-group">
+                <li class="list-inline-item text-center">Demander</li>
+                @if (true)
+                {
+                  <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.Date)</li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="stepper-item @suivisDevis[2]">
+            <div class="step-counter">2</div>
+            <div class="step-name">
+              <ul class="list-group">
+                <li class="list-inline-item text-center">EValider</li>
+                @if (devis.DateValidation != null)
+                {
+                  <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateValidation)</li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="stepper-item @suivisDevis[3]">
+            <div class="step-counter">3</div>
+            <div class="step-name">
+              <ul class="list-group">
+                <li class="list-inline-item text-center">Avance Payement</li>
+                @if (devis.DatePayer != null)
+                {
+                  <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DatePayer)</li>
+                }
+              </ul>
+            </div>
+          </div>
+          <div class="stepper-item @suivisDevis[4]">
+            <div class="step-counter">4</div>
+            <div class="step-name">
+              <ul class="list-group">
+                <li class="list-inline-item text-center">Livré</li>
+                @if (devis.IsLivrer)
+                {
+                  <li class="list-inline-item text-secondary"><i class="fa fa-check"></i></li>
+                }
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="alert alert-@(devis.DatePayer != null ? "success" : "danger") h5" role="alert">
+          Payement <i class="fa fa-arrow-right"></i>
+          "<a href="#" class="alert-link">@(devis.DatePayer != null ? "Complet" : "Incomplet") <i class="fa fa-@(devis.DatePayer != null ? "check-circle-o" : "close")"></i></a>"
+        </div>
+      </th>
+    </tr>
+    </thead>
+    <thead>
+    <tr>
+      <th scope="col" class="pal6_bg2 text-white"></th>
+      <th scope="col" class="pal6_bg2 text-white">Produit</th>
+      <th scope="col" class="pal6_bg2 text-white">Prix Euro <i class="fa fa-euro"></i></th>
+      <th scope="col" class="pal6_bg2 text-white">Couleur</th>
+      <th scope="col" class="pal6_bg2 text-white">Taille</th>
+      <th scope="col" class="pal6_bg2 text-white">Quantiter</th>
+      <th scope="col" class="pal6_bg2 text-white">Url Ref</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var q in Model)
+    {
+      <input type="hidden" name="Id" value="@q.Id"/>
+      <input type="hidden" name="IdDevis" value="@q.IdDevis"/>
+      <tr scope="row">
+        <td>
+          <a>
+            <img class="img-thumbnail" src="~/images/produits/@(q.image != null ? $"minimize_{q.image}" : "locks/minimize_vide.jpg") " alt="">
+          </a>
+        </td>
+        <td>
+          @q.ProduitName
+        </td>
+        <td>
+          @q.PrixEuro <i class="fa fa-euro"></i>
+          @* <small class="d-block">Far far away, behind the word mountains</small> *@
+        </td>
+        <td>@q.Couleur</td>
+        <td>@q.Taille</td>
+        <td>@q.Nombre</td>
+        <td><a href="@q.ReferenceSite" target="_blank">@q.ReferenceSite</a></td>
+      </tr>
+    }
+    <tr>
+      <td></td> <td>@devis.ActuelEuroElement <i class="fa fa-euro"></i></td>
+      <td>Cours Euro: @(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.CoursEuro)} MGA (instable)" : $"{Formattage.Valeur((double)devis.CoursDevis)} MGA (Fix)") </td>
+      <td colspan="3"> <i class="fa fa-arrow-right"></i> @Formattage.Valeur((double)devis.TotalPrixAriary1) MGA</td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+@*--------------VALIDATION------------------------*@
+
+
+
+@if (!etatValider)
+{
+  
+  <!-- valider -->
+  <div class="modal" id="valider" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-body">
+        
+          <div class="alert alert-danger" role="alert">
+            <i class="fa fa-warning"></i> Voulez-vous vraiment donner suite à cette demande?
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+          <form method="POST">
+            <button type="submit" asp-action="Valider" asp-route-id_devis="@devis.Id" class="btn btn-primary"><i class="fa fa-check"></i> Confirmer</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non valider -->
+  <div class="modal" id="nonvalider" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form asp-action="NonValide" asp-route-id_devis="@devis.Id">
+          <div class="modal-body">
+          
+            <div class="alert alert-danger" role="alert">
+              <i class="fa fa-warning"></i> Voulez-vous vraiment refuser cette demande?
+            </div>
+            <div class="mb-3">
+              <label for="exampleFormControlTextarea1" class="form-label">Remarque*</label>
+              <textarea name="Remarque" class="form-control" id="exampleFormControlTextarea1" rows="3">Devis invalide ou information non cohérente</textarea>
+            </div>
+          </div>
+        
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+            <button type="submit" class="btn btn-primary"><i class="fa fa-check"></i> Confirmer</button>
+          </div>
+        
+        </form>
+      </div>
+    </div>
+  </div>
+}
+
+
+
+
+

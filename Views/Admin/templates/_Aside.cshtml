@@ -1,0 +1,347 @@
+@using originalstoremada.Models.Users
+@using originalstoremada.Services.Users
+@using originalstoremada.Models.Boutiques
+@using Newtonsoft.Json
+
+@{
+  Admin admin = AdminService.GetByCookies(Context.Request.Cookies["admin"]);
+  Boutique boutique = null;
+  if (Context.Request.Cookies["boutique"] != null) boutique = JsonConvert.DeserializeObject<Boutique>(Context.Request.Cookies["boutique"]);
+}
+
+@*<aside id="sidebar" class="sidebar">
+
+  <ul class="sidebar-nav" id="sidebar-nav">
+    
+    @if (boutique != null)
+      {
+        <li class="nav-heading">Boutique(@boutique.adresse)</li>
+      }
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#produits-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Produits</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="produits-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a asp-controller="CategorieProduit" asp-action="Index">
+            <i class="bi bi-circle"></i><span>Categorie Produit</span>
+          </a>
+        </li>
+        <li>
+          <a asp-controller="Produit" asp-action="Index">
+            <i class="bi bi-circle"></i><span>Produits</span>
+          </a>
+        </li>
+      </ul>
+    </li>
+   
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#devis-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Devis</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="devis-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a asp-controller="Vol" asp-action="Index">
+            <i class="bi bi-circle"></i><span>VOl</span>
+          </a>
+        </li>
+        <li>
+          <a asp-controller="DevisAdmin" asp-action="Index">
+            <i class="bi bi-circle"></i><span>Les Devis</span>
+          </a>
+        </li>
+
+      </ul>
+    </li>
+    
+    <li class="nav-item">
+      <a class="nav-link " asp-controller="FactureAdmin" asp-action="Facture">
+        <i class="ri ri-computer-fill"></i>
+        <span>Factures</span>
+      </a>
+    </li>
+
+    $1$--------------------------------------#1#
+    
+    @if (AdminService.IsLevel_5(admin))
+    {
+      <li class="nav-heading">Super Admin</li>
+
+      <li class="nav-item">
+        <a class="nav-link " asp-controller="Admin_S" asp-action="Index">
+          <i class="ri ri-computer-fill"></i>
+          <span>Employers</span>
+        </a>
+      </li>
+      
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#boutiqueAd-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-layout-text-window-reverse"></i><span>Devis</span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="boutiqueAd-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a asp-controller="InfoLivraison" asp-action="Index">
+              <i class="bi bi-circle"></i><span>Info Livraison</span>
+            </a>
+          </li>
+          
+          <li>
+            <a asp-controller="Boutique" asp-action="Index">
+              <i class="bi bi-circle"></i><span>Boutiques</span>
+            </a>
+          </li>
+
+        </ul>
+      </li>
+    }
+
+    $1$------------------------------------------------------------------#1#
+
+    <li class="nav-heading">Templates_</li>
+
+    <li class="nav-item">
+      <a class="nav-link " href="index.html">
+        <i class="bi bi-grid"></i>
+        <span>Dashboard</span>
+      </a>
+    </li><!-- End Dashboard Nav -->
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" data-bs-target="#tables-nav" data-bs-toggle="collapse" href="#">
+        <i class="bi bi-layout-text-window-reverse"></i><span>Tables</span><i class="bi bi-chevron-down ms-auto"></i>
+      </a>
+      <ul id="tables-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+        <li>
+          <a href="tables-general.html">
+            <i class="bi bi-circle"></i><span>General Tables</span>
+          </a>
+        </li>
+        <li>
+          <a href="tables-data.html">
+            <i class="bi bi-circle"></i><span>Data Tables</span>
+          </a>
+        </li>
+      </ul>
+    </li><!-- End Tables Nav -->
+
+    <li class="nav-heading">Pages</li>
+
+    <li class="nav-item">
+      <a class="nav-link collapsed" href="users-profile.html">
+        <i class="bi bi-person"></i>
+        <span>Profile</span>
+      </a>
+    </li><!-- End Profile Page Nav -->
+
+  </ul>
+
+
+</aside><!-- End Sidebar-->*@
+
+<aside class="sidebar-left border-right bg-white shadow" id="leftSidebar" data-simplebar>
+  <a href="#" class="btn collapseSidebar toggle-btn d-lg-none text-muted ml-2 mt-3" data-toggle="toggle">
+    <i class="fe fe-x"><span class="sr-only"></span></i>
+  </a>
+  <nav class="vertnav navbar navbar-light">
+    <!-- nav bar -->
+    <div class="w-100 mb-4 d-flex">
+      <a class="navbar-brand mx-auto mt-2 flex-fill text-center" asp-controller="Admin" asp-action="Home">
+        <strong class="h2 fw-bold text-dark">Original</strong><span class="h2 text-secondary">-Store</span>
+      </a>
+    </div>
+    <ul class="navbar-nav flex-fill w-100 mb-2">
+      <li class="nav-item w-100">
+        <a class="nav-link" asp-controller="Admin" asp-action="Home">
+          <i class="fe fe-layers fe-16"></i>
+          <span class="ml-3 item-text">Accueil</span>
+        </a>
+      </li>
+      
+      <li class="nav-item w-100">
+        <a class="nav-link" asp-controller="StatVente" asp-action="VenteProduit">
+          <i class="fa fa-bar-chart fe-16"></i>
+          <span class="ml-3 item-text">Stat. de vente</span>
+        </a>
+      </li>
+
+      @if (AdminService.IsLevel_5(admin))
+      {
+        <p class="text-muted nav-heading mt-4 mb-1">
+          <span>Super Admin</span>
+        </p> 
+        
+        <li class="nav-item w-100">
+          <a class="nav-link" asp-controller="Vol" asp-action="Index">
+            <i class="fa fa-plane fa-16"></i>
+            <span class="ml-3 item-text">Tous les Vols</span>
+          </a>
+        </li>
+
+        <li class="nav-item w-100">
+          <a class="nav-link" asp-controller="TypePayement" asp-action="Index">
+            <i class="fe fe-layers fe-16"></i>
+            <span class="ml-3 item-text">Type de Payement</span>
+          </a>
+        </li>
+
+        <li class="nav-item w-100">
+          <a class="nav-link" asp-controller="CategorieProduit" asp-action="Index">
+            <i class="fa fa-book fa-16"></i>
+            <span class="ml-3 item-text">Catégories Produits</span>
+          </a>
+        </li>
+
+        <li class="nav-item w-100 notifBell">
+          <a class="nav-link" asp-controller="Boutique" asp-action="Index">
+            <i class="fa fa-home fa-16"></i>
+            <span class="ml-3 item-text">Nos Boutiques</span>
+          </a>
+        </li>
+        
+        <li class="nav-item w-100 notifBell DEV">
+          <a class="nav-link"  asp-controller="DevisAdmin" asp-action="Index">
+            <i class="fa fa-retweet fa-16"></i>
+            <span class="ml-3 item-text">Les Devis <i class="fa bell"></i> <b class="notifLab text-secondary"></b></span>
+          </a>
+        </li>
+        
+        <p class="text-muted nav-heading mt-4 mb-1">
+          <span>Preference</span>
+        </p>
+        
+        <li class="nav-item w-100">
+          <a class="nav-link"  asp-controller="Admin" asp-action="HomeClientImage">
+            <i class="fa fa-pagelines fa-16"></i>
+            <span class="ml-3 item-text">Images d`accueil</span>
+          </a>
+        </li>
+
+      }
+
+      <p class="text-muted nav-heading mt-4 mb-1">
+        <span>Notre Produit</span>
+      </p>
+      
+      <li class="nav-item w-100">
+        <a class="nav-link" asp-controller="Produit" asp-action="Index" asp-route-refresh="true">
+          <i class="fa fa-product-hunt fa-16"></i>
+          <span class="ml-3 item-text">Tous les Produits</span>
+        </a>
+      </li>
+      
+      <li class="nav-item w-100 notifBell FAC">
+        <a class="nav-link" asp-controller="FactureAdmin" asp-action="Facture">
+          <i class="fa fa-paper-plane fa-16"></i>
+          <span class="ml-3 item-text">Factures <i class="fa bell"></i> <b class="notifLab text-secondary"></b></span>
+        </a>
+      </li>
+      
+      @if (AdminService.IsLevel_5(admin))
+      {
+        <p class="text-muted nav-heading mt-4 mb-1">
+          <span>Événement</span>
+        </p>
+
+        <li class="nav-item w-100 notifBell EVT">
+          <a class="nav-link" asp-controller="EventAdmin" asp-action="Index" asp-route-refresh="true">
+            <i class="fe fe-calendar fa-16"></i>
+            <span class="ml-3 item-text">Événements <i class="fa bell"></i> <b class="notifLab text-secondary"></b></span>
+          </a>
+        </li>
+      }
+
+      <script>
+        document.addEventListener('DOMContentLoaded', function () {
+          // Fonction pour charger le nombre d'événements à intervalles réguliers
+          function chargerNotif(url , labelLi) {
+            // Appeler le contrôleur via AJAX pour obtenir le nombre d'événements
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', url, true);
+            xhr.onreadystatechange = function () {
+              if (xhr.readyState === 4 && xhr.status === 200) {
+                // Les données JSON sont retournées avec succès, vous pouvez les traiter ici
+                var resultat = JSON.parse(xhr.responseText);
+                var res = resultat.res;
+                var color = resultat.color;
+                // Mettre à jour le data-label1 de la balise <li>
+                var label1LiList = document.querySelectorAll(labelLi);
+      
+                 label1LiList.forEach(function (label1Li) {
+                   if(res >= 1) {
+                    var icon = label1Li.querySelector('.bell');
+                    var lab = label1Li.querySelector('.notifLab');
+                    if (icon) {
+                      icon.classList.add('fa-bell',color, 'bell-moving');
+                    }
+                    if (lab) {
+                      lab.innerHTML = res;
+                    }
+                  } else {
+                    var icon = label1Li.querySelector('.bell');
+                    if (icon) {
+                      icon.classList.remove('fa-bell' , color, 'bell-moving');
+                    }
+                    var lab = label1Li.querySelector('.notifLab');
+                    if (lab) {
+                      lab.innerHTML = "";
+                    }
+                  }
+                 });
+              }
+            };
+            xhr.send();
+          }
+          chargerNotif('/FactureAdmin/NotifFacture' , '.FAC');
+           chargerNotif('/Event/EventExist' , '.EVT');
+           chargerNotif('/DevisAdmin/NotifDevis' , '.DEV');
+           
+           setInterval(function () {
+             chargerNotif('/FactureAdmin/NotifFacture', '.FAC');
+             chargerNotif('/Event/EventExist', '.EVT');
+             chargerNotif('/DevisAdmin/NotifDevis' , '.DEV');
+             }, 30000);
+            });
+      </script>
+
+      @*---------------------------------------*@
+  
+      @*<li class="nav-item dropdown">
+        <a href="#dashboard" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+          <i class="fe fe-home fe-16"></i>
+          <span class="ml-3 item-text">Dashboard</span><span class="sr-only">(current)</span>
+        </a>
+        <ul class="collapse list-unstyled pl-4 w-100" id="dashboard">
+          <li class="nav-item active">
+            <a class="nav-link pl-3" href="./index.html"><span class="ml-1 item-text">Default</span></a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <p class="text-muted nav-heading mt-4 mb-1">
+      <span>Components</span>
+    </p>
+    <ul class="navbar-nav flex-fill w-100 mb-2">
+      <li class="nav-item dropdown">
+        <a href="#ui-elements" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle nav-link">
+          <i class="fe fe-box fe-16"></i>
+          <span class="ml-3 item-text">UI elements</span>
+        </a>
+        <ul class="collapse list-unstyled pl-4 w-100" id="ui-elements">
+          <li class="nav-item">
+            <a class="nav-link pl-3" href="./ui-color.html"><span class="ml-1 item-text">Colors</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+      <li class="nav-item w-100">
+        <a class="nav-link" href="widgets.html">
+          <i class="fe fe-layers fe-16"></i>
+          <span class="ml-3 item-text">Widgets</span>
+          <span class="badge badge-pill pal6_bg3">New</span>
+        </a>
+      </li>*@
+    </ul>
+  </nav>
+</aside>
+

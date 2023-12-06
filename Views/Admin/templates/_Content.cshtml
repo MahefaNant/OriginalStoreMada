@@ -1,0 +1,21 @@
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.C_
+@{
+    Layout = RoutePath.HtmlTemplateAdmin();
+}
+
+<div class="wrapper">
+    <partial name="@RoutePath.NavAdmin()"/>
+    <partial name="@RoutePath.AsideAdmin()"/>
+    <main role="main" class="main-content">
+        <div class="container-fluid">
+            <div class="row justify-content-center">
+                <div class="col-12">
+                    @RenderBody()
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+<script src="~/js/site.js" asp-append-version="true"></script>
+@await RenderSectionAsync("Scripts", required: false)

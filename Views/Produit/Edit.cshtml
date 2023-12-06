@@ -1,0 +1,149 @@
+@model originalstoremada.Models.Produits.Produit
+
+@{
+    Layout = "~/Views/Admin/templates/_Content.cshtml";
+}
+
+<div class="row align-items-center h-100">
+    <form asp-action="SaveAvancer" class="col-lg-6 col-md-8 col-10 mx-auto" enctype="multipart/form-data">
+        <div class="mx-auto text-center my-4">
+            <a class="navbar-brand mx-auto mt-2 flex-fill text-center" href="./index.html">
+                <svg version="1.1" id="logo" class="navbar-brand-img brand-md" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 120 120" xml:space="preserve">
+                    <g>
+                        <polygon class="st0" points="78,105 15,105 24,87 87,87 	" />
+                        <polygon class="st0" points="96,69 33,69 42,51 105,51 	" />
+                        <polygon class="st0" points="78,33 15,33 24,15 87,15 	" />
+                    </g>
+                </svg>
+            </a>
+            <h2 class="my-3">Création du nouveau modèle produit</h2>
+        </div>
+        
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="Categorie">Categorie</label>
+                <div class="input-group mb-3">
+                    <select asp-for="IdCategorie" id="Categorie" class="form-control select2" asp-items="ViewBag.IdCategorie"></select>
+                    <div class="input-group-append">
+                        <a data-toggle="modal" data-target="#createCateg" data-whatever="@@mdo" class="btn btn-outline-secondary" type="button"><i class="fe fe-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="Type">Type/Genre</label>
+                <div class="input-group mb-3">
+                    <select asp-for="IdType" id="Type" class ="form-control select2" asp-items="ViewBag.IdType"></select>
+                    <div class="input-group-append">
+                        <a data-toggle="modal" data-target="#createType" data-whatever="@@mdo" class="btn btn-outline-secondary" type="button"><i class="fe fe-plus"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label for="NomProduit">Nom du produit</label>
+            <input asp-for="Nom" class="form-control" id="NomProduit">
+        </div>
+
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="Fournisseur">Fournisseur</label>
+                <input asp-for="Fournisseur" type="text" id="Fournisseur" class="form-control">
+            </div>
+            <div class="form-group col-md-6">
+                <label for="enfant">Pour Enfant</label>
+                <div class="custom-control custom-switch">
+                    <input asp-for="PourEnfant" type="checkbox" class="custom-control-input" id="customSwitch1">
+                    <label class="custom-control-label" for="customSwitch1">Oui ?</label>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <label for="desc">Description</label>
+            <textarea asp-for="Description" class="form-control" id="example-desc" rows="4"></textarea>
+        </div>
+        <hr class="my-4">
+        <div class="form-row">
+            <div class="form-group col-md-6">
+                <label for="achat">Prix d' achat</label>
+                <input name="Achat" type="number" class="form-control" id="achat">
+            </div>
+            <div class="form-group col-md-6">
+                <div class="custom-control custom-switch">
+                    <label for="vente">Prix de vente</label>
+                    <input name="Vente" type="number" class="form-control" id="vente">
+                </div>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            @*<label for="file">Choisir les images du produit</label>
+            <input name="Images" type="file" class="form-control" id="file" multiple>*@
+            <div class="mb-3">
+                <label for="formFile" class="form-label">Choisir les contenues Image de cette produit</label>
+                <input name="Images" class="form-control" type="file" id="formFile" multiple>
+            </div>
+        </div>
+        
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign up</button>
+        <p class="mt-5 mb-3 text-muted text-center">© 2020</p>
+    </form>
+</div>
+
+@*-------------------MODAL CATEG---------------------------------*@
+
+<div class="modal fade" id="createCateg" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Nouvelle catégorie</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="CategorieProduit" asp-action="Create">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nom du catégorie:</label>
+                        <input name="Nom" type="text" class="form-control" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn mb-2 btn-primary">Valider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@*-------------------MODAL Type---------------------------------*@
+
+<div class="modal fade" id="createType" tabindex="-1" role="dialog" aria-labelledby="varyModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="varyModalLabel">Nouveau Type(genre)</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form asp-controller="TypeProduit" asp-action="Create">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="recipient-name" class="col-form-label">Nom du type ou genre:</label>
+                        <input name="Nom" type="text" class="form-control" id="recipient-name">
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn mb-2 btn-secondary" data-dismiss="modal">Annuler</button>
+                    <button type="submit" class="btn mb-2 btn-primary">Valider</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

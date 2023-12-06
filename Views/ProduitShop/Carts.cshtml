@@ -1,0 +1,394 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Boutiques
+@using originalstoremada.Models.Others
+@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using originalstoremada.Models.Payements
+@using originalstoremada.Models.Users
+@model List<originalstoremada.Models.Produits.Others.Cart>
+
+@{
+    Layout = RoutePath.ContentClient();
+	Coordonner? coordonner = ViewBag.coordonner;
+	InfoPayementShop infoPayement = ViewBag.infoPayement;
+	Client? client = ViewBag.client;
+	List<TypePayement> typePayements = ViewBag.typePayements;
+}
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script> 
+
+<!-- breadcrumb -->
+<div class="container">
+	<div class="bread-crumb flex-w p-l-25 p-r-15 p-t-30 p-lr-0-lg">
+		<a href="index.html" class="stext-109 cl8 hov-cl1 trans-04">
+			Home
+			<i class="fa fa-angle-right m-l-9 m-r-10" aria-hidden="true"></i>
+		</a>
+
+		<span class="stext-109 cl4">
+			Shoping Cart
+		</span>
+	</div>
+</div>
+
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+
+<!-- Shoping Cart -->
+<div class="">
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col-lg-10 col-xl-7 m-lr-auto m-b-50">
+				<form asp-controller="ProduitShop" asp-action="UpdateCart" method="post">
+					<div class="m-l-25 m-r--38 m-lr-0-xl card">
+						<div class="wrap-table-shopping-cart">
+							<table class="table-shopping-cart">
+								<tr class="table_head">
+									<th class="column-1">Produit</th>
+									<th class="column-2"></th>
+									<th class="column-3">Prix</th>
+									<th class="column-4">Quantiter</th>
+									<th class="column-5">Total</th>
+								</tr>
+							
+								@foreach (var item in Model)
+								{
+									<tr class="table_row">
+										<td class="column-1">
+											<div class="how-itemcart1">
+												<img src="~/images/produits/@item.Image" class="img-fluid img-thumbnail"/>
+											</div>
+										</td>
+										<td class="column-2">
+											<ul class="list-group">
+												<li class="list-group-item d-flex justify-content-between align-items-start">
+													<div class="ms-2 me-auto">
+														<div class="fw-bold">Couleur : @item.Couleur</div>
+														@item.Nom
+														<div class="fw">
+															<a asp-action="RemoveCartElement" asp-route-id_pref="@item.IdPref" class="btn but2-mod3 btn-sm">
+																<i class="fa fa-trash text-danger"></i><span class="text-danger">Suprimer</span>
+															</a>
+														</div>
+													</div>
+													<span class="badge bg-white text-dark rounded-pill">Taille: @item.Taille</span>
+												</li>
+											</ul>
+										</td>
+										<td class="column-3">@Formattage.Valeur(item.PrixVente) MGA</td>
+										<td class="column-4">
+											<input type="hidden" name="idPrefs" value="@item.IdPref">
+											<div class="wrap-num-product flex-w m-l-auto m-r-0">
+												<div class="btn-num-product-down cl8 hov-btn3 trans-04 flex-c-m">
+													<i class="fs-16 zmdi zmdi-minus"></i>
+												</div>
+
+												<input class="mtext-104 cl3 txt-center num-product" type="number" name="quants" value="@item.Quantiter">
+
+												<div class="btn-num-product-up cl8 hov-btn3 trans-04 flex-c-m">
+													<i class="fs-16 zmdi zmdi-plus"></i>
+												</div>
+											</div>
+										</td>
+										<td class="column-5">@Formattage.Valeur(Math.Round(item.PrixVente*item.Quantiter)) MGA</td>
+									</tr>
+								}
+							
+							</table>
+						</div>
+
+						<div class="flex-w flex-sb-m bor15 p-t-18 p-b-15 p-lr-40 p-lr-15-sm">
+							<div class="flex-w flex-m m-r-20 m-tb-5">
+								<a asp-action="Index" class="btn but2-mod2">
+									<i class="fa fa-play"></i><span>Continuer à magasiner</span>
+								</a>
+							</div>
+
+							<button type="submit" class="btn but2-mod3">
+								<i class="fa fa-edit"></i><span>Modifier Pannier</span>
+							</button>
+						</div>
+					
+					</div>
+				</form>
+			</div>
+
+			<div class="col-sm-10 col-lg-7 col-xl-5 m-lr-auto m-b-50">
+				<div class="bor10 p-lr-40 p-t-30 p-b-40 m-l-63 m-r-40 m-lr-0-xl p-lr-15-sm card">
+					<h4 class="mtext-109 cl2 p-b-30">
+						Total de votre Panier
+					</h4>
+
+					<div class="flex-w flex-t bor12 p-b-13">
+						<div class="size-208">
+							<span class="stext-110 cl2">
+								Sous-total:
+							</span>
+						</div>
+
+						<div class="size-209">
+							<span class="mtext-110 cl2">
+								@Formattage.Valeur(ViewBag.summCarts) MGA
+							</span>
+						</div>
+					</div>
+
+					<div class="flex-w flex-t bor12 p-t-15 p-b-30">
+						<div class="size-208 w-full-ssm">
+							<span class="stext-110 cl2">
+								Livraison:
+							</span>
+						</div>
+
+						<div class="size-209 p-r-18 p-r-0-sm w-full-ssm">
+							
+							<p class="stext-111 cl6 p-t-2">
+								Veuillez choisir ici votre type de livraison
+							</p>
+
+							<div class="text-center">
+								<a asp-action="ChooseBoutique" asp-route-InBoutique="true" class="btn mb-2 mr-2 but2-mod1 btn-sm"><i class="fa fa-gift"></i> <span>Option de récupération en boutique</span></a>
+								<a asp-action="ChooseBoutique" class="btn mb-2 but2-mod2 btn-sm"><i class="fa fa-truck"></i> <span>Option de livraison</span></a>
+							</div>
+
+						
+
+							<div class="p-t-15">
+								@if (coordonner != null)
+								{
+									@if (coordonner.Type == 0)
+									{
+										<div class="card">
+											<div class="card-header">Type: Récupération directe sur Boutique</div>
+											<div class="card-body">
+												<ul class="list-group mb-3">
+													<li class="list-group-item pal6_bg1" aria-current="true">Boutique</li>
+													<li class="list-group-item">@coordonner.Boutique.Quartier - @coordonner.Boutique.Ville</li>
+													<li class="list-group-item">@coordonner.Boutique.adresse</li>
+												</ul>
+												<ul class="list-group">
+													<li class="list-group-item pal6_bg3 text-white" aria-current="true">Frais de Livraison : 0 MGA</li>
+												</ul>
+											</div>
+										</div>
+									}
+									else if (coordonner.Type == 1)
+									{
+										<div class="card">
+											<div class="card-header">Type: Choix du lieu de livraison.</div>
+											<div class="card-body">
+												<ul class="list-group">
+													<li class="list-group-item pal6_bg3 text-white" aria-current="true">Lieu</li>
+													<li class="list-group-item">@coordonner.Quartier - @coordonner.Ville</li>
+													<li class="list-group-item">Long: @coordonner.Longitude</li>
+													<li class="list-group-item">Lat: @coordonner.Latitude</li>
+												</ul>
+												<ul class="list-group">
+													<li class="list-group-item pal6_bg3 text-white" aria-current="true">Frais de Livraison : @Formattage.Valeur(infoPayement.FraisLivraison()) MGA</li>
+												</ul>
+											</div>
+										</div>
+
+									}
+								}
+
+								@*<div class="bor8 bg0 m-b-12">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="state" placeholder="State /  country">
+								</div>
+
+								<div class="bor8 bg0 m-b-22">
+									<input class="stext-111 cl8 plh3 size-111 p-lr-15" type="text" name="postcode" placeholder="Postcode / Zip">
+								</div>*@
+
+							</div>
+						</div>
+					</div>
+					
+
+					@if (infoPayement != null)
+					{
+						<div class="flex-w flex-t p-t-27 p-b-33">
+							<div class="size-208">
+								<span class="mtext-101 cl2">
+									Total:
+								</span>
+							</div>
+
+							<div class="size-209 p-t-1">
+								<span class="mtext-110 cl2">
+									@(infoPayement!=null ? Formattage.Valeur(infoPayement.MontantFinal()) : "?" ) MGA
+								</span>
+							</div>
+						</div>
+						
+						<a asp-action="" data-bs-toggle="modal" data-bs-target="#validerPayement" type="button" class="btn but2-mod1 but-block">
+							<i class="fa fa-check-circle"></i><span>Procéder au Payement</span>
+						</a>
+					}
+
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!-- Payement Confirmation -->
+@if (infoPayement != null)
+{
+	<div class="modal" id="validerPayement" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content">
+				<form asp-action="Payement">
+					<div class="modal-body">
+						<div class="alert alert-danger" role="alert">
+							<i class="fa fa-warning"></i> Voulez-vous vraiment donner suite à cette Payement?
+						</div>
+						
+						@for (int i = 0; i < typePayements.Count(); i++)
+						{
+							<div class="form-check">
+								<input name="id_typePayement" class="form-check-input" type="radio" value="@typePayements[i].Id" id="flexCheckChecked" @(i == 0 ? "checked" : "")>
+								<label class="form-check-label" for="flexCheckChecked">
+									@typePayements[i].Nom
+								</label>
+							</div>
+						}
+
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><i class="fa fa-close"></i> Annuler</button>
+						<button data-bs-toggle="modal" data-bs-target="#confirmation" type="submit" class="btn btn-danger"><i class="fa fa-check"></i> Confirmer</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+}
+
+<!-- Modal Confirmation -->
+<div class="modal" id="confirmation" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+	<div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+			<div class="modal-body text-center">
+				<h2>
+					Confirmation
+					<div class="spinner-border text-success" role="status">
+						<span class="visually-hidden">Loading...</span>
+					</div>
+				</h2>
+				<h4 class="mb-2">Votre paiement est en traitement</h4>
+			</div>
+		</div>
+	</div>
+</div>
+
+@if (ViewData["Payementsuccess"] != null && client!=null)
+{
+<script>
+    // Wait for the page to fully load
+    document.addEventListener("DOMContentLoaded", function() {
+        // Activate the modal by targeting its ID
+        var modal = new bootstrap.Modal(document.getElementById('det'));
+        modal.show();
+    });
+</script>
+    
+    <!-- Modal Confirmation -->
+    <div class="modal" id="det" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-body text-center">
+                    <h2>
+                        Confirmation Effectuer <i class="fa fa-check-circle-o"></i>
+                    </h2>
+                    <div class="icon d-flex align-items-center justify-content-center">
+                        <img src="~/images/OSM/confirm1.png" alt="" class="img-fluid">
+                    </div>
+                    <h4 class="mb-2">Informations Envoyer à votre email : <span class="text-bg-danger">@client.Mail</span></h4>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Terminer <i class="fa fa-check-circle-o"></i></button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+<script>
+    var map;
+    var coordinatesInput = document.getElementById('coordinatesInput');
+    var marker;
+    function loadMapScenario() {
+        map = L.map('myMap').setView([-18.8792, 47.5079], 6); // Coordonnées centrées sur Madagascar
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(map);
+
+        map.on('click', function(e) {
+            displayCoordinates(e.latlng);
+            addOrUpdateMarker(e.latlng);
+        });
+    }
+
+    function searchCoordinates() {
+        var city = document.getElementById('cityInput').value;
+        geocodeLocation(city);
+    }
+
+    function geocodeLocation(city) {
+        var geocodeRequest = "https://nominatim.openstreetmap.org/search?format=json&q=" + encodeURIComponent(city);
+        
+        fetch(geocodeRequest)
+            .then(response => response.json())
+            .then(data => {
+                if (data.length > 0) {
+                    var latitude = parseFloat(data[0].lat);
+                    var longitude = parseFloat(data[0].lon);
+
+                    var location = L.latLng(latitude, longitude);
+                    map.setView(location, 14);
+                    displayCoordinates(location);
+                    addOrUpdateMarker(location);
+                } else {
+                    alert("Ville non trouvée.");
+                }
+            })
+            .catch(error => console.error("Erreur de géocodage : ", error));
+    }
+
+    function displayCoordinates(location) {
+        var latitude = location.lat.toFixed(6);
+        var longitude = location.lng.toFixed(6);
+
+        coordinatesInput.value = "Latitude : " + latitude + ", Longitude : " + longitude;
+    }
+    
+    var customIcon = L.icon({
+        iconUrl: '/images/OSM/panier.png', // URL de l'icône personnalisée
+        iconSize: [32, 32], // Taille de l'icône en pixels
+        iconAnchor: [16, 32], // Point d'ancrage de l'icône (position du bas au centre)
+    });
+
+    function addOrUpdateMarker(location) {
+        if (marker) {
+            marker.setLatLng(location);
+        } else {
+            marker = L.marker(location, { icon: customIcon } ).addTo(map);
+        }
+    }
+
+    // Appeler la fonction de chargement de la carte une fois que la page est chargée
+    window.onload = loadMapScenario;
+</script>
+

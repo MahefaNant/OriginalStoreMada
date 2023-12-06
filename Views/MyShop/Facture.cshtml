@@ -1,0 +1,178 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Payements.views
+@using originalstoremada.Services
+@model List<originalstoremada.Models.Payements.views.VFacture>
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentClient();
+    Pagination<VFacture> paginations = ViewBag.pagination;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage("MES FACTURES"))
+<!----------------->
+<hr/>
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show text-center mb-3" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+    
+      <a asp-action="MesPayement" class="btn but2-mod2">
+        <i class="fa fa-money"></i>
+        <span>Tous Les Payements Via Shop</span>
+      </a>
+    
+      <div class="tab2-wrap">
+        <table class="tab2">
+          <thead>
+          <tr>
+            <th colspan="6">
+              
+              <a asp-action="Facture" asp-route-etat="0" asp-route-pagId="1" type="button" class="btn btn-@(ViewBag.etat==0? "" : "outline-")secondary">Tous</a>
+              <!-- Example single secondary button -->
+              <div class="btn-group">
+                <button type="button" class="btn btn-@(ViewBag.etat>=1 && ViewBag.etat<=3? "" : "outline-")secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Récupération directe
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a asp-action="Facture" asp-route-etat="1" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==1? "active" : "")" >Pas encore prêt(En attente)</a></li>
+                  <li><a asp-action="Facture" asp-route-etat="2" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==2? "active" : "")">Pret à être récupéré</a></li>
+                  <li><a asp-action="Facture" asp-route-etat="3" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==3? "active" : "")" >Déjà récupérer</a></li>
+                </ul>
+              </div>
+              <!-- Example single secondary button -->
+              <div class="btn-group">
+                <button type="button" class="btn btn-@(ViewBag.etat>=4 && ViewBag.etat<=6? "" : "outline-")secondary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                  Par livraison
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a asp-action="Facture" asp-route-etat="4" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==4? "active" : "")" >Pas encore prêt(En attente)</a></li>
+                  <li><a asp-action="Facture" asp-route-etat="5" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==5? "active" : "")" >Pret a livré</a></li>
+                  <li><a asp-action="Facture" asp-route-etat="6" asp-route-pagId="1" class="dropdown-item @(ViewBag.etat==6? "active" : "")" >Déjà Livrer</a></li>
+                </ul>
+              </div>
+              
+            </th>
+          </tr>
+          </thead>
+          <thead>
+          <tr>
+            <th class="pal6_bg2 text-white"></th>
+            <th class="pal6_bg2 text-white">Date</th>
+            <th class="pal6_bg2 text-white">Montant Finale</th>
+          </tr>
+          </thead>
+          <tbody>
+          @foreach (var item in Model)
+          {
+            <tr class="alert" role="alert">
+              <td>
+                <div class="pl-3 email">
+                  <span>#@Formattage.Numero(item.Id)</span>
+                  <span>
+                    <a asp-action="DetailsFacture" asp-route-id_facture="@item.Id" class="btn but2-mod2 btn-sm">
+                      <i class="fa fa-eye"></i><span class="text-white">Consulter</span>
+                    </a>
+                  </span>
+                </div>
+              </td>
+              <td class="status">
+                <div class="pl-3 email">
+                  <span>@Formattage.DateTime(item.Date)</span>
+                  @if (item.DateSuspendue != null)
+                  {
+                    <span>
+                      <button type="button" class="btn btn-danger disabled">
+                        <i class="fa fa-bell"></i> Facture suspendue
+                      </button>
+                    </span>
+                    <span>
+                      <strong>Suspendue le <span class="text-danger">@Formattage.DateTime((DateTime)item.DateSuspendue)</span></strong>
+                    </span>
+                    
+                  }
+                  else
+                  {
+                    @if (item.EstPayer != null)
+                    {
+                      <span class="active mb-1"><i class="fa fa-check-circle"></i> Facture Déja Payer</span>
+                    }
+                    else
+                    {
+                      <span class="waiting mb-1"><i class="fa fa-circle-o"></i> Facture non Payer</span>
+                    }
+                  
+                    <span class="active mb-1"><i class="fa fa-circle-o"></i> @item.EtatLivraisonType</span>
+                    @if (item.DatePret == null || (item.DatePret != null && item.DateLivrer == null))
+                    {
+                      <span class="waiting"><i class="fa fa-circle-o"></i> @item.EtatLivraison</span>
+                    } 
+                    else
+                    {
+                      <span class="active"><i class="fa fa-check-circle"></i> @item.EtatLivraison</span>
+                    }
+                  }
+                  
+                  <span></span>
+                </div>
+
+              </td>
+              <td class="status">
+                <div class="pl-3 email">
+                  <span><b>@Formattage.Valeur(item.MontantFin) MGA</b></span>
+                  <span><b>Quantiter : @item.QuantiterTotal</b></span>
+                  <span></span>
+                </div>
+
+              </td>
+            </tr>
+          }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load more -->
+  
+  <div class="pagin1">
+    <a asp-action="Facture"  asp-route-pagId="@(paginations.PageId - 1)" class="@(paginations.PageId == 1 ? "page-disabled" : "")" title="previous page"><i class="fa fa-chevron-left"></i></a>
+    @if (paginations.PageId > 1 && paginations.PageId > 4)
+    {
+                             
+      <a asp-action="Facture"  asp-route-pagId="1">1</a>
+      @if (paginations.PageId > 5)
+      {
+        <span class="page-dots">...</span>
+      }
+    }
+    @for (int i = paginations.PageId - 3; i <= paginations.PageId + 3; i++)
+    {
+      @if (i > 0 && i <= paginations.TotalPages)
+      {
+        <a asp-action="Facture"  asp-route-pagId="@i" class="@(paginations.PageId == i ? "page-active" : "")">@i</a>
+      }
+    }
+                                                  
+    @if (paginations.PageId < paginations.TotalPages && paginations.PageId < paginations.TotalPages - 3)
+    {
+      @if (paginations.PageId < paginations.TotalPages - 4)
+      {
+        <span class="page-dots">...</span>
+      }
+      <a asp-action="Facture"  asp-route-pagId="@paginations.TotalPages">@paginations.TotalPages</a>
+    }
+    <a asp-action="Facture"  asp-route-pagId="@(paginations.PageId + 1)" class="@(paginations.PageId == paginations.TotalPages ? "page-disabled" : "")" title="next page"><i class="fa fa-chevron-right"></i></a>
+  </div>
+
+</div>
+

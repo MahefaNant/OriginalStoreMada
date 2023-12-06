@@ -1,0 +1,196 @@
+@using originalstoremada.C_
+@using originalstoremada.Models.Devis.Views
+@using originalstoremada.Models.Payements
+@using originalstoremada.Services.Devis
+@model List<originalstoremada.Models.Devis.Views.VCommanceDevis>
+
+@{
+    ViewBag.Title = "title";
+    Layout = RoutePath.ContentClient();
+  VDevisInfo devis = ViewBag.devis;
+  Dictionary<int, string> suivisDevis = ViewBag.suivisDevis;
+  AdresseLivraisonDevis adresseLivraison = ViewBag.adresseLivraison;
+}
+
+<!-- Title page -->
+@Html.Raw(HTMLClient.TitlePage($"DETAILS DEVIS #{Formattage.Numero(devis.Id)}"))
+<!----------------->
+
+
+@if (ViewBag.error != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show mb-3 mt-3 text-center" role="alert">
+        <strong>Invalide! @ViewBag.error</strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="container">
+  <nav aria-label="breadcrumb mt-3">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a asp-action="Index">Mes devis</a></li>
+      <li class="breadcrumb-item active" aria-current="page">Details</li>
+    </ol>
+  </nav>
+
+  <div class="billing_details">
+    <div class="row">
+      <section class="section_tab1">
+        <div class="content_tab1">
+          <div class="container">
+            @{ bool etatValider = devis.EtatActuel.Etat != DevisService.Envoyer && devis.DateDelete==null ; }
+            @if (etatValider)
+            {
+              <a asp-action="Payement" asp-route-id_devis="@devis.Id" class="btn but2-mod1 btn-lg"><i class="fa fa-money"></i> Payement</a>
+            }
+            else
+            {
+              <button disabled class="btn but2-mod3 btn-lg"><i class="fa fa-lock"></i> Payement</button>
+            }
+            
+            @if (devis.DatePayer != null)
+            {
+              <a asp-action="OptionImportation" asp-route-id_devis="@devis.Id" class="btn but2-mod2 btn-lg"><i class="fa fa-plane"></i> Options D'Importation</a>
+            }
+            
+            @*@if (suivisDevis[3].Contains("completed") && adresseLivraison==null)
+            {
+              <a asp-action="ChooseLivraison" asp-route-id_devis="@devis.Id" class="btn but2-mod2 btn-lg"><i class="fa fa-truck"></i> Choix de Livraison</a>
+            }*@
+            <hr/>
+            
+            <div class="tab2-wrap">
+              <table class="tab2">
+                <thead>
+                <tr>
+                  <th colspan="7">
+                    <div class="alert alert-danger" role="alert">
+                      Etat actuel de cette devis "<a href="#" class="alert-link">@devis.EtatActuel.Etat</a>"
+                    </div>
+                    @if (devis.DateDelete != null)
+                    {
+                      <div class="alert alert-danger" role="alert">
+                        Dernier Remarque: "<a href="#" class="alert-link">@devis.Remarque</a>"
+                      </div>
+                    }
+                    <div class="stepper-wrapper">
+                      <div class="stepper-item @suivisDevis[0]">
+                        <div class="step-counter"><i class="fa fa-close"></i></div>
+                        <div class="step-name">
+                          <ul class="list-group">
+                            <li class="list-inline-item text-center">Effacer / Invalide</li>
+                            @if (devis.DateDelete != null)
+                            {
+                              <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateDelete)</li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="stepper-item @suivisDevis[1]">
+                        <div class="step-counter">1</div>
+                        <div class="step-name">
+                          <ul class="list-group">
+                            <li class="list-inline-item text-center">Demander</li>
+                            @if (true)
+                            {
+                              <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.Date)</li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="stepper-item @suivisDevis[2]">
+                        <div class="step-counter">2</div>
+                        <div class="step-name">
+                          <ul class="list-group">
+                            <li class="list-inline-item text-center">EValider</li>
+                            @if (devis.DateValidation != null)
+                            {
+                              <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DateValidation)</li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="stepper-item @suivisDevis[3]">
+                        <div class="step-counter">3</div>
+                        <div class="step-name">
+                          <ul class="list-group">
+                            <li class="list-inline-item text-center">Avance Payement</li>
+                            @if (devis.DatePayer != null)
+                            {
+                              <li class="list-inline-item text-secondary">@Formattage.DateTime((DateTime)devis.DatePayer)</li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                      <div class="stepper-item @suivisDevis[4]">
+                        <div class="step-counter">4</div>
+                        <div class="step-name">
+                          <ul class="list-group">
+                            <li class="list-inline-item text-center">Livré</li>
+                            @if (devis.IsLivrer)
+                            {
+                              <li class="list-inline-item text-secondary"><i class="fa fa-check"></i></li>
+                            }
+                          </ul>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="alert alert-@(devis.DatePayer != null ? "success" : "danger") h5" role="alert">
+                      Payement <i class="fa fa-arrow-right"></i>
+                      "<a href="#" class="alert-link">@(devis.DatePayer != null ? "Complet" : "Incomplet") <i class="fa fa-@(devis.DatePayer != null ? "check-circle-o" : "close")"></i></a>"
+                    </div>
+                  </th>
+                </tr>
+                </thead>
+                <thead>
+                <tr>
+                  <th scope="col" class="pal6_bg2 text-white" ></th>
+                  <th scope="col" class="pal6_bg2 text-white">Produit</th>
+                  <th scope="col" class="pal6_bg2 text-white">Prix <i class="fa fa-euro"></i></th>
+                  <th scope="col" class="pal6_bg2 text-white">Couleur</th>
+                  <th scope="col" class="pal6_bg2 text-white">Taille</th>
+                  <th scope="col" class="pal6_bg2 text-white">Quantiter</th>
+                  <th scope="col" class="pal6_bg2 text-white">Url Ref</th>
+                </tr>
+                </thead>
+                <tbody>
+                @foreach (var q in Model)
+                {
+                  <input type="hidden" name="Id" value="@q.Id"/>
+                  <input type="hidden" name="IdDevis" value="@q.IdDevis"/>
+                  <tr scope="row">
+                    <td>
+                      <a>
+                        <img class="img-thumbnail" src="~/images/produits/@(q.image != null ? $"minimize_{q.image}" : "locks/minimize_vide.jpg") " alt="">
+                      </a>
+                    </td>
+                    <td>
+                      @q.ProduitName
+                    </td>
+                    <td>
+                      @q.PrixEuro <i class="fa fa-euro"></i>
+                      @* <small class="d-block">Far far away, behind the word mountains</small> *@
+                    </td>
+                    <td>@q.Couleur</td>
+                    <td>@q.Taille</td>
+                    <td>@q.Nombre</td>
+                    <td><a href="@q.ReferenceSite" target="_blank">@q.ReferenceSite</a></td>
+                  </tr>
+                }
+                <tr>
+                  <td></td> <td>@devis.ActuelEuroElement <i class="fa fa-euro"></i></td>
+                  <td>Cours Euro: @(devis.CoursDevis == null ? $"{Formattage.Valeur((double)devis.CoursEuro)} MGA (instable)" : $"{Formattage.Valeur((double)devis.CoursDevis)} MGA (Fix)") </td>
+                  <td colspan="3"> <i class="fa fa-arrow-right"></i> @Formattage.Valeur((double)devis.TotalPrixAriary1) MGA</td>
+                </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </div>
+  </div>
+    
+</div>
